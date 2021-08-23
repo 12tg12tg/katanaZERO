@@ -69,7 +69,7 @@ using namespace std;
 //	매크로 설정부분	//
 //=================//
 
-#define WINNAME			(LPTSTR)(TEXT("루시의 일기"))
+#define WINNAME			(LPTSTR)(TEXT("katana ZERO"))
 #define WINSTARTX		50//시작점
 #define WINSTARTY		50
 //#define WINSIZEX		1024
