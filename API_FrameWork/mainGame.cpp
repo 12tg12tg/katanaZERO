@@ -14,8 +14,8 @@ HRESULT mainGame::init()
 {
 	gameNode::init(true);	//필요한동적할당
 
-
-
+	_KZmain = new KatanaZero;
+	_KZmain->init();
 
 	return S_OK;
 }
@@ -25,7 +25,7 @@ void mainGame::release()
 	gameNode::release();	//해제
 
 
-
+	SAFE_DELETE(_KZmain);
 }
 
 void mainGame::update()
@@ -33,7 +33,7 @@ void mainGame::update()
 	gameNode::update();
 
 
-
+	_KZmain->update();
 
 
 
@@ -50,10 +50,10 @@ void mainGame::render(/*HDC hdc*/)	//그림그리는곳
 	RECT rc = checkGameSize();
 	//========================================================
 						/*렌더링 공간*/
+	//if(_isDebug) RectangleMake(getMemDC(), { WINSIZEX / 2 - 50, WINSIZEY / 2 - 50, WINSIZEX / 2 + 50, WINSIZEY / 2 + 50 });	//테스트중심사각형
 
-	if(_isDebug) RectangleMake(getMemDC(), { WINSIZEX / 2 - 50, WINSIZEY / 2 - 50, WINSIZEX / 2 + 50, WINSIZEY / 2 + 50 });	//테스트중심사각형
 
-
+	_KZmain->render();
 
 
 

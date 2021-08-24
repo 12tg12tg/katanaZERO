@@ -143,3 +143,19 @@ inline void BeginSolidColor(HDC hdc, HBRUSH* brush, COLORREF color)
 	*brush = CreateSolidBrush(color);
 	*brush = (HBRUSH)SelectObject(hdc, *brush);
 }
+
+//===============================================
+//					enum
+//===============================================
+enum class FOWARD
+{
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+	LEFTUP,
+	RIGHTUP,
+	LEFTDOWN,
+	RIGHTDOWN,
+	NONE
+};

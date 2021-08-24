@@ -1,11 +1,13 @@
 #pragma once
 #include "gameNode.h"
-
+#include "KatanaZero.h"
 class mainGame : public gameNode
 {
 private:
 	image* _finalBuffer;
+private:
 
+	KatanaZero* _KZmain;
 
 
 
@@ -28,10 +30,7 @@ public:
 	void setIsDebug() {
 		if (InputManager->isOnceKeyDown(VK_F1)) {
 			_isDebug = !_isDebug;
-
-
-
-
+			_KZmain->setIsDebug(_isDebug);
 		}
 	}
 };  

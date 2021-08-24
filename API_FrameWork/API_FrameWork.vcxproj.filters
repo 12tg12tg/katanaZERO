@@ -61,6 +61,15 @@
     <Filter Include="manager\카메라">
       <UniqueIdentifier>{d9f6413c-bdb3-4ef6-9878-9cbf87983a63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero">
+      <UniqueIdentifier>{0bfcef73-d018-4b0b-b47e-c2dc87213c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\Player">
+      <UniqueIdentifier>{27a58f06-3909-4473-bb0f-1b840b1ca961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\Map">
+      <UniqueIdentifier>{d8d690f5-c8c4-42bb-bc94-1fe210c55e6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -147,6 +156,12 @@
     <ClInclude Include="camera.h">
       <Filter>manager\카메라</Filter>
     </ClInclude>
+    <ClInclude Include="KatanaZero.h">
+      <Filter>KatanaZero</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>KatanaZero\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -214,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>manager\카메라</Filter>
+    </ClCompile>
+    <ClCompile Include="KatanaZero.cpp">
+      <Filter>KatanaZero</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>KatanaZero\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -44,6 +44,7 @@ using namespace std;
 #include"button.h"
 #include"camera.h"
 
+#include"player.h"
 
 
 //=======================//
@@ -64,6 +65,7 @@ using namespace std;
 #define BUTTON			Cbutton::getSingleton()
 #define CAMERA			camera::getSingleton()
 
+#define PLAYER			player::getSingleton()
 
 //===================//
 //	매크로 설정부분	//
