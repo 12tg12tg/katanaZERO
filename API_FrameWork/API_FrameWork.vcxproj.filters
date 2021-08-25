@@ -70,6 +70,9 @@
     <Filter Include="KatanaZero\Map">
       <UniqueIdentifier>{d8d690f5-c8c4-42bb-bc94-1fe210c55e6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="manager\FSM">
+      <UniqueIdentifier>{7bc82f92-ba7b-460c-be55-6ff8c9d89fb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -162,6 +165,12 @@
     <ClInclude Include="player.h">
       <Filter>KatanaZero\Player</Filter>
     </ClInclude>
+    <ClInclude Include="playerstate.h">
+      <Filter>KatanaZero\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.h">
+      <Filter>manager\FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -235,6 +244,12 @@
     </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>KatanaZero\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="playerstate.cpp">
+      <Filter>KatanaZero\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="FSM.cpp">
+      <Filter>manager\FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

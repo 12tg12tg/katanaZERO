@@ -59,22 +59,24 @@ void player::render()
 	ZORDER->ZorderAniRender(_img, ZUNIT, _rc.bottom, _x, _y, _ani);
 
 	TCHAR str[128];
-	wsprintf(str, "frameCount : %d", _frameCount);
+	wsprintf(str, "state : %d", _oldstate);
 	ZORDER->UITextOut(str, ZUIFIRST, 100, 0, RGB(0, 0, 0));
 }
 
 void player::move()
 {
 	//좌우
-	if ((INPUT->isStayKeyDown('A') && INPUT->isStayKeyDown('D'))) {
+	if (INPUT->isStayKeyDown('A') && INPUT->isStayKeyDown('D')) {
 		if (_oldstate != PLAYERSTATE::IDLE) {
+			_oldstate = _state;
 			_state = PLAYERSTATE::IDLE;
 			_frameCount = 0;
 		}
 		_speed = 0.f;
 	}
-	else if (INPUT->isStayKeyDown('A')){
+	else if (INPUT->isStayKeyDown('A') && _state != PLAYERSTATE::ROLL){
 		if (_oldstate != PLAYERSTATE::RUN || _foward != FOWARD::LEFT) {
+			_oldstate = _state;
 			_state = PLAYERSTATE::RUN;
 			_frameCount = 0;
 		}
@@ -84,8 +86,9 @@ void player::move()
 		_x -= _speed;
 		/*상자*/
 	}
-	else if (INPUT->isStayKeyDown('D')) {
+	else if (INPUT->isStayKeyDown('D') && _state != PLAYERSTATE::ROLL) {
 		if (_oldstate != PLAYERSTATE::RUN || _foward != FOWARD::RIGHT) {
+			_oldstate = _state;
 			_state = PLAYERSTATE::RUN;
 			_frameCount = 0;
 		}
@@ -96,8 +99,9 @@ void player::move()
 		/*상자*/
 	}
 	//정지
-	if (INPUT->isOnceKeyUp('D') || INPUT->isOnceKeyUp('A')){
+	if (_state != PLAYERSTATE::ROLL && (INPUT->isOnceKeyUp('D') || INPUT->isOnceKeyUp('A'))){
 		if (_oldstate != PLAYERSTATE::IDLE) {
+			_oldstate = _state;
 			_state = PLAYERSTATE::IDLE;
 			_frameCount = 0;
 		}
@@ -108,12 +112,24 @@ void player::move()
 	if (INPUT->isStayKeyDown('W')) {
 		
 	}
-	else if (INPUT->isStayKeyDown('S')) {
+	else if (INPUT->isStayKeyDown('S') && _state != PLAYERSTATE::ROLL) {
 		if (_state == PLAYERSTATE::IDLE) {
+			_oldstate = _state;
+			_frameCount = 0;
 			_state = PLAYERSTATE::CROUCH;
 		}
 		else if (_state == PLAYERSTATE::RUN) {
+			_oldstate = _state;
+			_frameCount = 0;
 			_state = PLAYERSTATE::ROLL;
+		}
+	}
+	//정지
+	if (_state == PLAYERSTATE::CROUCH && INPUT->isOnceKeyUp('S')) {
+		if (_oldstate != PLAYERSTATE::IDLE) {
+			_oldstate = _state;
+			_state = PLAYERSTATE::IDLE;
+			_frameCount = 0;
 		}
 	}
 }
@@ -124,19 +140,34 @@ void player::giveFrame()
 	{
 	case PLAYERSTATE::IDLE:
 		if (_frameCount == 0) {
-			if (_oldstate == PLAYERSTATE::RUN) {
-				_oldstate = PLAYERSTATE::IDLE;
-				if(_foward==FOWARD::RIGHT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 33, 37, 12, false, false);
-				else if(_foward == FOWARD::LEFT)
-					_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 131, 127, 12, false, false);
-			}
-			else {
+			switch (_oldstate)
+			{
+			case PLAYERSTATE::IDLE:
 				if (_foward == FOWARD::RIGHT)
 					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 0, 10, 11, false, true);
 				else if (_foward == FOWARD::LEFT)
 					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 98, 88, 11, false, true);
+			case PLAYERSTATE::RUN:
+				if (_foward == FOWARD::RIGHT)
+					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 33, 37, 12, false, false);
+				else if (_foward == FOWARD::LEFT)
+					_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 131, 127, 12, false, false);
+				break;
+			case PLAYERSTATE::CROUCH:
+			case PLAYERSTATE::ROLL:
+				if (_foward == FOWARD::RIGHT)
+					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 77, 78, 8, false, false);
+				else if (_foward == FOWARD::LEFT)
+					_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 175, 174, 8, false, false);
+				break;
+			case PLAYERSTATE::JUMP:
+				break;
+			case PLAYERSTATE::ATTACK:
+				break;
+			case PLAYERSTATE::DIE:
+				break;
 			}
+			_oldstate = PLAYERSTATE::IDLE;
 		}
 		else if (!_ani->isPlay()) {
 			if (_foward == FOWARD::RIGHT)
@@ -170,15 +201,28 @@ void player::giveFrame()
 		break;
 	case PLAYERSTATE::CROUCH:
 		if (_frameCount == 0) {
+			_oldstate = PLAYERSTATE::CROUCH;
 			if (_foward == FOWARD::RIGHT) {
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 55, 56, 12, false, false);
+				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 55, 56, 8, false, false);
 			}
 			else if (_foward == FOWARD::LEFT) {
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 153, 152, 12, false, false);
+				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 153, 152, 8, false, false);
 			}
 		}
 		break;
 	case PLAYERSTATE::ROLL:
+		if (_frameCount == 0) {
+			_oldstate = PLAYERSTATE::ROLL;
+			if (_foward == FOWARD::RIGHT) {
+				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 66, 72, 8, false, false);
+			}
+			else if (_foward == FOWARD::LEFT) {
+				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 164, 158, 8, false, false);
+			}
+		}
+		else if (!_ani->isPlay()) {
+			_state = PLAYERSTATE::IDLE;
+		}
 		break;
 	case PLAYERSTATE::JUMP:
 		break;
