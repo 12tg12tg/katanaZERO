@@ -152,8 +152,8 @@
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
+    <ClInclude Include="enum.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="FSM.h" />
     <ClInclude Include="gameNode.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
@@ -163,7 +163,7 @@
     <ClInclude Include="mapTool.h" />
     <ClInclude Include="OBBCollision.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="playerstate.h" />
+    <ClInclude Include="PlayerState.h" />
     <ClInclude Include="progressBar.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="Resource.h" />
@@ -185,7 +185,6 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
-    <ClCompile Include="FSM.cpp" />
     <ClCompile Include="gameNode.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
@@ -195,7 +194,7 @@
     <ClCompile Include="mapTool.cpp" />
     <ClCompile Include="OBBCollision.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="playerstate.cpp" />
+    <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="progressBar.cpp" />
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="soundManager.cpp" />

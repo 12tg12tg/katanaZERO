@@ -43,6 +43,7 @@ using namespace std;
 #include"Zorder.h"
 #include"button.h"
 #include"camera.h"
+#include"enum.h"
 
 #include"player.h"
 

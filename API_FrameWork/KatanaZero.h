@@ -14,6 +14,7 @@ public:
 	void update();
 	void render();
 
+	void dropFrame();
 	void setIsDebug(bool isDebug)
 	{
 		_isDebug = isDebug;

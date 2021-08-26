@@ -6,8 +6,8 @@
 #define PI_8	(PI/8) //22.5µµ
 #define PI_16	(PI/16)
 
-#define DEGREE(p) (PI/180)*(p)
-#define RADIAN(p) (180/PI)*(p)
+#define RADIAN(p) (PI/180)*(p)
+#define DEGREE(p) (180/PI)*(p)
 
 #define UPLEFTANGLE (3*PI/4)
 #define UPANGLE (PI/2)

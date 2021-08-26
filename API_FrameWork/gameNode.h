@@ -17,7 +17,6 @@ public:
 	virtual void update(); //계산하는곳
 	virtual void render(/*HDC hdc*/);
 
-
 	image* getBackBuffer()const { return _backBuffer; }
 	HDC getHDC()const { return _hdc; }
 	HDC getMemDC()const { return _backBuffer->getMemDC(); }

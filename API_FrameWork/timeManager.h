@@ -5,6 +5,7 @@ class timeManager : public Singleton<timeManager>
 {
 private:
 	timer* _timer;
+	float _gametimeRate = 1.f;
 public:
 	timeManager();
 	~timeManager();
@@ -16,7 +17,7 @@ public:
 
 	float getElapsedTime()const { return _timer->getElapsedTime(); }
 	float getWorldTime()const { return _timer->getWorldTime(); }
-
-
+	float getGameTimeRate() { return _gametimeRate; }
+	void setGameTimeRate(float timeRate) { _gametimeRate = timeRate; }
 };
 

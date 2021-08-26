@@ -1,6 +1,6 @@
 #include "framework.h"
 #include "player.h"
-
+#include "PlayerState.h"
 player::player()
 {
 }
@@ -18,39 +18,28 @@ HRESULT player::init()
 	_rc = RectMake(_x + _img->getFrameWidth() * 2 / 5, _y + _img->getFrameHeight() * 1 / 5, _img->getFrameWidth()* 1 / 5, _img->getFrameHeight() * 4 / 5);
 	_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 0, 10, 11, false, true);
 	_speed = 0.f;
-	_maxSpeed = 7.f;
-	_state = PLAYERSTATE::IDLE;
-	_oldstate = PLAYERSTATE::IDLE;
-	_foward = FOWARD::RIGHT;
-	_oldfoward = FOWARD::RIGHT;
+	_maxSpeed = 9.f;
 	_frameCount = 0;
-	//_isFowardChange = false;
-	//_isStateChange = false;
+	stateInit();
+
 	return S_OK;
-}
-
-void player::imageInit()
-{
-	IMAGE->addFrameImage("player_IDLE", "images/player/player_idle.bmp", 396 * PLAYERSIZEUP, 35 * PLAYERSIZEUP, 11, 1, true);
-	IMAGE->addFrameImage("player_IDLE_to_RUN", "images/player/player_idle_to_Run.bmp", 176 * PLAYERSIZEUP, 32 * PLAYERSIZEUP, 4, 1, true);
-	IMAGE->addFrameImage("player_RUN", "images/player/player_run.bmp", 440 * PLAYERSIZEUP, 32 * PLAYERSIZEUP, 10, 1, true);
-	IMAGE->addFrameImage("player_RUN_to_IDLE", "images/player/player_run_to_idle.bmp", 260 * PLAYERSIZEUP, 36 * PLAYERSIZEUP, 5, 1, true);
-	IMAGE->addFrameImage("player_JUMP", "images/player/player_jump.bmp", 128 * PLAYERSIZEUP, 42 * PLAYERSIZEUP, 4, 1, true);
-	IMAGE->addFrameImage("player_ROLL", "images/player/player_roll.bmp", 336 * PLAYERSIZEUP, 33 * PLAYERSIZEUP, 7, 1, true);
-	IMAGE->addFrameImage("player_PRECROUCH", "images/player/player_precrouch.bmp", 72 * PLAYERSIZEUP, 40 * PLAYERSIZEUP, 2, 1, true);
-	IMAGE->addFrameImage("player_POSTCROUCH", "images/player/player_postcrouch.bmp", 72 * PLAYERSIZEUP, 40 * PLAYERSIZEUP, 2, 1, true);
-
-	IMAGE->addFrameImage("player_ALL1", "images/player/player_all1.bmp", 572*2, 672*2, 11, 16, true);
 }
 
 void player::release()
 {
+	SAFE_DELETE(_FSM);
 }
 
 void player::update()
 {
-	move();
-	giveFrame();
+	_FSM->update();	//이미지프레임 상태패턴 - 이동.
+
+	//테스트
+	if (INPUT->isOnceKeyDown('J')) _FSM->ChangeState(PLAYERSTATE::DOORBREAK);
+	if (INPUT->isOnceKeyDown('K')) _FSM->ChangeState(PLAYERSTATE::DEAD);
+	if (INPUT->isOnceKeyDown('R')) _FSM->ChangeState(PLAYERSTATE::HURTCOVER);
+	if (INPUT->isOnceKeyDown('F')) _FSM->ChangeState(PLAYERSTATE::FLIP);
+	if (INPUT->isOnceKeyDown('P')) _FSM->ChangeState(PLAYERSTATE::WALLSLIDE);
 }
 
 void player::render()
@@ -59,189 +48,31 @@ void player::render()
 	ZORDER->ZorderAniRender(_img, ZUNIT, _rc.bottom, _x, _y, _ani);
 
 	TCHAR str[128];
-	wsprintf(str, "state : %d", _oldstate);
+	_stprintf_s(str, "speed : %.1f", _speed);
 	ZORDER->UITextOut(str, ZUIFIRST, 100, 0, RGB(0, 0, 0));
 }
 
-void player::move()
+void player::imageInit()
 {
-	//좌우
-	if (INPUT->isStayKeyDown('A') && INPUT->isStayKeyDown('D')) {
-		if (_oldstate != PLAYERSTATE::IDLE) {
-			_oldstate = _state;
-			_state = PLAYERSTATE::IDLE;
-			_frameCount = 0;
-		}
-		_speed = 0.f;
-	}
-	else if (INPUT->isStayKeyDown('A') && _state != PLAYERSTATE::ROLL){
-		if (_oldstate != PLAYERSTATE::RUN || _foward != FOWARD::LEFT) {
-			_oldstate = _state;
-			_state = PLAYERSTATE::RUN;
-			_frameCount = 0;
-		}
-		_foward = FOWARD::LEFT;
-		_speed += _maxSpeed / 20;
-		if (_speed > _maxSpeed) _speed = _maxSpeed;
-		_x -= _speed;
-		/*상자*/
-	}
-	else if (INPUT->isStayKeyDown('D') && _state != PLAYERSTATE::ROLL) {
-		if (_oldstate != PLAYERSTATE::RUN || _foward != FOWARD::RIGHT) {
-			_oldstate = _state;
-			_state = PLAYERSTATE::RUN;
-			_frameCount = 0;
-		}
-		_foward = FOWARD::RIGHT;
-		_speed += _maxSpeed / 20;
-		if (_speed > _maxSpeed) _speed = _maxSpeed;
-		_x += _speed;
-		/*상자*/
-	}
-	//정지
-	if (_state != PLAYERSTATE::ROLL && (INPUT->isOnceKeyUp('D') || INPUT->isOnceKeyUp('A'))){
-		if (_oldstate != PLAYERSTATE::IDLE) {
-			_oldstate = _state;
-			_state = PLAYERSTATE::IDLE;
-			_frameCount = 0;
-		}
-		_speed = 0.f;
-	}
-
-	//점프, 구르기
-	if (INPUT->isStayKeyDown('W')) {
-		
-	}
-	else if (INPUT->isStayKeyDown('S') && _state != PLAYERSTATE::ROLL) {
-		if (_state == PLAYERSTATE::IDLE) {
-			_oldstate = _state;
-			_frameCount = 0;
-			_state = PLAYERSTATE::CROUCH;
-		}
-		else if (_state == PLAYERSTATE::RUN) {
-			_oldstate = _state;
-			_frameCount = 0;
-			_state = PLAYERSTATE::ROLL;
-		}
-	}
-	//정지
-	if (_state == PLAYERSTATE::CROUCH && INPUT->isOnceKeyUp('S')) {
-		if (_oldstate != PLAYERSTATE::IDLE) {
-			_oldstate = _state;
-			_state = PLAYERSTATE::IDLE;
-			_frameCount = 0;
-		}
-	}
+	IMAGE->addFrameImage("player_ALL1", "images/player/player_all1.bmp", 744 * 2, 1440 * 2, 12, 30, true);
 }
 
-void player::giveFrame()
+void player::stateInit()
 {
-	switch (_state)
-	{
-	case PLAYERSTATE::IDLE:
-		if (_frameCount == 0) {
-			switch (_oldstate)
-			{
-			case PLAYERSTATE::IDLE:
-				if (_foward == FOWARD::RIGHT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 0, 10, 11, false, true);
-				else if (_foward == FOWARD::LEFT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 98, 88, 11, false, true);
-			case PLAYERSTATE::RUN:
-				if (_foward == FOWARD::RIGHT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 33, 37, 12, false, false);
-				else if (_foward == FOWARD::LEFT)
-					_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 131, 127, 12, false, false);
-				break;
-			case PLAYERSTATE::CROUCH:
-			case PLAYERSTATE::ROLL:
-				if (_foward == FOWARD::RIGHT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 77, 78, 8, false, false);
-				else if (_foward == FOWARD::LEFT)
-					_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 175, 174, 8, false, false);
-				break;
-			case PLAYERSTATE::JUMP:
-				break;
-			case PLAYERSTATE::ATTACK:
-				break;
-			case PLAYERSTATE::DIE:
-				break;
-			}
-			_oldstate = PLAYERSTATE::IDLE;
-		}
-		else if (!_ani->isPlay()) {
-			if (_foward == FOWARD::RIGHT)
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 0, 10, 11, false, true);
-			else if (_foward == FOWARD::LEFT)
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 98, 88, 11, false, true);
-		}
-		break;
-	case PLAYERSTATE::RUN:
-		if (_frameCount == 0) {
-			if (_oldstate == PLAYERSTATE::IDLE) {
-				_oldstate = PLAYERSTATE::RUN;
-				if (_foward == FOWARD::RIGHT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 11, 14, 12, false, false);
-				else if (_foward == FOWARD::LEFT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 109, 106, 12, false, false);
-			}
-			else {
-				if (_foward == FOWARD::RIGHT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 22, 31, 12, false, true);
-				else if (_foward == FOWARD::LEFT)
-					ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 120, 111, 12, false, true);
-			}
-		}
-		else if (!_ani->isPlay()) {
-			if (_foward == FOWARD::RIGHT)
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 22, 31, 12, false, true);
-			else if (_foward == FOWARD::LEFT)
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 120, 111, 12, false, true);
-		}
-		break;
-	case PLAYERSTATE::CROUCH:
-		if (_frameCount == 0) {
-			_oldstate = PLAYERSTATE::CROUCH;
-			if (_foward == FOWARD::RIGHT) {
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 55, 56, 8, false, false);
-			}
-			else if (_foward == FOWARD::LEFT) {
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 153, 152, 8, false, false);
-			}
-		}
-		break;
-	case PLAYERSTATE::ROLL:
-		if (_frameCount == 0) {
-			_oldstate = PLAYERSTATE::ROLL;
-			if (_foward == FOWARD::RIGHT) {
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 66, 72, 8, false, false);
-			}
-			else if (_foward == FOWARD::LEFT) {
-				ANIMATION->changeNonKeyAnimation(_ani, "player_ALL1", 164, 158, 8, false, false);
-			}
-		}
-		else if (!_ani->isPlay()) {
-			_state = PLAYERSTATE::IDLE;
-		}
-		break;
-	case PLAYERSTATE::JUMP:
-		break;
-	case PLAYERSTATE::WALK:
-		break;
-	case PLAYERSTATE::ATTACK:
-		break;
-	case PLAYERSTATE::DIE:
-		break;
-	}
-	++_frameCount;
-}
+	_FSM = new PlayerFSM;
+	_FSM->AddState(new Player_Idle);
+	_FSM->AddState(new Player_Run);
+	_FSM->AddState(new Player_Roll);
+	_FSM->AddState(new Player_Crouch);
+	_FSM->AddState(new Player_Jump);
+	_FSM->AddState(new Player_Fall);
+	_FSM->AddState(new Player_Attack);
+	_FSM->AddState(new Player_Doorbreak);
+	_FSM->AddState(new Player_Dead);
+	_FSM->AddState(new Player_HurtCover);
+	_FSM->AddState(new Player_Flip);
+	_FSM->AddState(new Player_WallSlide);
 
-void player::stateUpdate()
-{
-	if (_speed > 0){
-		_state = PLAYERSTATE::RUN;
-	}
-	else {
-		_state = PLAYERSTATE::IDLE;
-	}
+
+	_FSM->SetState(PLAYERSTATE::IDLE);
 }

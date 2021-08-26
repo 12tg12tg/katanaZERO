@@ -25,14 +25,14 @@ void animationManager::update()
     for ( iter; iter != _animation.end(); ++iter)
     {
         if (!iter->second->isPlay()) continue;
-        iter->second->frameUpdate(TIME->getElapsedTime() * 1.0f);
+        iter->second->frameUpdate(TIME->getElapsedTime() * TIME->getGameTimeRate());
     }
 
     //--------------------------20210808 추가 제작-----------------------------------
     for (_viAnimation = _vAnimation.begin(); _viAnimation != _vAnimation.end(); ++_viAnimation)
     {
         if (!((*_viAnimation)->isPlay())) continue;
-        (*_viAnimation)->frameUpdate(TIME->getElapsedTime() * 1.0f);
+        (*_viAnimation)->frameUpdate(TIME->getElapsedTime() * TIME->getGameTimeRate());
     }
     //------------------------------------------------------------------------------
 }
