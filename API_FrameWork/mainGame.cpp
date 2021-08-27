@@ -31,7 +31,13 @@ void mainGame::release()
 void mainGame::update()
 {
 	gameNode::update();
-
+	if (getCliChange()) {
+		setCliChange(false);
+		_clientGameRc = checkGameSize();
+		CAMERA->setClientRect(_clientGameRc);
+	}
+	//========================================================
+							/*업뎃 공간*/
 
 	_KZmain->update();
 
@@ -41,29 +47,24 @@ void mainGame::update()
 
 	setIsDebug();
 	setFPSprint();
+	//========================================================
 }
 
 void mainGame::render(/*HDC hdc*/)	//그림그리는곳
 {
 	PatBlt(_finalBuffer->getMemDC(), 0, 0, _finalBuffer->getWidth(), _finalBuffer->getHeight(), BLACKNESS);
 	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
-	RECT rc = checkGameSize();
 	//========================================================
 						/*렌더링 공간*/
-	//if(_isDebug) RectangleMake(getMemDC(), { WINSIZEX / 2 - 50, WINSIZEY / 2 - 50, WINSIZEX / 2 + 50, WINSIZEY / 2 + 50 });	//테스트중심사각형
-
 
 	_KZmain->render();
 
 
 
 
-
-
-
 	//========================================================
 	//백퍼버의 내용을 finalBuffer에 그린다. (getmemdc + fps정보)
-	this->getBackBuffer()->stretchRender(_finalBuffer->getMemDC(), RecCenX(rc), RecCenY(rc), RecWidth(rc), RecHeight(rc));
+	this->getBackBuffer()->stretchRender(_finalBuffer->getMemDC(), RecCenX(_clientGameRc), RecCenY(_clientGameRc), RecWidth(_clientGameRc), RecHeight(_clientGameRc));
 	if (_showFPS) TIME->render(_finalBuffer->getMemDC());
 	//hdc로 전송
 	_finalBuffer->render(getHDC());

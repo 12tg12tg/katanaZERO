@@ -172,91 +172,6 @@ void camera::release()
 {
 }
 
-//RECT camera::RelativeRectMake(float x, float y, int width, int height)
-//{
-//	return RECT();
-//}
-
-//void camera::release()
-//{
-//}
-
-//void camera::RelativeRectangle(HDC hdc, RECT rc)
-//{
-//}
-
-//void camera::RelativeRectangle(HDC hdc, int left, int top, int width, int height)
-//{
-//}
-
-//void camera::RelativeFrameRect(HDC hdc, RECT rc, COLORREF color)
-//{
-//}
-
-//void camera::RelativeLineMake(HDC hdc, int startX, int startY, int endX, int endY)
-//{
-//}
-
-//void camera::RelativeRender(HDC hdc, image * ig, int destX, int destY)
-//{
-//}
-
-//void camera::RelativeRender(HDC hdc, image * ig, int destX, int destY, int sourX, int sourY, int sourWid, int sourHei)
-//{
-//}
-
-//void camera::RelativeFrameRender(HDC hdc, image * ig, int destX, int destY, int frameX, int frameY)
-//{
-//}
-
-//void camera::RelativeStretchRender(HDC hdc, image * ig, int destX, int destY, float size)
-//{
-//}
-
-//void camera::RelativeStretchRender(HDC hdc, image * ig, int destX, int destY, float scaleX, float scaleY)
-//{
-//}
-
-//void camera::RelativeStretchFrameRender(HDC hdc, image * ig, int destX, int destY, int frameX, int frameY, float size)
-//{
-//}
-
-//void camera::RelativeStretchFrameRender(HDC hdc, image * ig, int destX, int destY, int frameX, int frameY, float scaleX, float scaleY)
-//{
-//}
-
-//void camera::RelativeAlphaRender(HDC hdc, image * ig, int destX, int destY, BYTE alpha)
-//{
-//}
-
-//void camera::RelativeAlphaRender(HDC hdc, image * ig, int destX, int destY, int sourX, int sourY, int sourWid, int sourHei, BYTE alpha)
-//{
-//}
-
-//void camera::RelativeAlphaFrameRender(HDC hdc, image * ig, int destX, int destY, int frameX, int frameY, BYTE alpha)
-//{
-//}
-
-//void camera::RelativeRotateRender(HDC hdc, image * img, int centerX, int centerY, float angle)
-//{
-//}
-
-//void camera::RelativeRotateFrameRender(HDC hdc, image * img, int centerX, int centerY, float angle, int frameX, int frameY)
-//{
-//}
-
-//void camera::RelativeRotateAlphaRender(HDC hdc, image * img, int centerX, int centerY, float angle, BYTE alpha)
-//{
-//}
-
-//void camera::RelativeRotateAlphaFrameRender(HDC hdc, image * img, int centerX, int centerY, float angle, int frameX, int frameY, BYTE alpha)
-//{
-//}
-
-//void camera::textOut(HDC hdc, int x, int y, const char* text, COLORREF color)
-//{
-//}
-
 void camera::FadeInit(int time, FADEKIND fadeKind)
 {
 	IMAGE->addImage("fadeImg", WINSIZEX, WINSIZEY);
@@ -335,10 +250,29 @@ POINT camera::getRelativePoint(POINT pt)
 
 POINT camera::getRelativeMouse()
 {
-	POINT ptM;
-	ptM.x = m_ptMouse.x + _cameraRect.left;
-	ptM.y = m_ptMouse.y + _cameraRect.top;
-	return ptM;
+	POINT cameraMouse;
+	POINT relativeMouse;
+	relativeMouse.x = m_ptMouse.x - _clientGameRc.left;
+	relativeMouse.y = m_ptMouse.y - _clientGameRc.top;
+	float rate = (float)relativeMouse.x / RecWidth(_clientGameRc);
+	cameraMouse.x = CAMERA->getRect().left + RecWidth(CAMERA->getRect()) * rate;
+	rate = (float)relativeMouse.y / RecHeight(_clientGameRc);
+	cameraMouse.y = CAMERA->getRect().top + RecHeight(CAMERA->getRect()) * rate;
+
+	return cameraMouse;
+}
+
+POINT camera::getClientMouse()
+{
+	POINT relativeMouse;
+	relativeMouse.x = m_ptMouse.x - _clientGameRc.left;
+	relativeMouse.y = m_ptMouse.y - _clientGameRc.top;
+	float rate = (float)relativeMouse.x / RecWidth(_clientGameRc);
+	relativeMouse.x = RecWidth(CAMERA->getRect()) * rate;
+	rate = (float)relativeMouse.y / RecHeight(_clientGameRc);
+	relativeMouse.y = RecHeight(CAMERA->getRect()) * rate;
+
+	return relativeMouse;
 }
 
 RECT camera::getRelativeRect(RECT rc)

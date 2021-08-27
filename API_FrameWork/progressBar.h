@@ -21,9 +21,10 @@ public:
 	~progressBar();
 
 	HRESULT init(char* frontImage, char* backImage, float x, float y, int width, int height, bool isUi = true, bool isAlpha = false, BYTE alpha = 255);
+	HRESULT initOnlyFront(char* frontImage, float x, float y, int width, int height, bool isUi = true, bool isAlpha = false, BYTE alpha = 255);
 	void release();
 	void update();
-	void render();
+	void render(float z);
 
 
 	void setGauge(float currentGauge, float maxGauge, BYTE alpha = 255);

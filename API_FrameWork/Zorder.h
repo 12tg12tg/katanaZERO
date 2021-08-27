@@ -17,7 +17,9 @@
 #define ZUITHIRD	3
 #define ZUIFIRTH	4
 #define ZUIFADE		5
-#define ZUIMOUSE	6	
+#define ZUIMOUSE	6
+#define ZUITOP		7
+#define ZUITOP2		8
 
 //최대레이어
 #define ZMAXLAYER	10

@@ -45,6 +45,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	RegisterClass(&wndClass);
 
+	//20210827 추가 - 카타나제로 시작시 윈도우 여백 없애도록
+	RECT rc = { 0, 0, WINSIZEX, WINSIZEY };
+	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+	//rc.right -= rc.left;
+	//rc.bottom -= rc.top;
+	//rc.left = rc.top = 0;
 
 	m_hWnd = CreateWindow(
 		WINNAME,
@@ -52,14 +58,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		WS_OVERLAPPEDWINDOW,
 		WINSTARTX,
 		WINSTARTY,
-		WINSIZEX,
-		WINSIZEY,
+		rc.right - rc.left,
+		rc.bottom - rc.top,
+		//WINSIZEX,
+		//WINSIZEY,
 		NULL,
 		(HMENU)NULL,
 		hInstance,
 		NULL);
 
-	setWindowSize(WINSTARTX, WINSTARTY, WINSIZEX, WINSIZEY);
+	//20210827 수정 - 카타나제로 시작시 윈도우 여백 없애도록
+	//setWindowSize(WINSTARTX, WINSTARTY, WINSIZEX, WINSIZEY);
 	ShowWindow(m_hWnd, nCmdShow);
 
 	if (FAILED(mg.init())) //메인게임초기화실패시 종료.

@@ -73,8 +73,8 @@ using namespace std;
 //=================//
 
 #define WINNAME			(LPTSTR)(TEXT("katana ZERO"))
-#define WINSTARTX		50//시작점
-#define WINSTARTY		50
+#define WINSTARTX		500//시작점
+#define WINSTARTY		200
 //#define WINSIZEX		1024
 //#define WINSIZEY		768
 #define WINSIZEX		1365		//DOL ver

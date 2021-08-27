@@ -61,6 +61,9 @@ private:
 
 	//페이드인아웃
 	tagFadeInfo _fadeInfo;
+
+	//클라이언트내 화면 크기 반영한 마우스를 위한 추가 - 20210827 카타나제로
+	RECT _clientGameRc;
 public:
 	camera();
 	~camera();
@@ -70,29 +73,6 @@ public:
 	HRESULT init(float pivotX, float pivotY, float maxX, float maxY, float minX, float minY, float disX, float disY, float sizeX, float sizeY);
 	void update();
 	void release();
-
-	//피벗반영하여 좌표 당겨서 랜더하기. - 필요없어짐
-	//void RelativeRectangle(HDC hdc, RECT rc);
-	//void RelativeRectangle(HDC hdc, int left, int top, int width, int height);
-	//void RelativeFrameRect(HDC hdc, RECT rc, COLORREF color);
-	//void RelativeLineMake(HDC hdc, int startX, int startY, int endX, int endY);
-	//RECT RelativeRectMake(float x, float y, int width, int height);
-	//void RelativeRender(HDC hdc, image* ig, int destX, int destY);
-	//void RelativeRender(HDC hdc, image* ig, int destX, int destY, int sourX, int sourY, int sourWid, int sourHei);
-	//void RelativeFrameRender(HDC hdc, image* ig, int destX, int destY, int frameX = 0, int frameY = 0);
-	//void RelativeStretchRender(HDC hdc, image* ig, int destX, int destY, float size);
-	//void RelativeStretchRender(HDC hdc, image* ig, int destX, int destY, float scaleX, float scaleY);
-	//void RelativeStretchFrameRender(HDC hdc, image* ig, int destX, int destY, int frameX, int frameY, float size);
-	//void RelativeStretchFrameRender(HDC hdc, image* ig, int destX, int destY, int frameX, int frameY, float scaleX, float scaleY);
-	//void RelativeAlphaRender(HDC hdc, image* ig, int destX, int destY, BYTE alpha);
-	//void RelativeAlphaRender(HDC hdc, image* ig, int destX, int destY, int sourX, int sourY, int sourWid, int sourHei, BYTE alpha);
-	//void RelativeAlphaFrameRender(HDC hdc, image* ig, int destX, int destY, int frameX, int frameY, BYTE alpha);
-	//void RelativeRotateRender(HDC hdc, image* img, int centerX, int centerY, float angle);
-	//void RelativeRotateFrameRender(HDC hdc, image* img, int centerX, int centerY, float angle, int frameX = 0, int frameY = 0);
-	//void RelativeRotateAlphaRender(HDC hdc, image* img, int centerX, int centerY, float angle, BYTE alpha);
-	//void RelativeRotateAlphaFrameRender(HDC hdc, image* img, int centerX, int centerY, float angle, int frameX, int frameY, BYTE alpha);
-	//글씨 당겨서 출력.
-	//void textOut(HDC hdc, int x, int y, const char* text, COLORREF color = RGB(255, 0, 0));
 
 	//페이드인아웃
 	void FadeInit(int time, FADEKIND fadeKind);	
@@ -111,6 +91,8 @@ public:
 	int getRelativeY(float y);
 	POINT getRelativePoint(POINT pt);
 	POINT getRelativeMouse();
+	POINT getClientMouse();
+	void setClientRect(RECT rc) { _clientGameRc = rc; }
 
 	//getter
 	float getPivotX() { return _pivotX; }

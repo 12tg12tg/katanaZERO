@@ -34,7 +34,7 @@ void player::update()
 {
 	_FSM->update();	//이미지프레임 상태패턴 - 이동.
 
-	//테스트
+	//상태테스트
 	if (INPUT->isOnceKeyDown('J')) _FSM->ChangeState(PLAYERSTATE::DOORBREAK);
 	if (INPUT->isOnceKeyDown('K')) _FSM->ChangeState(PLAYERSTATE::DEAD);
 	if (INPUT->isOnceKeyDown('R')) _FSM->ChangeState(PLAYERSTATE::HURTCOVER);
@@ -47,9 +47,9 @@ void player::render()
 	if (_isDebug) ZORDER->ZorderRectangle(_rc, ZCOL3);
 	ZORDER->ZorderAniRender(_img, ZUNIT, _rc.bottom, _x, _y, _ani);
 
-	TCHAR str[128];
-	_stprintf_s(str, "speed : %.1f", _speed);
-	ZORDER->UITextOut(str, ZUIFIRST, 100, 0, RGB(0, 0, 0));
+
+
+
 }
 
 void player::imageInit()

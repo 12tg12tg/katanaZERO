@@ -10,7 +10,8 @@ private:
 	KatanaZero* _KZmain;
 
 
-
+private:
+	RECT _clientGameRc;
 	bool _isDebug;
 	bool _showFPS;
 public:

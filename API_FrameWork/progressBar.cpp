@@ -31,6 +31,27 @@ HRESULT progressBar::init(char* frontImage, char* backImage, float x, float y, i
 	return S_OK;
 }
 
+HRESULT progressBar::initOnlyFront(char* frontImage, float x, float y, int width, int height, bool isUi, bool isAlpha, BYTE alpha)
+{
+	_x = x;
+	_y = y;
+
+	_rcProgress = RectMake(x, y, width, height);
+	_progressBarFront = new image;
+	_progressBarFront->init(frontImage, x, y, width, height, true, RGB(255, 0, 255));
+
+	_progressBarBack = nullptr;
+
+	_width = _progressBarFront->getWidth();
+
+	_isUi = isUi;
+
+	_isAlpha = isAlpha;
+	_alpha = alpha;
+
+	return S_OK;
+}
+
 void progressBar::release()
 {
 	SAFE_DELETE(_progressBarFront);
@@ -39,37 +60,37 @@ void progressBar::release()
 
 void progressBar::update()
 {
-	_rcProgress = RectMakeCenter(_x + _progressBarBack->getWidth() / 2,
-		_y + _progressBarBack->getHeight() / 2,
-		_progressBarBack->getWidth(), _progressBarBack->getHeight());
+	_rcProgress = RectMakeCenter(_x + _progressBarFront->getWidth() / 2,
+		_y + _progressBarFront->getHeight() / 2,
+		_progressBarFront->getWidth(), _progressBarFront->getHeight());
 }
 
-void progressBar::render()
+void progressBar::render(float z)
 {
 	if (_isUi) {
 		if (!_isAlpha) {
-			ZORDER->UIRender(_progressBarBack, ZUIFIRST, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight());
-			ZORDER->UIRender(_progressBarFront, ZUISECOND, 0, _rcProgress.left, _y, 0, 0, _width, _progressBarBack->getHeight());
+			if(_progressBarBack) ZORDER->UIRender(_progressBarBack, z - 0.001, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight());
+			ZORDER->UIRender(_progressBarFront, z, 0, _rcProgress.left, _y, 0, 0, _width, _progressBarFront->getHeight());
 		}
 		else {
-			ZORDER->UIAlphaRender(_progressBarBack, ZUIFIRST, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight(), _alpha);
-			ZORDER->UIAlphaRender(_progressBarFront, ZUISECOND, 0, _rcProgress.left, _y, 0, 0, _width, _progressBarBack->getHeight(), _alpha);
+			if (_progressBarBack) ZORDER->UIAlphaRender(_progressBarBack, z - 0.001, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight(), _alpha);
+			ZORDER->UIAlphaRender(_progressBarFront, z, 0, _rcProgress.left, _y, 0, 0, _width, _progressBarFront->getHeight(), _alpha);
 		}
 	}
 	else {
 		if (!_isAlpha) {
-			ZORDER->ZorderRender(_progressBarBack, ZUNIT, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight());
-			ZORDER->ZorderRender(_progressBarFront, ZUNIT, 1, _rcProgress.left, _y, 0, 0, _width, _progressBarBack->getHeight());
+			if (_progressBarBack) ZORDER->ZorderRender(_progressBarBack, z-0.001, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight());
+			ZORDER->ZorderRender(_progressBarFront, z, 1, _rcProgress.left, _y, 0, 0, _width, _progressBarFront->getHeight());
 		}
 		else {
-			ZORDER->ZorderAlphaRender(_progressBarBack, ZUNIT, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight(), _alpha);
-			ZORDER->ZorderAlphaRender(_progressBarFront, ZUNIT, 1, _rcProgress.left, _y, 0, 0, _width, _progressBarBack->getHeight(), _alpha);
+			if (_progressBarBack) ZORDER->ZorderAlphaRender(_progressBarBack, z - 0.001, 0, _rcProgress.left, _y, 0, 0, _progressBarBack->getWidth(), _progressBarBack->getHeight(), _alpha);
+			ZORDER->ZorderAlphaRender(_progressBarFront, z, 1, _rcProgress.left, _y, 0, 0, _width, _progressBarFront->getHeight(), _alpha);
 		}
 	}
 }
 
 void progressBar::setGauge(float currentGauge, float maxGauge, BYTE alpha)
 {
-	_width = (currentGauge / maxGauge) * _progressBarBack->getWidth();
+	_width = (currentGauge / maxGauge) * _progressBarFront->getWidth();
 	_alpha = alpha;
 }
