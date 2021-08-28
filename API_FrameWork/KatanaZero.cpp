@@ -18,8 +18,10 @@ HRESULT KatanaZero::init()
     m_ui = new UI;
     m_ui->init();
 
-
-
+    //------------------------------------------------------------------------------------------------
+    _test = dynamic_cast<CollisionTestScene*>(SCENE->addScene("충돌테스트", new CollisionTestScene));
+    SCENE->changeScene("충돌테스트");
+    //------------------------------------------------------------------------------------------------
 
 
     CAMERA->init(PLAYER->getX(), PLAYER->getY(), WINSIZEX*2, WINSIZEY*2, 0, 0, WINSIZEX / 2, WINSIZEY / 2,
@@ -35,6 +37,7 @@ void KatanaZero::release()
     PLAYER->release();
     PLAYER->releaseSingleton();
     SAFE_DELETE(m_ui);
+
 }
 
 void KatanaZero::update()
@@ -44,7 +47,9 @@ void KatanaZero::update()
     ANIMATION->update();
 
     dropFrame();    //슬로우기능
-
+    //---------------------------
+    SCENE->update();
+    //---------------------------
 
     CAMERA->movePivot(PLAYER->getX(), PLAYER->getY());
     CAMERA->update();
@@ -55,6 +60,13 @@ void KatanaZero::render()
     if (_isDebug) {
         ZORDER->UIRectangleColor(m_debugRc, ZUIFIRST, MINT);
 
+
+
+        Vec2 temp1(4, 5);
+        Vec2 temp2(10, 0);
+        temp1.Distance(temp2);
+        Vec2 res = temp1.Project(temp2);
+
         string str = "";
         str = "배속 :" + to_string(TIME->getGameTimeRate()) + "\n";
         str += "알파 : " + to_string(_slowAlpha) + "\n";
@@ -63,7 +75,8 @@ void KatanaZero::render()
         str += "전체DC내부 마우스위치 : \n　　　　　　　" +
             to_string(CAMERA->getRelativeMouse().x) + ", " +
             to_string(CAMERA->getRelativeMouse().y) + "\n";
-        str += "getFloat = " + to_string(RND->getFloatFromTo(10,20)) + "\n";
+        str += "vectorTest : " + to_string(res.x)+", " + to_string(res.y) + "\n";
+        //str += "vectorTest : " + to_string(temp1.Projection(temp2)) + "\n";
         
         ZORDER->UIDrawText(str, ZUISECOND, m_debugRc,
             CreateFont(15, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
@@ -79,7 +92,9 @@ void KatanaZero::render()
 
 
 
-
+    //---------------------------
+    SCENE->render();
+    //---------------------------
 
 
 

@@ -10,6 +10,7 @@ private:
 	float _x, _y;
 	float _centerX, _centerY;
 	RECT _rc;
+	Collider* _col;
 	image* _img;
 	animation* _ani;
 	int _frameCount;

@@ -65,6 +65,7 @@ void gameNode::release()
 		EFFECT->release();
 		ZORDER->release();
 		BUTTON->release();
+		COLLISION->release();
 
 		InputManager->releaseSingleton();
 		RND->releaseSingleton();
@@ -78,7 +79,7 @@ void gameNode::release()
 		OBB->releaseSingleton();
 		ZORDER->releaseSingleton();
 		BUTTON->releaseSingleton();
-		
+		COLLISION->releaseSingleton();
 
 	}
 	ReleaseDC(m_hWnd, _hdc);

@@ -113,7 +113,7 @@ public:
 	//µµÇü,±Û¾¾
 	void ZorderRectangle(RECT rc, float z);
 	void ZorderRectangleColor(RECT rc, float z, COLORREF color);
-	void ZorderRectangleRotate(RECT rc, float z, float angle);
+	void ZorderRectangleRotate(RECT rc, float z, float angle, COLORREF color);
 	void ZorderTextOut(string txt, float z, int destX, int destY, COLORREF color);
 	void ZorderDrawText(string txt, float z, RECT txtRC, HFONT font, COLORREF color, UINT format);
 
@@ -139,7 +139,7 @@ public:
 	void UIAniAlphaRender(image* img, float z, float bottom, int destX, int destY, animation* ani, BYTE alpha);
 	void UIRectangle(RECT rc, float z);
 	void UIRectangleColor(RECT rc, float z, COLORREF color);
-	void UIRectangleRotate(RECT rc, float z, float angle);
+	void UIRectangleRotate(RECT rc, float z, float angle, COLORREF color);
 	void UITextOut(string txt, float z, int destX, int destY, COLORREF color);
 	void UIDrawText(string txt, float z, RECT txtRC, HFONT font, COLORREF color, UINT format);
 

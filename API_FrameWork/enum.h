@@ -30,3 +30,13 @@ enum class PLAYERSTATE	//카타나제로
 	WALLSLIDE,
 	DEAD
 };
+
+enum class COLLIDER_TYPE
+{
+	PLAYER_UNIT,
+	BULLET_PLAYER,
+	ENEMY_UNIT,
+	BULLET_ENEMY,
+
+	END = 32,
+};

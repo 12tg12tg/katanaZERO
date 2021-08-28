@@ -1,10 +1,31 @@
 #pragma once
 #include "gameNode.h"
 #include "UI.h"
+
+
+//----------------------------
+#include "CollisionTestScene.h"
+//-----------------------------
+
+
 class KatanaZero : public gameNode
 {
 private:
 	UI* m_ui;
+
+
+
+
+	//------------------------
+	CollisionTestScene* _test;
+	//-------------------------
+
+
+
+
+
+
+
 
 
 	BYTE _slowAlpha;
@@ -26,7 +47,7 @@ public:
 	{
 		_isDebug = isDebug;
 		PLAYER->setIsDebug(isDebug);
-
+		COLLISION->setIsDebug(isDebug);
 	}
 };
 

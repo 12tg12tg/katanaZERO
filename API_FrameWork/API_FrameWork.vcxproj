@@ -149,6 +149,9 @@
     <ClInclude Include="API_FrameWork.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="collisionManager.h" />
+    <ClInclude Include="CollisionTestScene.h" />
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="txtData.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="vector2.h" />
     <ClInclude Include="Zorder.h" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +188,9 @@
     <ClCompile Include="API_FrameWork.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="collisionManager.cpp" />
+    <ClCompile Include="CollisionTestScene.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
     <ClCompile Include="gameNode.cpp" />

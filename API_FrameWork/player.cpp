@@ -15,7 +15,10 @@ HRESULT player::init()
 	_x = WINSIZEX / 2;
 	_y = WINSIZEY / 2;
 	_img = IMAGE->findImage("player_ALL1");
-	_rc = RectMake(_x + _img->getFrameWidth() * 2 / 5, _y + _img->getFrameHeight() * 1 / 5, _img->getFrameWidth()* 1 / 5, _img->getFrameHeight() * 4 / 5);
+	//_rc = RectMake(_x + _img->getFrameWidth() * 2 / 5, _y + _img->getFrameHeight() * 3 / 10, _img->getFrameWidth()* 1 / 5, _img->getFrameHeight() * 7 / 10);
+	_col = COLLISION->addCollider({ _x + 62, _y + 40 },
+		{ _img->getFrameWidth() * 1 / 5.f, _img->getFrameHeight() * 7 / 10.f },
+		COLLIDER_TYPE::PLAYER_UNIT, ZCOL3);
 	_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 0, 10, 11, false, true);
 	_speed = 0.f;
 	_maxSpeed = 9.f;
@@ -33,6 +36,7 @@ void player::release()
 void player::update()
 {
 	_FSM->update();	//이미지프레임 상태패턴 - 이동.
+	_col->setPos({ _x + 62, _y + 64 });
 
 	//상태테스트
 	if (INPUT->isOnceKeyDown('J')) _FSM->ChangeState(PLAYERSTATE::DOORBREAK);

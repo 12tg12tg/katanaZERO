@@ -197,7 +197,7 @@ void Zorder::ZorderRectangleColor(RECT rc, float z, COLORREF color)
 	_vZorder.push_back(_zo);
 }
 
-void Zorder::ZorderRectangleRotate(RECT rc, float z, float angle)
+void Zorder::ZorderRectangleRotate(RECT rc, float z, float angle, COLORREF color)
 {
 	tagZorder _zo(OBJ_RECTROTATE, nullptr, z, 0, 0);
 
@@ -206,6 +206,7 @@ void Zorder::ZorderRectangleRotate(RECT rc, float z, float angle)
 	_zo.bottom = min;
 	_zo.rc = rc;
 	_zo.angle = angle;
+	_zo.rectColor = color;
 	_vZorder.push_back(_zo);
 }
 
@@ -422,7 +423,7 @@ void Zorder::UIRectangleColor(RECT rc, float z, COLORREF color)
 	_vUiZorder.push_back(_zo);
 }
 
-void Zorder::UIRectangleRotate(RECT rc, float z, float angle)
+void Zorder::UIRectangleRotate(RECT rc, float z, float angle, COLORREF color)
 {
 	tagZorder _zo(OBJ_RECTROTATE, nullptr, z, 0, 0);
 
@@ -431,6 +432,7 @@ void Zorder::UIRectangleRotate(RECT rc, float z, float angle)
 	_zo.bottom = min;
 	_zo.rc = rc;
 	_zo.angle = angle;
+	_zo.rectColor = color;
 	_vUiZorder.push_back(_zo);
 }
 
@@ -583,7 +585,13 @@ void Zorder::ZorderTotalRender(HDC hdc)
 			RectangleMake(hdc, _vZorder[i].rc);
 			break;
 		case OBJ_RECTROTATE:
+		{
+			HPEN pen = CreatePen(PS_SOLID, 1, _vZorder[i].rectColor);
+			HPEN oldpen = (HPEN)SelectObject(hdc, pen);
 			RectangleMakeRotateCenter(hdc, _vZorder[i].rc, _vZorder[i].angle);
+			SelectObject(hdc, oldpen);
+			DeleteObject(pen);
+		}
 			break;
 		case OBJ_COLORRECT:
 		{
@@ -688,7 +696,13 @@ void Zorder::ZorderUITotalRender(HDC hdc)
 			RectangleMake(hdc, _vUiZorder[i].rc);
 			break;
 		case OBJ_RECTROTATE:
+		{
+			HPEN pen = CreatePen(PS_SOLID, 1, _vUiZorder[i].rectColor);
+			HPEN oldpen = (HPEN)SelectObject(hdc, pen);
 			RectangleMakeRotateCenter(hdc, _vUiZorder[i].rc, _vUiZorder[i].angle);
+			SelectObject(hdc, oldpen);
+			DeleteObject(pen);
+		}
 			break;
 		case OBJ_COLORRECT:
 		{

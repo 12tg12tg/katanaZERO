@@ -46,9 +46,6 @@
     <Filter Include="맵툴">
       <UniqueIdentifier>{e3922ca6-9d5f-4c7a-a20e-7f72caa6fe44}</UniqueIdentifier>
     </Filter>
-    <Filter Include="manager\OBB">
-      <UniqueIdentifier>{1af3ce06-36a7-44a8-aeff-3887b8b69dde}</UniqueIdentifier>
-    </Filter>
     <Filter Include="manager\Zorder">
       <UniqueIdentifier>{8d7c25ed-e013-4602-99ae-a281af32861d}</UniqueIdentifier>
     </Filter>
@@ -72,6 +69,15 @@
     </Filter>
     <Filter Include="KatanaZero\UI">
       <UniqueIdentifier>{1674e53f-2d7e-46b1-a0d2-3b39d33b06b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manager\Collision">
+      <UniqueIdentifier>{61156214-09d3-4d93-8973-24322620c97d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manager\Collision\OBB">
+      <UniqueIdentifier>{1af3ce06-36a7-44a8-aeff-3887b8b69dde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manager\Collision\collider">
+      <UniqueIdentifier>{b303b07c-8635-4d1d-bfb4-a87e852944c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -145,7 +151,7 @@
       <Filter>맵툴</Filter>
     </ClInclude>
     <ClInclude Include="OBBCollision.h">
-      <Filter>manager\OBB</Filter>
+      <Filter>manager\Collision\OBB</Filter>
     </ClInclude>
     <ClInclude Include="Zorder.h">
       <Filter>manager\Zorder</Filter>
@@ -173,6 +179,18 @@
     </ClInclude>
     <ClInclude Include="UI.h">
       <Filter>KatanaZero\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>manager\Collision\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionManager.h">
+      <Filter>manager\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionTestScene.h">
+      <Filter>KatanaZero\Map</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -228,7 +246,7 @@
       <Filter>맵툴</Filter>
     </ClCompile>
     <ClCompile Include="OBBCollision.cpp">
-      <Filter>manager\OBB</Filter>
+      <Filter>manager\Collision\OBB</Filter>
     </ClCompile>
     <ClCompile Include="Zorder.cpp">
       <Filter>manager\Zorder</Filter>
@@ -253,6 +271,15 @@
     </ClCompile>
     <ClCompile Include="UI.cpp">
       <Filter>KatanaZero\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>manager\Collision\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="collisionManager.cpp">
+      <Filter>manager\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionTestScene.cpp">
+      <Filter>KatanaZero\Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

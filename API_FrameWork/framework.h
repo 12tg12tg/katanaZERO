@@ -24,6 +24,8 @@ using namespace std;
 #include<vector>
 #include <string>
 #include <algorithm>
+#include <assert.h>
+#include <list>
 
 //=======================//
 //	내가만든 헤더파일		//
@@ -44,6 +46,7 @@ using namespace std;
 #include"button.h"
 #include"camera.h"
 #include"enum.h"
+#include"collisionManager.h"
 
 #include"player.h"
 
@@ -65,6 +68,7 @@ using namespace std;
 #define ZORDER			Zorder::getSingleton()
 #define BUTTON			Cbutton::getSingleton()
 #define CAMERA			camera::getSingleton()
+#define COLLISION		collisionManager::getSingleton()
 
 #define PLAYER			player::getSingleton()
 
