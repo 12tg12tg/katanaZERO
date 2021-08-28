@@ -63,6 +63,7 @@ void KatanaZero::render()
         str += "전체DC내부 마우스위치 : \n　　　　　　　" +
             to_string(CAMERA->getRelativeMouse().x) + ", " +
             to_string(CAMERA->getRelativeMouse().y) + "\n";
+        str += "getFloat = " + to_string(RND->getFloatFromTo(10,20)) + "\n";
         
         ZORDER->UIDrawText(str, ZUISECOND, m_debugRc,
             CreateFont(15, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,

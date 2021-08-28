@@ -155,8 +155,8 @@ void camera::update()
 		}
 		if (_shakeTime.current % _shakeTime.cool == 0)
 		{
-			_shakePivot.x = RND->getFromInTo(_savePivot.x - _shakePower, _savePivot.x + _shakePower);
-			_shakePivot.y = RND->getFromInTo(_savePivot.y - _shakePower, _savePivot.y + _shakePower);
+			_shakePivot.x = RND->getFromTo(_savePivot.x - _shakePower, _savePivot.x + _shakePower);
+			_shakePivot.y = RND->getFromTo(_savePivot.y - _shakePower, _savePivot.y + _shakePower);
 			_cameraRect = RectMake(_shakePivot.x - _distanceX, _shakePivot.y - _distanceY, _cameraSizeX, _cameraSizeY);
 		}
 		break;

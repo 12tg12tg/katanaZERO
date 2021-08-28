@@ -15,7 +15,7 @@ enum class FOWARD
 	NONE
 };
 
-enum class PLAYERSTATE
+enum class PLAYERSTATE	//카타나제로
 {
 	IDLE,
 	RUN,

@@ -182,7 +182,7 @@ HRESULT effectManager::addParticle(string key, float z, float x, float y, float 
     ptcle.frameY = RND->getInt(IMAGE->findImage(key)->getMaxFrameY() + 1);
     ptcle.isAlpha = isAlpha;
     ptcle.alpha = alpha;
-    ptcle.count = RND->getFromInTo(count - 20, count + 20);
+    ptcle.count = RND->getFromTo(count - 20, count + 20);
     ptcle.speed = 0.2+RND->getInt(100) / 100.0f;
     ptcle.isPlay = false;
     _vParticle.push_back(ptcle);
