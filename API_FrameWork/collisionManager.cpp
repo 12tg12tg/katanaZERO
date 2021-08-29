@@ -80,6 +80,16 @@ void collisionManager::erase(Collider* collider)
 	for (ltIter; ltIter != ltCollider.end(); ++ltIter)
 	{
 		if ((*ltIter)->getID() == collider->getID()) {
+			//얘랑 충돌중이던 콜라이더의 list 수정해주기
+			auto& thisMap = collider->getOthers();
+			auto thisIter = thisMap.begin();
+			for (thisIter; thisIter != thisMap.end(); ++thisIter)
+			{
+				auto& otherMap = thisIter->second->getOthers();
+				auto otherIter = otherMap.find(collider->getID());
+				otherMap.erase(otherIter);
+			}
+			//할당공간지우기
 			SAFE_DELETE(*ltIter);
 			ltCollider.erase(ltIter);
 			return;
@@ -145,6 +155,15 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 			//exit 초기화
 			(*listIter1)->_isExit = false;
 			(*listIter2)->_isExit = false;
+			//충돌체가 계속 남아있는지 체크 - 충돌체가사라졋다면 바로 false
+			if ((*listIter1)->getOthers().size() == 0) {
+				(*listIter1)->_isEnter = false;
+				(*listIter1)->_isIng = false;
+			}
+			if ((*listIter2)->getOthers().size() == 0) {
+				(*listIter2)->_isEnter = false;
+				(*listIter2)->_isIng = false;
+			}
 
 			//충돌체크
 			if (isCollision((*listIter1), (*listIter2)))
@@ -154,14 +173,18 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 				{
 					m_mapID.insert(make_pair(colID.ID, true));
 					(*listIter1)->_isEnter = true;
+					(*listIter1)->getOthers().insert(make_pair((*listIter2)->getID(), (*listIter2)));
 					(*listIter2)->_isEnter = true;
+					(*listIter2)->getOthers().insert(make_pair((*listIter1)->getID(), (*listIter1)));
 				}
 				//충돌기록은 있는데, 이전에 충돌하지 않고있었다면
 				else if (idIter->second == false)
 				{
 					idIter->second = true;
 					(*listIter1)->_isEnter = true;
+					(*listIter1)->getOthers().insert(make_pair((*listIter2)->getID(), (*listIter2)));
 					(*listIter2)->_isEnter = true;
+					(*listIter2)->getOthers().insert(make_pair((*listIter1)->getID(), (*listIter1)));
 				}
 				//충돌기록도있고, 이전에 충돌중이었다면
 				else {
@@ -180,6 +203,8 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 					(*listIter2)->_isIng = false;
 					(*listIter1)->_isExit = true;
 					(*listIter2)->_isExit = true;
+					(*listIter1)->getOthers().erase((*listIter1)->getOthers().find((*listIter2)->getID()));
+					(*listIter2)->getOthers().erase((*listIter2)->getOthers().find((*listIter1)->getID()));
 				}
 			}
 		}

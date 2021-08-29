@@ -4,6 +4,8 @@ class CollisionTestScene : public gameNode
 {
 private:
 	int count;
+	float _angle;
+	Collider* _rotateCol;
 	vector<Collider*> _vCollider;
 	vector<Collider*>::iterator _viCollider;
 public:

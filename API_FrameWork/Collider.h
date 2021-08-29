@@ -20,6 +20,8 @@ private:
 	bool			_isEnter;		//规陛面倒
 	bool			_isIng;			//面倒吝
 	bool			_isExit;		//面倒场
+
+	map<DWORD, Collider*> _others;
 public:
 	Collider();
 	~Collider();
@@ -46,6 +48,8 @@ public:
 	bool isColEnter() { return _isEnter;}
 	bool isColIng() { return _isIng;}
 	bool isColExit() { return _isExit;}
+	
+	map<DWORD, Collider*>& getOthers() { return _others; }
 
 	friend collisionManager;
 };

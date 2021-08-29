@@ -174,4 +174,58 @@ public:
 		return unit * (*this).Dot(unit);
 	}
 
+	//각도
+	float AngleTo(const vector2& rhs) const {
+		return UTIL::getAngle(x, y, rhs.x, rhs.y);
+	}
+
+	//벡터사이의 각도(theha)
+	float Interval(vector2& rhs) const {
+		float cosTheta = this->Dot(rhs) / this->Length() * rhs.Length();
+		if (cosTheta < 0) cosTheta *= -1;
+		return acosf(cosTheta);
+	}
+
+	//(매개변수가) 나의 어느방향에 존재하는가
+	FOWARD whichFoward(vector2& rhs) const {
+		float incrementX = rhs.x - x;
+		float incrementY = rhs.y - y;
+
+		if (incrementX == 0 && incrementY == 0)
+		{
+			return FOWARD::NONE;
+		}
+		if (incrementX > 0 && incrementY == 0)
+		{
+			return FOWARD::RIGHT;
+		}
+		if (incrementX < 0 && incrementY == 0)
+		{
+			return FOWARD::LEFT;
+		}
+		if (incrementX == 0 && incrementY > 0)
+		{
+			return FOWARD::DOWN;
+		}
+		if (incrementX == 0 && incrementY < 0)
+		{
+			return FOWARD::UP;
+		}
+		if (incrementX > 0 && incrementY > 0)
+		{
+			return FOWARD::RIGHTDOWN;
+		}
+		if (incrementX > 0 && incrementY < 0)
+		{
+			return FOWARD::RIGHTUP;
+		}
+		if (incrementX < 0 && incrementY > 0)
+		{
+			return FOWARD::LEFTDOWN;
+		}
+		if (incrementX < 0 && incrementY < 0)
+		{
+			return FOWARD::LEFTUP;
+		}
+	}
 }typedef Vec2;
