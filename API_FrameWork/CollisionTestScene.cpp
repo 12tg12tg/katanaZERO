@@ -52,9 +52,7 @@ void CollisionTestScene::update()
 		}
 	}
 	
-	//TCHAR str[128];
-	//_stprintf_s(str, "Å×½ºÆ®¾Àº¤ÅÍÅ©±â : %d", _vCollider.size());
-	//ZORDER->UITextOut(str, ZUIMOUSE, 300, 300, RGB(0, 0, 0));
+
 
 	COLLISION->update();
 }

@@ -23,10 +23,12 @@ HRESULT KatanaZero::init()
     SCENE->changeScene("충돌테스트");
     //------------------------------------------------------------------------------------------------
 
+    _state = MAINSTATE::INGAME;
+    _caretaker = new Caretaker;
+    _caretaker->init();
 
     CAMERA->init(PLAYER->getX(), PLAYER->getY(), WINSIZEX*2, WINSIZEY*2, 0, 0, WINSIZEX / 2, WINSIZEY / 2,
         CAMERASIZEX, CAMERASIZEY);
-
     m_debugRc = RectMake(1110, 79, 220, 200);
     _slowAlpha = 0;
     return S_OK;
@@ -36,23 +38,69 @@ void KatanaZero::release()
 {
     PLAYER->release();
     PLAYER->releaseSingleton();
+    MAIN->releaseSingleton();
     SAFE_DELETE(m_ui);
+    SAFE_DELETE(_caretaker);
 
 }
 
 void KatanaZero::update()
 {
-    PLAYER->update();
-    m_ui->update();
-    ANIMATION->update();
+    MAIN->setIsSlow(_isSlow);
+    MAIN->setMainState(_state);
 
-    dropFrame();    //슬로우기능
-    //---------------------------
-    SCENE->update();
-    //---------------------------
+    switch (_state)
+    {
+    case MAINSTATE::TITLE:
+        break;
+    case MAINSTATE::LOADING:
+        break;
+    case MAINSTATE::INGAME:
+    {
+        dropFrame();            //슬로우기능
+        PLAYER->update();
+        m_ui->update();
+        ANIMATION->update();
+        SCENE->update();
+        CAMERA->movePivot(PLAYER->getX(), PLAYER->getY());
+        CAMERA->update();
+        _caretaker->snapshot();
 
-    CAMERA->movePivot(PLAYER->getX(), PLAYER->getY());
-    CAMERA->update();
+        if (INPUT->isOnceKeyDown(VK_LEFT)) {
+            _state = MAINSTATE::REPLAY;
+        }
+        if (INPUT->isOnceKeyDown(VK_RIGHT)) {
+            _state = MAINSTATE::ROLLBACK;
+        }
+    }
+        break;
+    case MAINSTATE::REPLAY:
+    {
+        m_ui->update();
+        _caretaker->replay();
+        if (_caretaker->getReplayDone()) {
+            _caretaker->setReplayDone(false);
+            _caretaker->allVectorClear();
+            _state = MAINSTATE::INGAME;
+        }
+    }
+        break;
+    case MAINSTATE::ROLLBACK:
+    {
+        m_ui->update();
+        _caretaker->rollback();
+        if (_caretaker->getRollbackDone()) {
+            _caretaker->setRollbackDone(false);
+            _caretaker->allVectorClear();
+            _state = MAINSTATE::INGAME;
+        }
+    }
+        break;
+    case MAINSTATE::PAUSE:
+        break;
+    case MAINSTATE::NONE:
+        break;
+    }
 }
 
 void KatanaZero::render()
@@ -61,7 +109,7 @@ void KatanaZero::render()
         ZORDER->UIRectangleColor(m_debugRc, ZUIFIRST, MINT);
 
 
-
+        //----------------------------------------------
         Vec2 temp1(4, 5);
         Vec2 temp2(10, 0);
         temp1.Distance(temp2);
@@ -82,28 +130,45 @@ void KatanaZero::render()
             CreateFont(15, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
                 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("굴림")),
                 RGB(0, 0, 0), DT_LEFT | DT_VCENTER); 
+        //----------------------------------------------
     }
-   
-    PLAYER->render();
-    m_ui->render();
 
+    switch (_state)
+    {
+    case MAINSTATE::TITLE:
+        break;
+    case MAINSTATE::LOADING:
+        break;
+    case MAINSTATE::INGAME:
+    {
+        PLAYER->render();
+        m_ui->render();
+        SCENE->render();
+        ZORDER->ZorderAlphaRender(IMAGE->findImage("fadeImg"), ZUNIT - 0.5, 0, 0, 0, _slowAlpha);   //슬로우
+    }
+        break;
+    case MAINSTATE::REPLAY:
+    {
+        PLAYER->render();
+        m_ui->render();
+        SCENE->render();
+    }
+        break;
+    case MAINSTATE::ROLLBACK:
+    {
+        PLAYER->render();
+        m_ui->render();
+        SCENE->render();
+    }
+        break;
+    case MAINSTATE::PAUSE:
+        break;
+    case MAINSTATE::NONE:
+        break;
+    }
 
-
-
-
-
-    //---------------------------
-    SCENE->render();
-    //---------------------------
-
-
-
-    ZORDER->ZorderAlphaRender(IMAGE->findImage("fadeImg"), ZUNIT-0.5, 0, 0, 0, _slowAlpha);
     ZORDER->ZorderTotalRender(getMemDC());
     ZORDER->ZorderUITotalRender(getMemDC());
-
-    //SetPixel(getMemDC(), 100, 100, RGB(0, 0, 0));
-    //SetPixel(getMemDC(), 500, 500, RGB(0, 0, 0));
 }
 
 void KatanaZero::dropFrame()

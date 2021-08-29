@@ -48,6 +48,7 @@ using namespace std;
 #include"enum.h"
 #include"collisionManager.h"
 
+#include"mainState.h"
 #include"player.h"
 
 
@@ -70,6 +71,7 @@ using namespace std;
 #define CAMERA			camera::getSingleton()
 #define COLLISION		collisionManager::getSingleton()
 
+#define MAIN			mainState::getSingleton()
 #define PLAYER			player::getSingleton()
 
 //===================//

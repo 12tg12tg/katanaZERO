@@ -149,6 +149,7 @@
     <ClInclude Include="API_FrameWork.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Caretaker.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="collisionManager.h" />
     <ClInclude Include="CollisionTestScene.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="KatanaZero.h" />
     <ClInclude Include="mainGame.h" />
+    <ClInclude Include="mainState.h" />
     <ClInclude Include="mapTool.h" />
     <ClInclude Include="OBBCollision.h" />
     <ClInclude Include="player.h" />
@@ -188,6 +190,7 @@
     <ClCompile Include="API_FrameWork.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Caretaker.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="collisionManager.cpp" />
     <ClCompile Include="CollisionTestScene.cpp" />
@@ -199,6 +202,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KatanaZero.cpp" />
     <ClCompile Include="mainGame.cpp" />
+    <ClCompile Include="mainState.cpp" />
     <ClCompile Include="mapTool.cpp" />
     <ClCompile Include="OBBCollision.cpp" />
     <ClCompile Include="player.cpp" />

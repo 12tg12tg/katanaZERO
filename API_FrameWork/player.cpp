@@ -12,6 +12,7 @@ player::~player()
 HRESULT player::init()
 {
 	imageInit();
+	_z = ZUNIT;
 	_x = WINSIZEX / 2;
 	_y = WINSIZEY / 2;
 	_img = IMAGE->findImage("player_ALL1");
@@ -20,6 +21,7 @@ HRESULT player::init()
 		{ _img->getFrameWidth() * 1 / 5.f, _img->getFrameHeight() * 7 / 10.f },
 		COLLIDER_TYPE::PLAYER_UNIT, ZCOL3);
 	_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 0, 10, 11, false, true);
+	_frameX = _frameY = 0;
 	_speed = 0.f;
 	_maxSpeed = 9.f;
 	_frameCount = 0;
@@ -48,11 +50,34 @@ void player::update()
 
 void player::render()
 {
-	if (_isDebug) ZORDER->ZorderRectangle(_rc, ZCOL3);
-	ZORDER->ZorderAniRender(_img, ZUNIT, _rc.bottom, _x, _y, _ani);
+	_bottom = _col->getRect().bottom;
+	switch (MAIN->getMainState())
+	{
+	case MAINSTATE::INGAME:
+		//애니랜더
+		ZORDER->ZorderAniRender(_img, _z, _bottom, _x, _y, _ani);
+		break;
+	case MAINSTATE::REPLAY:
+		//프레임랜더 - 리플랜더(클리어후다시보기)
+		ZORDER->ZorderFrameRender(_img, _z, _bottom, _x, _y, _frameX, _frameY);
+		break;
+	case MAINSTATE::ROLLBACK:
+		//프레임랜더 - 되감기랜더(사망후역재생)
+		ZORDER->ZorderFrameRender(_img, _z, _bottom, _x, _y, _frameX, _frameY);
+		break;
+	case MAINSTATE::PAUSE:
+		break;
+	case MAINSTATE::NONE:
+		break;
+	default:
+		break;
+	}
 
-
-
+	TCHAR str[128];
+	_stprintf_s(str, "ani정보 : %d, %d", _ani->getFrameX(), _ani->getFrameY());
+	ZORDER->UITextOut(str, ZUIFIRST, 300, 300, MINT);
+	_stprintf_s(str, "ani pos : %d, %d", _ani->getFramePos().x, _ani->getFramePos().y);
+	ZORDER->UITextOut(str, ZUIFIRST, 300, 300+20, MINT);
 
 }
 

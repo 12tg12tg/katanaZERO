@@ -61,15 +61,6 @@
     <Filter Include="KatanaZero">
       <UniqueIdentifier>{0bfcef73-d018-4b0b-b47e-c2dc87213c29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KatanaZero\Player">
-      <UniqueIdentifier>{27a58f06-3909-4473-bb0f-1b840b1ca961}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KatanaZero\Map">
-      <UniqueIdentifier>{d8d690f5-c8c4-42bb-bc94-1fe210c55e6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KatanaZero\UI">
-      <UniqueIdentifier>{1674e53f-2d7e-46b1-a0d2-3b39d33b06b3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="manager\Collision">
       <UniqueIdentifier>{61156214-09d3-4d93-8973-24322620c97d}</UniqueIdentifier>
     </Filter>
@@ -78,6 +69,24 @@
     </Filter>
     <Filter Include="manager\Collision\collider">
       <UniqueIdentifier>{b303b07c-8635-4d1d-bfb4-a87e852944c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\1Player">
+      <UniqueIdentifier>{27a58f06-3909-4473-bb0f-1b840b1ca961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\2UI">
+      <UniqueIdentifier>{1674e53f-2d7e-46b1-a0d2-3b39d33b06b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\0Caretaker">
+      <UniqueIdentifier>{de0e4c8e-5f18-48af-856a-611f63b809c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\0main">
+      <UniqueIdentifier>{7332752b-fda6-4225-a473-d8774b2a62cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\3Map">
+      <UniqueIdentifier>{d8d690f5-c8c4-42bb-bc94-1fe210c55e6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\0mainState">
+      <UniqueIdentifier>{75700892-ea07-4110-af54-0d1b2a4d6d47}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -165,20 +174,17 @@
     <ClInclude Include="camera.h">
       <Filter>manager\카메라</Filter>
     </ClInclude>
-    <ClInclude Include="KatanaZero.h">
-      <Filter>KatanaZero</Filter>
-    </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>KatanaZero\Player</Filter>
+      <Filter>KatanaZero\1Player</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.h">
-      <Filter>KatanaZero\Player</Filter>
+      <Filter>KatanaZero\1Player</Filter>
     </ClInclude>
     <ClInclude Include="enum.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UI.h">
-      <Filter>KatanaZero\UI</Filter>
+      <Filter>KatanaZero\2UI</Filter>
     </ClInclude>
     <ClInclude Include="vector2.h">
       <Filter>헤더 파일</Filter>
@@ -190,7 +196,16 @@
       <Filter>manager\Collision</Filter>
     </ClInclude>
     <ClInclude Include="CollisionTestScene.h">
-      <Filter>KatanaZero\Map</Filter>
+      <Filter>KatanaZero\3Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Caretaker.h">
+      <Filter>KatanaZero\0Caretaker</Filter>
+    </ClInclude>
+    <ClInclude Include="KatanaZero.h">
+      <Filter>KatanaZero\0main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainState.h">
+      <Filter>KatanaZero\0mainState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -260,17 +275,14 @@
     <ClCompile Include="camera.cpp">
       <Filter>manager\카메라</Filter>
     </ClCompile>
-    <ClCompile Include="KatanaZero.cpp">
-      <Filter>KatanaZero</Filter>
-    </ClCompile>
     <ClCompile Include="player.cpp">
-      <Filter>KatanaZero\Player</Filter>
+      <Filter>KatanaZero\1Player</Filter>
     </ClCompile>
     <ClCompile Include="PlayerState.cpp">
-      <Filter>KatanaZero\Player</Filter>
+      <Filter>KatanaZero\1Player</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
-      <Filter>KatanaZero\UI</Filter>
+      <Filter>KatanaZero\2UI</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>manager\Collision\collider</Filter>
@@ -279,7 +291,16 @@
       <Filter>manager\Collision</Filter>
     </ClCompile>
     <ClCompile Include="CollisionTestScene.cpp">
-      <Filter>KatanaZero\Map</Filter>
+      <Filter>KatanaZero\3Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Caretaker.cpp">
+      <Filter>KatanaZero\0Caretaker</Filter>
+    </ClCompile>
+    <ClCompile Include="KatanaZero.cpp">
+      <Filter>KatanaZero\0main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainState.cpp">
+      <Filter>KatanaZero\0mainState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

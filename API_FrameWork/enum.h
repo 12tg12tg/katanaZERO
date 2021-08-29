@@ -40,3 +40,14 @@ enum class COLLIDER_TYPE
 
 	END = 32,
 };
+
+enum class MAINSTATE
+{
+	TITLE,
+	LOADING,
+	INGAME,
+	REPLAY,
+	ROLLBACK,
+	PAUSE,
+	NONE
+};

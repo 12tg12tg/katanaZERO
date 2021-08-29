@@ -1,21 +1,18 @@
 #pragma once
 #include "gameNode.h"
 #include "UI.h"
-
+#include "Caretaker.h"
 
 //----------------------------
 #include "CollisionTestScene.h"
 //-----------------------------
 
 
+
 class KatanaZero : public gameNode
 {
 private:
 	UI* m_ui;
-
-
-
-
 	//------------------------
 	CollisionTestScene* _test;
 	//-------------------------
@@ -26,12 +23,16 @@ private:
 
 
 
+	//메인상태
+	MAINSTATE _state;
+	//메멘토효과
+	Caretaker* _caretaker;
 
-
+	//슬로우
 	BYTE _slowAlpha;
 	bool _isSlow;
-
-	RECT m_debugRc;				//디버그텍스트 출력할 사각형
+	//디버그텍스트박스
+	RECT m_debugRc;	
 	bool _isDebug;
 public:
 	KatanaZero();
