@@ -46,7 +46,8 @@ public:
 	inline POINT getFramePos()const { return _frameList[_playList[_nowPlayIndex]]; }
 	inline int getFrameWidth()const { return _frameWidth; }
 	inline int getFrameHeight()const { return _frameHeight; }
-	inline int getFrameX()const { return _frameList[_playList[_nowPlayIndex]].x / _frameWidth; }
-	inline int getFrameY()const { return _frameList[_playList[_nowPlayIndex]].y / _frameHeight; }
+
+	int getFrameX() { return _frameList[_playList[_nowPlayIndex]].x / _frameWidth; }
+	int getFrameY() { return _frameList[_playList[_nowPlayIndex]].y / _frameHeight; }
 };
 

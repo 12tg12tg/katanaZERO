@@ -71,6 +71,7 @@ class Player_Run : public PlayerState
 {
 private:
 	float _accel;
+	float _sountCount;
 public:
 	Player_Run();
 	~Player_Run();
@@ -115,7 +116,6 @@ private:
 	float _startX;
 	float _startY;
 	float _graphX;
-	float _jumpPower;
 	float _maxJumpPower;
 	float _maxDashPower;
 public:
@@ -136,6 +136,7 @@ private:
 	float _accelB;
 	float _maxDashPower;
 	bool _onGravity;
+	float _delay;
 public:
 	Player_Fall();
 	~Player_Fall();
@@ -148,7 +149,12 @@ public:
 class Player_Attack : public PlayerState
 {
 private:
-
+	float _attAngle;
+	float _accel;
+	float _maxSpeed;
+	bool _effectOn;
+	float _effectCount;
+	effect* _slashEff;
 public:
 	Player_Attack();
 	~Player_Attack();

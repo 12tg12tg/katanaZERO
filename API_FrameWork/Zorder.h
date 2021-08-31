@@ -81,9 +81,29 @@ struct tagZorder
 
 class Zorder : public Singleton<Zorder>
 {
+public:
+	//메멘토패턴
+	class Memento
+	{
+	private:
+		friend class Zorder;
+		friend class Caretaker;
+
+		vector<tagZorder> _sVector;
+		vector<tagZorder> _sBwVector;
+
+		Memento(vector<tagZorder> moment, vector<tagZorder> bwmoment) 
+			: _sVector(moment), _sBwVector(bwmoment)
+		{}
+
+		vector<tagZorder> getVnormal() { return _sVector; }
+		vector<tagZorder> getVbw() { return _sBwVector; }
+	};
 private :
 	vector<tagZorder> _vZorder;
 	vector<tagZorder> _vUiZorder;
+	vector<tagZorder> _vMoment;
+	vector<tagZorder> _vBWMoment;
 public:
 	Zorder() {}
 	~Zorder() {}
@@ -143,6 +163,33 @@ public:
 	void UITextOut(string txt, float z, int destX, int destY, COLORREF color);
 	void UIDrawText(string txt, float z, RECT txtRC, HFONT font, COLORREF color, UINT format);
 
+	//세이브종류
+	void SaveRender(image* img, image* bw, float z, float bottom, int destX, int destY);
+	void SaveRender(image* img, image* bw, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight);
+	void SaveFrameRender(image* img, image* bw, float z, float bottom, int destX, int destY, int frameX = 0, int frameY = 0);
+	void SaveAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, BYTE alpha);
+	void SaveAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, BYTE alpha);
+	void SaveAlphaFrameRender(image* img, image* bw, float z, float bottom, int destX, int destY, int frameX, int frameY, BYTE alpha);
+	void SaveRotateRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle);
+	void SaveRotateFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, int frameX = 0, int frameY = 0);
+	void SaveRotateAlphaRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, BYTE alpha);
+	void SaveRotateAlphaFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, int frameX, int frameY, BYTE alpha);
+	void SaveStretchRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float ratio);
+	void SaveStretchRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float newWidth, float newHeight);
+	void SaveStretchFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, int frameX, int frameY, float ratio);
+	void SaveStretchFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, int frameX, int frameY, float newWidth, float newHeight);
+	void SaveRotateStretchRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, float ratio);
+	void SaveRotateStretchFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, int frameX, int frameY, float angle, float ratio);
+	void SaveAniRender(image* img, image* bw, float z, float bottom, int destX, int destY, animation* ani);
+	void SaveAniAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, animation* ani, BYTE alpha);
+
+	//세이브종류
+	void SaveRectangle(RECT rc, float z);
+	void SaveRectangleColor(RECT rc, float z, COLORREF color);
+	void SaveRectangleRotate(RECT rc, float z, float angle, COLORREF color);
+	void SaveTextOut(string txt, float z, int destX, int destY, COLORREF color);
+	void SaveDrawText(string txt, float z, RECT txtRC, HFONT font, COLORREF color, UINT format);
+
 
 	//정렬
 	void Sort(int i, int j);	//Z만 정렬시키는 연습용.
@@ -154,5 +201,10 @@ public:
 	void ZorderTotalRender(HDC hdc);
 	void ZorderUITotalRender(HDC hdc);
 
+public:
+	//메멘토패턴 저장,복구
+	Memento save()const { return Memento(_vMoment, _vBWMoment); }
+	void restore(const Memento& m, bool isBW){ (isBW) ? _vZorder = m._sBwVector : _vZorder = m._sVector; }
+	void ZorderSaveClear();
 };
 

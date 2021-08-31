@@ -14,7 +14,8 @@ HRESULT animation::init(int totalW, int totalH, int frameW, int frameH)
 {
     //가로 프레임 갯수
     _frameWidth = frameW;
-    int frameWidthNum = totalW / _frameWidth;
+    int frameWidthNum = totalW / _frameWidth; // 됐니?
+
     //세로 프레임 갯수
     _frameHeight = frameH;
     int frameHeightNum = totalH / _frameHeight;
@@ -34,7 +35,7 @@ HRESULT animation::init(int totalW, int totalH, int frameW, int frameH)
             framePos.y = i * _frameHeight;
 
             //프레임 위치 목록 추가
-            _frameList.push_back(framePos);
+            _frameList.push_back(framePos); // 안들어가
         }
     }
 

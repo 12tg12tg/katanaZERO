@@ -456,9 +456,361 @@ void Zorder::UIDrawText(string txt, float z, RECT txtRC, HFONT font, COLORREF co
 	_zo.format = format;
 	_vUiZorder.push_back(_zo);
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Zorder::SaveRender(image* img, image* bw, float z, float bottom, int destX, int destY)
+{
+	tagZorder _zo(IMG_NOMAL, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_NOMAL, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRender(image* img, image* bw, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight)
+{
+	tagZorder _zo(IMG_NOMAL_SOUR, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.sourX = sourX;
+	_zo.sourY = sourY;
+	_zo.sourWidth = sourWidth;
+	_zo.sourHeight = sourHeight;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_NOMAL_SOUR, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.sourX = sourX;
+	_bwzo.sourY = sourY;
+	_bwzo.sourWidth = sourWidth;
+	_bwzo.sourHeight = sourHeight;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveFrameRender(image* img, image* bw, float z, float bottom, int destX, int destY, int frameX, int frameY)
+{
+	tagZorder _zo(IMG_FRAME, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.frameX = frameX;
+	_zo.frameY = frameY;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_FRAME, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = frameX;
+	_bwzo.frameY = frameY;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, BYTE alpha)
+{
+	tagZorder _zo(IMG_ALPHA, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.alpha = alpha;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ALPHA, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.alpha = alpha;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, BYTE alpha)
+{
+	tagZorder _zo(IMG_ALPHA_SOUR, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.sourX = sourX;
+	_zo.sourY = sourY;
+	_zo.sourWidth = sourWidth;
+	_zo.sourHeight = sourHeight;
+	_zo.alpha = alpha;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ALPHA_SOUR, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.sourX = sourX;
+	_bwzo.sourY = sourY;
+	_bwzo.sourWidth = sourWidth;
+	_bwzo.sourHeight = sourHeight;
+	_bwzo.alpha = alpha;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveAlphaFrameRender(image* img, image* bw, float z, float bottom, int destX, int destY, int frameX, int frameY, BYTE alpha)
+{
+	tagZorder _zo(IMG_ALPHA_FRAME, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.frameX = frameX;
+	_zo.frameY = frameY;
+	_zo.alpha = alpha;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ALPHA_FRAME, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = frameX;
+	_bwzo.frameY = frameY;
+	_bwzo.alpha = alpha;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRotateRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle)
+{
+	tagZorder _zo(IMG_ROTATE, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.angle = angle;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ROTATE, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.angle = angle;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRotateFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, int frameX, int frameY)
+{
+	tagZorder _zo(IMG_ROTATE_FRAME, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.frameX = frameX;
+	_zo.frameY = frameY;
+	_zo.angle = angle;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ROTATE_FRAME, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = frameX;
+	_bwzo.frameY = frameY;
+	_bwzo.angle = angle;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRotateAlphaRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, BYTE alpha)
+{
+	tagZorder _zo(IMG_ROTATE_ALPHA, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.alpha = alpha;
+	_zo.angle = angle;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ROTATE_ALPHA, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.alpha = alpha;
+	_bwzo.angle = angle;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRotateAlphaFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, int frameX, int frameY, BYTE alpha)
+{
+	tagZorder _zo(IMG_ROTATE_ALPHAFRAME, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.frameX = frameX;
+	_zo.frameY = frameY;
+	_zo.alpha = alpha;
+	_zo.angle = angle;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ROTATE_ALPHAFRAME, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = frameX;
+	_bwzo.frameY = frameY;
+	_bwzo.alpha = alpha;
+	_bwzo.angle = angle;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveStretchRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float ratio)
+{
+	tagZorder _zo(IMG_STRETCH, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.ratio = ratio;
+	_zo.stretchKind = STRETCH_WHOLE_RATIO;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_STRETCH, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.ratio = ratio;
+	_bwzo.stretchKind = STRETCH_WHOLE_RATIO;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveStretchRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float newWidth, float newHeight)
+{
+	tagZorder _zo(IMG_STRETCH, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.newWidth = newWidth;
+	_zo.newHeight = newHeight;
+	_zo.stretchKind = STRETCH_EACH_SCALE;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_STRETCH, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.newWidth = newWidth;
+	_bwzo.newHeight = newHeight;
+	_bwzo.stretchKind = STRETCH_EACH_SCALE;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveStretchFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, int frameX, int frameY, float ratio)
+{
+	tagZorder _zo(IMG_STRETCH_FRAME, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.frameX = frameX;
+	_zo.frameY = frameY;
+	_zo.ratio = ratio;
+	_zo.stretchKind = STRETCH_WHOLE_RATIO;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_STRETCH_FRAME, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = frameX;
+	_bwzo.frameY = frameY;
+	_bwzo.ratio = ratio;
+	_bwzo.stretchKind = STRETCH_WHOLE_RATIO;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveStretchFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, int frameX, int frameY, float newWidth, float newHeight)
+{
+	tagZorder _zo(IMG_STRETCH_FRAME, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.frameX = frameX;
+	_zo.frameY = frameY;
+	_zo.newWidth = newWidth;
+	_zo.newHeight = newHeight;
+	_zo.stretchKind = STRETCH_EACH_SCALE;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_STRETCH_FRAME, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = frameX;
+	_bwzo.frameY = frameY;
+	_bwzo.newWidth = newWidth;
+	_bwzo.newHeight = newHeight;
+	_bwzo.stretchKind = STRETCH_EACH_SCALE;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRotateStretchRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, float angle, float ratio)
+{
+	tagZorder _zo(IMG_ROTATESTRETCH, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.angle = angle;
+	_zo.ratio = ratio;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ROTATESTRETCH, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.angle = angle;
+	_bwzo.ratio = ratio;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRotateStretchFrameRender(image* img, image* bw, float z, float bottom, int centerX, int centerY, int frameX, int frameY, float angle, float ratio)
+{
+	tagZorder _zo(IMG_ROTATESTRETCHFRAME, img, z, centerX, centerY);
+	_zo.bottom = bottom;
+	_zo.frameX = frameX;
+	_zo.frameY = frameY;
+	_zo.angle = angle;
+	_zo.ratio = ratio;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_ROTATESTRETCHFRAME, bw, z, centerX, centerY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = frameX;
+	_bwzo.frameY = frameY;
+	_bwzo.angle = angle;
+	_bwzo.ratio = ratio;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveAniRender(image* img, image* bw, float z, float bottom, int destX, int destY, animation* ani)
+{
+	//애니메이션 프레임으로 치환
+	tagZorder _zo(IMG_FRAME, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.frameX = ani->getFrameX();
+	_zo.frameY = ani->getFrameY();
+	_vMoment.push_back(_zo);
+
+	//애니메이션 프레임으로 치환
+	tagZorder _bwzo(IMG_FRAME, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = ani->getFrameX();
+	_bwzo.frameY = ani->getFrameY();
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveAniAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, animation* ani, BYTE alpha)
+{
+	//애니메이션 프레임으로 치환
+	tagZorder _zo(IMG_ALPHA_FRAME, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.frameX = ani->getFrameX();
+	_zo.frameY = ani->getFrameY();
+	_zo.alpha = alpha;
+	_vMoment.push_back(_zo);
+
+	//애니메이션 프레임으로 치환
+	tagZorder _bwzo(IMG_ALPHA_FRAME, bw, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = ani->getFrameX();
+	_bwzo.frameY = ani->getFrameY();
+	_bwzo.alpha = alpha;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveRectangle(RECT rc, float z)
+{
+	tagZorder _zo(OBJ_RECT, nullptr, z, 0, 0);
+	_zo.bottom = rc.bottom;
+	_zo.rc = rc;
+	_vMoment.push_back(_zo);
+}
+
+void Zorder::SaveRectangleColor(RECT rc, float z, COLORREF color)
+{
+	tagZorder _zo(OBJ_COLORRECT, nullptr, z, 0, 0);
+	_zo.bottom = rc.bottom;
+	_zo.rc = rc;
+	_zo.rectColor = color;
+	_vMoment.push_back(_zo);
+}
+
+void Zorder::SaveRectangleRotate(RECT rc, float z, float angle, COLORREF color)
+{
+	tagZorder _zo(OBJ_RECTROTATE, nullptr, z, 0, 0);
+
+	int min = RotateRectBottom(rc, angle);
+
+	_zo.bottom = min;
+	_zo.rc = rc;
+	_zo.angle = angle;
+	_zo.rectColor = color;
+	_vMoment.push_back(_zo);
+}
+
+void Zorder::SaveTextOut(string txt, float z, int destX, int destY, COLORREF color)
+{
+	tagZorder _zo(TXT_TEXTOUT, nullptr, z, destX, destY);
+	_zo.bottom = destY + 20;
+	_zo.txt = txt;
+	_zo.txtColor = color;
+	_vMoment.push_back(_zo);
+}
+
+void Zorder::SaveDrawText(string txt, float z, RECT txtRC, HFONT font, COLORREF color, UINT format)
+{
+	tagZorder _zo(TXT_DRAWTEXT, nullptr, z, 0, 0);
+	_zo.bottom = txtRC.bottom;
+	_zo.txt = txt;
+	_zo.txtRC = txtRC;
+	_zo.font = font;
+	_zo.txtColor = color;
+	_zo.format = format;
+	_vMoment.push_back(_zo);
+}
 
 //여기부터 정렬
-
 inline void Zorder::ZorderSort()
 {
 	stable_sort(_vZorder.begin(), _vZorder.end(), ZordorCompare);
@@ -745,4 +1097,10 @@ void Zorder::ZorderUITotalRender(HDC hdc)
 		if (_vUiZorder[i].font) DeleteObject(_vUiZorder[i].font);
 	}
 	_vUiZorder.clear();
+}
+
+void Zorder::ZorderSaveClear()
+{
+	_vMoment.clear();
+	_vBWMoment.clear();
 }

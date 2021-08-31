@@ -30,6 +30,24 @@ struct tagFadeInfo
 
 class camera : public Singleton<camera>
 {
+public:
+	//메멘토패턴
+	class Memento
+	{
+	private:
+		friend class camera;
+		friend class Caretaker;
+
+		float _pivotX;
+		float _pivotY;
+
+		Memento(float pivotX, float pivotY)
+			: _pivotX(pivotX), _pivotY(pivotY)
+		{}
+
+		float getPivotX() { return _pivotX; }
+		float getPivotY() { return _pivotY; }
+	};
 private:
 	//초기화정보
 	float _cameraSizeX;
@@ -106,5 +124,14 @@ public:
 	//카메라상태 getter/setter
 	void setCMState(CAMERASTATE state) { _state = state; }
 	CAMERASTATE getCMState() { return _state; }
+
+public:
+	//메멘토패턴 저장,복구
+	Memento save()const { return Memento(_pivotX, _pivotY); }
+	void restore(const Memento& m)
+	{
+		_moveToPivot.x = m._pivotX;
+		_moveToPivot.y = m._pivotY;
+	}
 };
 

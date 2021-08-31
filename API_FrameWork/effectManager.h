@@ -47,8 +47,8 @@ public:
 	void update();
 	void render();
 
-	void addEffect(string effectKey, char* imageName, float z, int imageW, int imageH, int frameW, int frameH, int fps, float elapsedTime, int buffer, BYTE alpha = 255);
-	void play(string effectKey, int x, int y);
+	void addEffect(string effectKey, char* imageName, int imageW, int imageH, int frameW, int frameH, int fps, float elapsedTime, int buffer, bool isRotate = false , bool isAlpha = false, bool isSave = false, image* bwImage = nullptr);
+	effect* play(string effectKey, float z, int x, int y, float radian = 0, BYTE alpha = 255);
 
 	HRESULT addParticle(string key, float z, float x, float y, float angle, int count = 20, bool isAlpha = false, BYTE alpha = 0);
 };

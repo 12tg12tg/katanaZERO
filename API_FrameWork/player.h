@@ -7,33 +7,23 @@ class player : public Singleton<player>
 private:
 	PlayerFSM* _FSM;		//상태패턴
 public:
-	//메멘토패턴 inner클래스
-	class Memento
-	{
-	private:
-		friend class player;
-		friend class Caretaker;
-
-		image* _sImg;
-		float _sZ;
-		float _sBottom;
-		float _sX, _sY;
-		int _sFrameX;
-		int _sFrameY;
-
-		Memento(image* img, float z, float bottom, float x, float y, int frameX, int frameY)
-			:_sImg(img), _sZ(z), _sBottom(bottom), _sX(x), _sY(y), _sFrameX(frameX), _sFrameY(frameY)
-		{}
-
-		image* getImg() { return _sImg; }
-		float getZ() { return _sZ; }
-		float getBottom() { return _sBottom; }
-		float getX() { return _sX; }
-		float getY() { return _sY; }
-		float getframeX() { return _sFrameX; }
-		float getframeY() { return _sFrameY; }
-	};
-
+	/*메멘토취소*/
+	////메멘토패턴 inner클래스
+	//class Memento
+	//{
+	//private:
+	//	friend class player;
+	//	friend class Caretaker;
+	//	image* _sImg;
+	//	float _sZ;
+	//	float _sBottom;
+	//	float _sX, _sY;
+	//	int _sFrameX;
+	//	int _sFrameY;
+	//	Memento(image* img, float z, float bottom, float x, float y, int frameX, int frameY)
+	//		:_sImg(img), _sZ(z), _sBottom(bottom), _sX(x), _sY(y), _sFrameX(frameX), _sFrameY(frameY)
+	//	{}
+	//};
 private:
 	float _x, _y, _z;
 	float _bottom;
@@ -42,8 +32,8 @@ private:
 	Collider* _col;
 	image* _img;
 	animation* _ani;
-	int _frameX, _frameY;		//되감기출력에이용. ani는 못써서;
 	int _frameCount;
+	BYTE _alpha;
 
 	float _speed;
 	float _maxSpeed;
@@ -51,7 +41,7 @@ private:
 
 	PLAYERSTATE _state;
 
-	bool _isDebug;
+	bool _attDash;
 public:
 	player();
 	~player();
@@ -64,6 +54,7 @@ public:
 	//초기화
 	void imageInit();
 	void stateInit();
+	void soundInit();
 
 	//getter & setter
 	float getX() { return _x; }
@@ -77,22 +68,23 @@ public:
 	animation* getAni() { return _ani; }
 	PLAYERSTATE getState() { return _state; }
 	FOWARD getFoward() { return _foward; }
+	Collider* getCollider() { return _col; }
 	void setFoward(FOWARD foward) { _foward = foward; }
 	void setState(PLAYERSTATE state) { _state = state; }
-	void setIsDebug(bool isDebug) { _isDebug = isDebug; };
-
+	bool getAttDash() { return _attDash; }
+	void setAttDash(bool attDash) { _attDash = attDash; }
 public:
-	//메멘토패턴 저장,복구
-	Memento save()const { return Memento(_img, _z, _col->getRect().bottom, _x, _y, _ani->getFrameX(), _ani->getFrameY()); }
-	void restore(const Memento& m)
-	{
-		_img = m._sImg;
-		_z = m._sZ;
-		_bottom = m._sBottom;
-		_x = m._sX;
-		_y = m._sY;
-		_frameX = m._sFrameX;
-		_frameY = m._sFrameY;
-	}
+	////메멘토패턴 저장,복구
+	//Memento save()const { return Memento(_img, _z, _col->getRect().bottom, _x, _y, _ani->getFrameX(), _ani->getFrameY()); }
+	//void restore(const Memento& m)
+	//{
+	//	_img = m._sImg;
+	//	_z = m._sZ;
+	//	_bottom = m._sBottom;
+	//	_x = m._sX;
+	//	_y = m._sY;
+	//	_frameX = m._sFrameX;
+	//	_frameY = m._sFrameY;
+	//}
 };
 

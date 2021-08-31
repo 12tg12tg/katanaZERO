@@ -2,10 +2,14 @@
 class Caretaker
 {
 private:
-	vector<player::Memento>				_vplayerhistory;
-	vector<player::Memento>::iterator	_iplayerhistory;
+	//vector<player::Memento>				_vplayerhistory;
+	//vector<player::Memento>::iterator	_iplayerhistory;
 	//...
 
+	vector<Zorder::Memento>				_vZorderhistory;
+	vector<Zorder::Memento>::iterator	_iZorderhistory;
+	vector<camera::Memento>				_vCamerahistory;
+	vector<camera::Memento>::iterator	_iCamerahistory;
 private:
 	bool isReplay;
 	bool replayDone;

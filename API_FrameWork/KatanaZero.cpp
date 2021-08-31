@@ -3,6 +3,7 @@
 
 KatanaZero::KatanaZero()
 {
+    _cameraBuffer = IMAGE->addImage("cameraBuffer", WINSIZEX*2, WINSIZEY*2);
     IMAGE->addImage("fadeImg", WINSIZEX, WINSIZEY);
     SetBkMode(getMemDC(), TRANSPARENT);
     ShowCursor(false);
@@ -58,26 +59,22 @@ void KatanaZero::update()
     case MAINSTATE::INGAME:
     {
         dropFrame();            //슬로우기능
-        PLAYER->update();
         m_ui->update();
-        ANIMATION->update();
         SCENE->update();
-        CAMERA->movePivot(PLAYER->getX(), PLAYER->getY());
-        CAMERA->update();
         _caretaker->snapshot();
-
-        if (INPUT->isOnceKeyDown(VK_LEFT)) {
+        if (INPUT->isOnceKeyDown('N')) {        /*연출테스트*/
             _state = MAINSTATE::REPLAY;
         }
-        if (INPUT->isOnceKeyDown(VK_RIGHT)) {
+        if (INPUT->isOnceKeyDown('M')) {
             _state = MAINSTATE::ROLLBACK;
         }
     }
         break;
     case MAINSTATE::REPLAY:
     {
-        m_ui->update();
+        //m_ui->update();
         _caretaker->replay();
+        CAMERA->update();
         if (_caretaker->getReplayDone()) {
             _caretaker->setReplayDone(false);
             _caretaker->allVectorClear();
@@ -87,8 +84,9 @@ void KatanaZero::update()
         break;
     case MAINSTATE::ROLLBACK:
     {
-        m_ui->update();
+        //m_ui->update();
         _caretaker->rollback();
+        CAMERA->update();
         if (_caretaker->getRollbackDone()) {
             _caretaker->setRollbackDone(false);
             _caretaker->allVectorClear();
@@ -101,10 +99,13 @@ void KatanaZero::update()
     case MAINSTATE::NONE:
         break;
     }
+    SOUND->update();
 }
 
 void KatanaZero::render()
 {
+    PatBlt(_cameraBuffer->getMemDC(), 0, 0, _cameraBuffer->getWidth(), _cameraBuffer->getHeight(), WHITENESS);
+    //--------------------------------------------------------------------------
     if (_isDebug) {
         ZORDER->UIRectangleColor(m_debugRc, ZUIFIRST, MINT);
 
@@ -131,6 +132,21 @@ void KatanaZero::render()
                 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("굴림")),
                 RGB(0, 0, 0), DT_LEFT | DT_VCENTER); 
         //----------------------------------------------
+		SetPixel(getMemDC(), WINSIZEX / 2 - 1, 246, RGB(0, 0, 0));
+		SetPixel(getMemDC(), WINSIZEX / 2, 246, RGB(0, 0, 0));
+		SetPixel(getMemDC(), WINSIZEX / 2 + 1, 246, RGB(0, 0, 0));
+
+		SetPixel(getMemDC(), WINSIZEX / 2 - 1, 343, RGB(0, 0, 0));
+		SetPixel(getMemDC(), WINSIZEX / 2, 343, RGB(0, 0, 0));
+		SetPixel(getMemDC(), WINSIZEX / 2 + 1, 343, RGB(0, 0, 0));
+
+		SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
+		SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50, RGB(0, 0, 0));
+		SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
+
+		SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
+		SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50, RGB(0, 0, 0));
+		SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
     }
 
     switch (_state)
@@ -141,24 +157,21 @@ void KatanaZero::render()
         break;
     case MAINSTATE::INGAME:
     {
-        PLAYER->render();
         m_ui->render();
         SCENE->render();
-        ZORDER->ZorderAlphaRender(IMAGE->findImage("fadeImg"), ZUNIT - 0.5, 0, 0, 0, _slowAlpha);   //슬로우
+        if(_isSlow || _slowAlpha > 0) ZORDER->ZorderAlphaRender(IMAGE->findImage("fadeImg"), ZUNIT - 0.5, 0, CAMERA->getRect().left, CAMERA->getRect().top, _slowAlpha);   //슬로우
     }
         break;
     case MAINSTATE::REPLAY:
     {
-        PLAYER->render();
-        m_ui->render();
-        SCENE->render();
+        //m_ui->render();
+        //SCENE->render();
     }
         break;
     case MAINSTATE::ROLLBACK:
     {
-        PLAYER->render();
-        m_ui->render();
-        SCENE->render();
+        //m_ui->render();
+        //SCENE->render();
     }
         break;
     case MAINSTATE::PAUSE:
@@ -166,8 +179,9 @@ void KatanaZero::render()
     case MAINSTATE::NONE:
         break;
     }
-
-    ZORDER->ZorderTotalRender(getMemDC());
+    //--------------------------------------------------------------------------
+    ZORDER->ZorderTotalRender(_cameraBuffer->getMemDC());
+    _cameraBuffer->render(getMemDC(), 0, 0, CAMERA->getRect().left, CAMERA->getRect().top, RecWidth(CAMERA->getRect()), RecHeight(CAMERA->getRect()));
     ZORDER->ZorderUITotalRender(getMemDC());
 }
 

@@ -74,7 +74,7 @@ void effectManager::update()
         _vParticle[i].count--;
         //일정주기마다 알파값, 앵글 변경
         if (_vParticle[i].count % 5 == 0) {
-            _vParticle[i].angle = _vParticle[i].angle + DEGREE(RND->getInt(10) - 5);
+            _vParticle[i].angle = _vParticle[i].angle + RADIAN(RND->getInt(10) - 5);
         }
         if (_vParticle[i].count % 12 == 0) {
             _vParticle[i].alpha = _vParticle[i].alpha - RND->getInt(6);
@@ -118,7 +118,7 @@ void effectManager::render()
 
 }
 
-void effectManager::addEffect(string effectKey, char* imageName, float z, int imageW, int imageH, int frameW, int frameH, int fps, float elapsedTime, int buffer, BYTE alpha)
+void effectManager::addEffect(string effectKey, char* imageName, int imageW, int imageH, int frameW, int frameH, int fps, float elapsedTime, int buffer, bool isRotate, bool isAlpha, bool isSave, image* bwImage)
 {
     image* img;
     vEffect vEffectBuffer;
@@ -130,14 +130,25 @@ void effectManager::addEffect(string effectKey, char* imageName, float z, int im
     }
     else
     {
-        img = IMAGE->addImage(effectKey, imageName, imageW, imageH, true, RGB(255, 0, 255));
+        img = IMAGE->addFrameImage(effectKey, imageName, imageW, imageH, imageW/frameW, imageH/frameH, true, RGB(255, 0, 255));
     }
 
     //버퍼크기만큼 이펙트를 할당 후 초기화 해서 벡터로 만든다.
     for (size_t i = 0; i < buffer; i++)
     {
         vEffectBuffer.push_back(new effect);
-        vEffectBuffer[i]->init(img, z, frameW, frameH, fps, elapsedTime, alpha);
+        if (isRotate && isAlpha) {
+            vEffectBuffer[i]->initRotateAlpha(img, frameW, frameH, fps, elapsedTime, isSave, bwImage);
+        }
+        else if (!isRotate && isAlpha) {
+            vEffectBuffer[i]->initAlpha(img, frameW, frameH, fps, elapsedTime, isSave, bwImage);
+        }
+        else if (isRotate && !isAlpha) {
+            vEffectBuffer[i]->initRotate(img, frameW, frameH, fps, elapsedTime, isSave, bwImage);
+        }
+        else {
+            vEffectBuffer[i]->init(img, frameW, frameH, fps, elapsedTime, isSave, bwImage);
+        }
     }
 
     //버퍼를 맵에 넣어주고
@@ -146,7 +157,7 @@ void effectManager::addEffect(string effectKey, char* imageName, float z, int im
     m_vTotalEffect.push_back(mArrEffect);
 }
 
-void effectManager::play(string effectKey, int x, int y)
+effect* effectManager::play(string effectKey, float z, int x, int y, float radian, BYTE alpha)
 {
     viTotalEffect vIter;
     miEffect mIter;
@@ -163,8 +174,8 @@ void effectManager::play(string effectKey, int x, int y)
             for (vArriter = mIter->second.begin(); vArriter != mIter->second.end(); ++vArriter)
             {
                 if ((*vArriter)->getIsRunning()) continue;
-                (*vArriter)->startEffect(x, y);
-                return;
+                (*vArriter)->startEffect(z, x, y, radian, alpha);
+                return (*vArriter);
             }
         }
     }
@@ -177,7 +188,7 @@ HRESULT effectManager::addParticle(string key, float z, float x, float y, float 
     ptcle.z = z;
     ptcle.x = x - IMAGE->findImage(key)->getFrameWidth() / 2;
     ptcle.y = y - IMAGE->findImage(key)->getFrameHeight() / 2;
-    ptcle.angle = angle + DEGREE(RND->getInt(20) - 10);
+    ptcle.angle = angle + RADIAN(RND->getInt(20) - 10);
     ptcle.frameX = RND->getInt(IMAGE->findImage(key)->getMaxFrameX() + 1);
     ptcle.frameY = RND->getInt(IMAGE->findImage(key)->getMaxFrameY() + 1);
     ptcle.isAlpha = isAlpha;

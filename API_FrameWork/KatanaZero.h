@@ -12,6 +12,7 @@
 class KatanaZero : public gameNode
 {
 private:
+	image* _cameraBuffer;
 	UI* m_ui;
 	//------------------------
 	CollisionTestScene* _test;
@@ -47,7 +48,6 @@ public:
 	void setIsDebug(bool isDebug)
 	{
 		_isDebug = isDebug;
-		PLAYER->setIsDebug(isDebug);
 		COLLISION->setIsDebug(isDebug);
 	}
 };

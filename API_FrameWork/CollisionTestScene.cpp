@@ -53,8 +53,12 @@ void CollisionTestScene::update()
 	}
 	
 
-
+	PLAYER->update();
+	ANIMATION->update();
 	COLLISION->update();
+	CAMERA->movePivot(PLAYER->getCollider()->getPos().x, PLAYER->getY());
+	CAMERA->update();
+	EFFECT->update();
 }
 
 void CollisionTestScene::release()
@@ -63,5 +67,7 @@ void CollisionTestScene::release()
 
 void CollisionTestScene::render()
 {
+	PLAYER->render();
 	COLLISION->render();
+	EFFECT->render();
 }
