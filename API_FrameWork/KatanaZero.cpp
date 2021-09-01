@@ -21,15 +21,14 @@ HRESULT KatanaZero::init()
 
     //------------------------------------------------------------------------------------------------
     _test = dynamic_cast<CollisionTestScene*>(SCENE->addScene("충돌테스트", new CollisionTestScene));
-    SCENE->changeScene("충돌테스트");
+    _testmap1 = dynamic_cast<textMap*>(SCENE->addScene("테스트맵1", new textMap));
+    SCENE->changeScene("테스트맵1");
     //------------------------------------------------------------------------------------------------
 
     _state = MAINSTATE::INGAME;
     _caretaker = new Caretaker;
     _caretaker->init();
 
-    CAMERA->init(PLAYER->getX(), PLAYER->getY(), WINSIZEX*2, WINSIZEY*2, 0, 0, WINSIZEX / 2, WINSIZEY / 2,
-        CAMERASIZEX, CAMERASIZEY);
     m_debugRc = RectMake(1110, 79, 220, 200);
     _slowAlpha = 0;
     return S_OK;
@@ -104,7 +103,7 @@ void KatanaZero::update()
 
 void KatanaZero::render()
 {
-    PatBlt(_cameraBuffer->getMemDC(), 0, 0, _cameraBuffer->getWidth(), _cameraBuffer->getHeight(), WHITENESS);
+    PatBlt(_cameraBuffer->getMemDC(), 0, 0, _cameraBuffer->getWidth(), _cameraBuffer->getHeight(), BLACKNESS);
     //--------------------------------------------------------------------------
     if (_isDebug) {
         ZORDER->UIRectangleColor(m_debugRc, ZUIFIRST, MINT);

@@ -26,6 +26,11 @@ HRESULT player::init()
 	_frameCount = 0;
 
 	_attDash = false;
+	_viglitch = _vglitch.begin();
+	_specCount = 0.f;
+	_specOn = false;
+	_idleCount = 30.1f;
+
 	stateInit();
 	soundInit();
 	return S_OK;
@@ -33,6 +38,7 @@ HRESULT player::init()
 
 void player::release()
 {
+	_FSM->release();
 	SAFE_DELETE(_FSM);
 }
 
@@ -46,6 +52,9 @@ void player::update()
 	if (INPUT->isOnceKeyDown('K')) _FSM->ChangeState(PLAYERSTATE::DEAD);
 	if (INPUT->isOnceKeyDown('R')) _FSM->ChangeState(PLAYERSTATE::HURTCOVER);
 	if (INPUT->isOnceKeyDown('P')) _FSM->ChangeState(PLAYERSTATE::WALLSLIDE);
+
+	//잔상생성
+	makeSpectrum();
 }
 
 void player::render()
@@ -85,10 +94,29 @@ void player::render()
 	else if (!MAIN->getIsSlow() && _alpha > 0) _alpha -= 5;
 	//평범과 네온 인쇄
 	ZORDER->ZorderAniRender(_img, _z, _bottom, _x, _y, _ani);
-	ZORDER->ZorderAniAlphaRender(IMAGE->findImage("player_neon1_ALL1"), _z+1, _bottom, _x, _y, _ani, _alpha);
+	if(_alpha > 0) ZORDER->ZorderAniAlphaRender(IMAGE->findImage("player_neon1_ALL1"), _z+1, _bottom, _x, _y, _ani, _alpha);
 	
 	//세이브저장
 	ZORDER->SaveAniRender(_img, IMAGE->findImage("player_bw_ALL1"), _z, _bottom, _x, _y, _ani);
+
+	//잔상
+	for (_ispectrum = _spectrum.begin(); _ispectrum != _spectrum.end(); )
+	{
+		ZORDER->ZorderAlphaFrameRender(*_viglitch, _z - 1, _bottom, _ispectrum->pos.x, _ispectrum->pos.y,
+			_ispectrum->frame.x, _ispectrum->frame.y, _ispectrum->alpha);
+		++_viglitch;
+		if (_viglitch == _vglitch.end()) _viglitch = _vglitch.begin();
+
+		if (_ispectrum->alpha <= 100)
+			_ispectrum = _spectrum.erase(_ispectrum);
+		else {
+			_ispectrum->alpha -= 10;
+			++_ispectrum;
+		}
+	}
+	
+
+
 
 	/*테스트*/
 	//TCHAR str[128];
@@ -110,6 +138,17 @@ void player::imageInit()
 	EFFECT->addEffect("player_slash_left", "images/effect/slash_left.bmp", 630 * 2, 30 * 2, 105 * 2, 30 * 2, 20, 0.01666, 3, true, false, true, IMAGE->findImage("player_slash_left_bw"));
 	EFFECT->addEffect("player_slash_right", "images/effect/slash_right.bmp", 630 * 2, 30 * 2, 105 * 2, 30 * 2, 20, 0.01666, 3, true, false, true, IMAGE->findImage("player_slash_right_bw"));
 
+	IMAGE->addFrameImage("player_glitch_pink", "images/player/player_all1_glitch_pink2.bmp", 744 * 2, 1440 * 2, 12, 30, true);
+	IMAGE->addFrameImage("player_glitch_red", "images/player/player_all1_glitch_red2.bmp", 744 * 2, 1440 * 2, 12, 30, true);
+	IMAGE->addFrameImage("player_glitch_green", "images/player/player_all1_glitch_green2.bmp", 744 * 2, 1440 * 2, 12, 30, true);
+	IMAGE->addFrameImage("player_glitch_blue", "images/player/player_all1_glitch_blue2.bmp", 744 * 2, 1440 * 2, 12, 30, true);
+	_vglitch.push_back(IMAGE->findImage("player_glitch_pink"));
+	_vglitch.push_back(IMAGE->findImage("player_glitch_red"));
+	//_vglitch.push_back(IMAGE->findImage("player_glitch_pink"));
+	_vglitch.push_back(IMAGE->findImage("player_glitch_green"));
+	_vglitch.push_back(IMAGE->findImage("player_neon1_ALL1"));
+	_vglitch.push_back(IMAGE->findImage("player_glitch_blue"));
+	//_vglitch.push_back(IMAGE->findImage("player_neon1_ALL1"));
 }
 
 void player::stateInit()
@@ -144,5 +183,55 @@ void player::soundInit()
 	SOUND->addSound("grabwall", "sound/player/grabwall.wav", false, false);
 	SOUND->addSound("roll", "sound/player/roll.wav", false, false);
 	SOUND->addSound("run1", "sound/player/run1.wav", false, false);
+	SOUND->addSound("run2", "sound/player/run2.wav", false, false);
+	SOUND->addSound("run3", "sound/player/run3.wav", false, false);
+	SOUND->addSound("run4", "sound/player/run4.wav", false, false);
 	SOUND->addSound("walljump", "sound/player/walljump1.wav", false, false);
+}
+
+void player::makeSpectrum()
+{
+	if (_state != PLAYERSTATE::IDLE) _idleCount = 0;
+	if (!MAIN->getIsSlow()) {
+		switch (_state)
+		{
+		case PLAYERSTATE::IDLE:
+			_idleCount += 1 * TIME->getGameTimeRate();
+			if (!_specOn && _idleCount < 30) {
+				_specOn = true;
+			}
+			break;
+		case PLAYERSTATE::ROLL:
+		case PLAYERSTATE::ATTACK:
+		case PLAYERSTATE::FLIP:
+		case PLAYERSTATE::RUN:
+		case PLAYERSTATE::FALL:
+		case PLAYERSTATE::JUMP:
+			_specOn = true;
+			break;
+		case PLAYERSTATE::DOORBREAK:
+		case PLAYERSTATE::HURTCOVER:
+		case PLAYERSTATE::WALLSLIDE:
+		case PLAYERSTATE::DEAD:
+			break;
+		}
+	}
+	else {
+		_specOn = true;
+	}
+
+	//리스트에 순간잔상정보 넣기.
+	if (_specOn) {
+		_specCount += 1 * TIME->getGameTimeRate();
+		if (_specCount > 1) {
+			_specOn = false;
+			_specCount = 0;
+			tagGlitch temp;
+			temp.alpha = 180;
+			temp.frame = vector2(_ani->getFrameX(), _ani->getFrameY());
+			temp.pos = vector2(_x, _y);
+			_spectrum.push_back(temp);
+		}
+	}
+
 }

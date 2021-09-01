@@ -26,6 +26,7 @@ using namespace std;
 #include <algorithm>
 #include <assert.h>
 #include <list>
+#include <queue>
 
 //=======================//
 //	내가만든 헤더파일		//
@@ -47,6 +48,7 @@ using namespace std;
 #include"camera.h"
 #include"enum.h"
 #include"collisionManager.h"
+#include"struct.h"
 
 #include"mainState.h"
 #include"player.h"

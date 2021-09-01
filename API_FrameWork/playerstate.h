@@ -13,6 +13,7 @@ public:
 	~PlayerFSM();
 
 	void update();
+	void release();
 
 public:
 	void AddState(PlayerState* _pState);

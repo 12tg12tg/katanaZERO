@@ -25,6 +25,15 @@ void PlayerFSM::update()
 	m_pCurState->update();
 }
 
+void PlayerFSM::release()
+{
+	auto iter = m_vecState.begin();
+	for (iter; iter != m_vecState.end(); ++iter)
+	{
+		SAFE_DELETE(*iter);
+	}
+}
+
 void PlayerFSM::AddState(PlayerState* _pState)
 {
 	_pState->SetFSM(this);
@@ -76,7 +85,6 @@ void PlayerFSM::SetState(PLAYERSTATE _eType)
 Player_Idle::Player_Idle()
 {
 	m_eState = PLAYERSTATE::IDLE;
-	PLAYER->setState(PLAYERSTATE::IDLE);
 }
 
 Player_Idle::~Player_Idle()
@@ -85,6 +93,7 @@ Player_Idle::~Player_Idle()
 
 void Player_Idle::init()
 {
+	PLAYER->setState(PLAYERSTATE::IDLE);
 	_accel = 0;
 	switch (m_pFSM->getPreState()->getThisState())
 	{
@@ -187,7 +196,6 @@ void Player_Idle::release()
 Player_Run::Player_Run()
 {
 	m_eState = PLAYERSTATE::RUN;
-	PLAYER->setState(PLAYERSTATE::RUN);
 }
 
 Player_Run::~Player_Run()
@@ -196,6 +204,7 @@ Player_Run::~Player_Run()
 
 void Player_Run::init()
 {
+	PLAYER->setState(PLAYERSTATE::RUN);
 	//속도제어
 	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::ROLL) {
 	}
@@ -277,7 +286,21 @@ void Player_Run::update()
 	_sountCount += 1 * TIME->getGameTimeRate();
 	if (_sountCount > 20) {
 		_sountCount = 0;
-		SOUND->play("run1", 0.5f);
+		switch (RND->getInt(4))
+		{
+		case 0:
+			SOUND->play("run1", 0.5f);
+			break;
+		case 1:
+			SOUND->play("run2", 0.5f);
+			break;
+		case 2:
+			SOUND->play("run3", 0.5f);
+			break;
+		case 3:
+			SOUND->play("run4", 0.5f);
+			break;
+		}
 	}
 }
 
@@ -289,7 +312,6 @@ void Player_Run::release()
 Player_Roll::Player_Roll()
 {
 	m_eState = PLAYERSTATE::ROLL;
-	PLAYER->setState(PLAYERSTATE::ROLL);
 }
 
 Player_Roll::~Player_Roll()
@@ -298,6 +320,7 @@ Player_Roll::~Player_Roll()
 
 void Player_Roll::init()
 {
+	PLAYER->setState(PLAYERSTATE::ROLL);
 	PLAYER->setSpeed(10.f);
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 72, 78, 16, false, false);
@@ -344,7 +367,6 @@ void Player_Roll::release()
 Player_Crouch::Player_Crouch()
 {
 	m_eState = PLAYERSTATE::CROUCH;
-	PLAYER->setState(PLAYERSTATE::CROUCH);
 }
 
 Player_Crouch::~Player_Crouch()
@@ -353,6 +375,7 @@ Player_Crouch::~Player_Crouch()
 
 void Player_Crouch::init()
 {
+	PLAYER->setState(PLAYERSTATE::CROUCH);
 	if (m_pFSM->getPreState()->getThisState() != PLAYERSTATE::ROLL) {
 		if (PLAYER->getFoward() == FOWARD::RIGHT) {
 			ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 60, 61, 8, false, false);
@@ -416,7 +439,6 @@ void Player_Crouch::release()
 Player_Jump::Player_Jump()
 {
 	m_eState = PLAYERSTATE::JUMP;
-	PLAYER->setState(PLAYERSTATE::JUMP);
 	_maxJumpPower = 155;
 	_maxDashPower = 10;
 }
@@ -427,6 +449,7 @@ Player_Jump::~Player_Jump()
 
 void Player_Jump::init()
 {
+	PLAYER->setState(PLAYERSTATE::JUMP);
 	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::RUN) {
 		_accelB = PLAYER->getSpeed()/2;
 	}
@@ -510,7 +533,6 @@ void Player_Jump::release()
 Player_Fall::Player_Fall()
 {
 	m_eState = PLAYERSTATE::FALL;
-	PLAYER->setState(PLAYERSTATE::FALL);
 	_gravity = 0.f;
 	_maxGravity = 10.f;
 	_maxDashPower = 8.f;
@@ -522,6 +544,7 @@ Player_Fall::~Player_Fall()
 
 void Player_Fall::init()
 {
+	PLAYER->setState(PLAYERSTATE::FALL);
 	_count = 0;
 	_onGravity = true;
 	_delay = 0;
@@ -608,7 +631,7 @@ void Player_Fall::update()
 		PLAYER->setX(PLAYER->getX() - _accelB * TIME->getGameTimeRate());
 
 	//종료조건 -  랜드충돌bool 변수에 의해/*수정*/ 
-	if (PLAYER->getY() > WINSIZEY / 2) {
+	if (PLAYER->getY() > 501) {
 		PLAYER->setSpeed(_accelB);
 		PLAYER->setAttDash(false);
 		m_pFSM->ChangeState(PLAYERSTATE::IDLE);
@@ -628,7 +651,6 @@ void Player_Fall::release()
 Player_Attack::Player_Attack()
 {
 	m_eState = PLAYERSTATE::ATTACK;
-	PLAYER->setState(PLAYERSTATE::ATTACK);
 }
 
 Player_Attack::~Player_Attack()
@@ -637,6 +659,7 @@ Player_Attack::~Player_Attack()
 
 void Player_Attack::init()
 {
+	PLAYER->setState(PLAYERSTATE::ATTACK);
 	//도약직후 땅에 한번은 닿았는지 bool변수 확인해서
 	//땅에서부터 떨어지고 한번은 도약하고, 이후 공격이 반복되면 도약하지않는다.
 	Vec2 clickPt = Vec2(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y);
@@ -723,7 +746,6 @@ void Player_Attack::release()
 Player_Doorbreak::Player_Doorbreak()
 {
 	m_eState = PLAYERSTATE::DOORBREAK;
-	PLAYER->setState(PLAYERSTATE::DOORBREAK);
 }
 
 Player_Doorbreak::~Player_Doorbreak()
@@ -732,6 +754,7 @@ Player_Doorbreak::~Player_Doorbreak()
 
 void Player_Doorbreak::init()
 {
+	PLAYER->setState(PLAYERSTATE::DOORBREAK);
 	//프레임
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 216, 225, 18, false, false);
@@ -761,7 +784,6 @@ void Player_Doorbreak::release()
 Player_Dead::Player_Dead()
 {
 	m_eState = PLAYERSTATE::DEAD;
-	PLAYER->setState(PLAYERSTATE::DEAD);
 }
 
 Player_Dead::~Player_Dead()
@@ -770,6 +792,7 @@ Player_Dead::~Player_Dead()
 
 void Player_Dead::init()
 {
+	PLAYER->setState(PLAYERSTATE::DEAD);
 	//프레임
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 228, 236, 8, false, false);
@@ -796,7 +819,6 @@ void Player_Dead::release()
 Player_HurtCover::Player_HurtCover()
 {
 	m_eState = PLAYERSTATE::HURTCOVER;
-	PLAYER->setState(PLAYERSTATE::HURTCOVER);
 }
 
 Player_HurtCover::~Player_HurtCover()
@@ -805,6 +827,7 @@ Player_HurtCover::~Player_HurtCover()
 
 void Player_HurtCover::init()
 {
+	PLAYER->setState(PLAYERSTATE::HURTCOVER);
 	//프레임
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 240, 248, 12, false, false);
@@ -829,7 +852,6 @@ void Player_HurtCover::release()
 Player_Flip::Player_Flip()
 {
 	m_eState = PLAYERSTATE::FLIP;
-	PLAYER->setState(PLAYERSTATE::FLIP);
 }
 
 Player_Flip::~Player_Flip()
@@ -838,6 +860,7 @@ Player_Flip::~Player_Flip()
 
 void Player_Flip::init()
 {
+	PLAYER->setState(PLAYERSTATE::FLIP);
 	//방향전환
 	if (PLAYER->getFoward() == FOWARD::LEFT) {
 		PLAYER->setFoward(FOWARD::RIGHT);
@@ -881,7 +904,6 @@ void Player_Flip::release()
 Player_WallSlide::Player_WallSlide()
 {
 	m_eState = PLAYERSTATE::WALLSLIDE;
-	PLAYER->setState(PLAYERSTATE::WALLSLIDE);
 }
 
 Player_WallSlide::~Player_WallSlide()
@@ -890,6 +912,7 @@ Player_WallSlide::~Player_WallSlide()
 
 void Player_WallSlide::init()
 {
+	PLAYER->setState(PLAYERSTATE::WALLSLIDE);
 	//프레임
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
 		int arr[] = { 264 };

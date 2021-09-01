@@ -5,6 +5,7 @@
 
 //----------------------------
 #include "CollisionTestScene.h"
+#include "textMap.h"
 //-----------------------------
 
 
@@ -16,6 +17,7 @@ private:
 	UI* m_ui;
 	//------------------------
 	CollisionTestScene* _test;
+	textMap* _testmap1;
 	//-------------------------
 
 

@@ -42,6 +42,14 @@ private:
 	PLAYERSTATE _state;
 
 	bool _attDash;
+
+	bool _specOn;
+	float _specCount;
+	float _idleCount;
+	list<tagGlitch> _spectrum;
+	list<tagGlitch>::iterator _ispectrum;
+	vector<image*> _vglitch;
+	vector<image*>::iterator _viglitch;
 public:
 	player();
 	~player();
@@ -55,6 +63,9 @@ public:
 	void imageInit();
 	void stateInit();
 	void soundInit();
+
+	//¿‹ªÛ
+	void makeSpectrum();
 
 	//getter & setter
 	float getX() { return _x; }
