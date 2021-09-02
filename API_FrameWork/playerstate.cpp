@@ -413,6 +413,10 @@ void Player_Crouch::update()
 		PLAYER->setSpeed(speed);
 	}
 	//키입력
+	if (INPUT->isStayKeyDown('S') && PLAYER->getColBlack()) {
+		PLAYER->setIgnoreBlack(true);
+		m_pFSM->ChangeState(PLAYERSTATE::FALL);
+	}
 	if (INPUT->isOnceKeyUp('S')) {
 		m_pFSM->ChangeState(PLAYERSTATE::IDLE);
 	}
@@ -449,6 +453,7 @@ Player_Jump::~Player_Jump()
 
 void Player_Jump::init()
 {
+	PLAYER->setIsLand(false);
 	PLAYER->setState(PLAYERSTATE::JUMP);
 	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::RUN) {
 		_accelB = PLAYER->getSpeed()/2;
@@ -544,6 +549,7 @@ Player_Fall::~Player_Fall()
 
 void Player_Fall::init()
 {
+	PLAYER->setIsLand(false);
 	PLAYER->setState(PLAYERSTATE::FALL);
 	_count = 0;
 	_onGravity = true;
@@ -608,7 +614,7 @@ void Player_Fall::update()
 	}
 	if (_accelB > _maxDashPower) _accelB = _maxDashPower;
 	//강제낙하
-	if (INPUT->isOnceKeyDown('S')) {
+	if (INPUT->isOnceKeyDown('S') && !PLAYER->getIgnoreBlack()) {
 		_onGravity = false;
 		_gravity = 20;
 	}
@@ -630,8 +636,16 @@ void Player_Fall::update()
 	if (PLAYER->getFoward() == FOWARD::LEFT)
 		PLAYER->setX(PLAYER->getX() - _accelB * TIME->getGameTimeRate());
 
+	//종료조건 - 벽잡기
+	if (PLAYER->getColYello() && 
+		(INPUT->isStayKeyDown('D') || INPUT->isStayKeyDown('A') || m_pFSM->getPreState()->getThisState()==PLAYERSTATE::FLIP)) {
+		PLAYER->setAttDash(false);
+		m_pFSM->ChangeState(PLAYERSTATE::WALLSLIDE);
+	}
+
+
 	//종료조건 -  랜드충돌bool 변수에 의해/*수정*/ 
-	if (PLAYER->getY() > 501) {
+	if (/*PLAYER->getY() > 501*/PLAYER->getIsLand()) {
 		PLAYER->setSpeed(_accelB);
 		PLAYER->setAttDash(false);
 		m_pFSM->ChangeState(PLAYERSTATE::IDLE);
@@ -659,6 +673,7 @@ Player_Attack::~Player_Attack()
 
 void Player_Attack::init()
 {
+	PLAYER->setIsLand(false);
 	PLAYER->setState(PLAYERSTATE::ATTACK);
 	//도약직후 땅에 한번은 닿았는지 bool변수 확인해서
 	//땅에서부터 떨어지고 한번은 도약하고, 이후 공격이 반복되면 도약하지않는다.
@@ -877,6 +892,11 @@ void Player_Flip::init()
 	else if (PLAYER->getFoward() == FOWARD::LEFT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 347, 337, 35, false, false);
 	}
+	//벽잡기
+	if (PLAYER->getColYello())
+		m_pFSM->ChangeState(PLAYERSTATE::WALLSLIDE);
+
+
 	//사운드
 	SOUND->play("walljump", 0.1f);
 }

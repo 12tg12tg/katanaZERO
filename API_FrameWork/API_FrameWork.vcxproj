@@ -150,6 +150,7 @@
     <ClInclude Include="button.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Caretaker.h" />
+    <ClInclude Include="Cmap.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="collisionManager.h" />
     <ClInclude Include="CollisionTestScene.h" />
@@ -178,6 +179,8 @@
     <ClInclude Include="struct.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="textMap.h" />
+    <ClInclude Include="textMap2.h" />
+    <ClInclude Include="textMap3.h" />
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="txtData.h" />
@@ -193,6 +196,7 @@
     <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Caretaker.cpp" />
+    <ClCompile Include="Cmap.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="collisionManager.cpp" />
     <ClCompile Include="CollisionTestScene.cpp" />
@@ -213,6 +217,8 @@
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="soundManager.cpp" />
     <ClCompile Include="textMap.cpp" />
+    <ClCompile Include="textMap2.cpp" />
+    <ClCompile Include="textMap3.cpp" />
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="txtData.cpp" />

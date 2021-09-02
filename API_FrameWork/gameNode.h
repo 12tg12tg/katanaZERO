@@ -8,6 +8,9 @@ private:
 	bool _managerInit;
 	RECT _rt;						//클라이언트크기
 	bool _cliSizeChange = false;	//클라크기바뀜.
+
+protected:
+	bool _isDebug;
 public:
 	gameNode();
 	virtual ~gameNode();
@@ -27,5 +30,7 @@ public:
 	void setCliChange(bool isChange) { _cliSizeChange = isChange; }
 
 	LRESULT MainProc(HWND hWnd, UINT imessage, WPARAM wParam, LPARAM lParam);
+
+	void setIsDebug(bool isDebug) { _isDebug = isDebug; }
 };
 

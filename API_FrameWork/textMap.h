@@ -1,10 +1,9 @@
 #pragma once
-#include "gameNode.h"
-class textMap : public gameNode
+#include "Cmap.h"
+class textMap : public Cmap
 {
 private:
-	image* _map;
-	image* _colmap;
+
 public:
 	textMap();
 	~textMap();
@@ -14,6 +13,6 @@ public:
 	void update();
 	void render();
 
-	image* getColmap() { return _colmap; }
+
 };
 

@@ -88,6 +88,27 @@
     <Filter Include="KatanaZero\0mainState">
       <UniqueIdentifier>{75700892-ea07-4110-af54-0d1b2a4d6d47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\3Map\Cmap">
+      <UniqueIdentifier>{6c198bc3-78d1-4cb8-b191-b9dc87cf7bce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\3Map\maps">
+      <UniqueIdentifier>{f583cead-c6d6-4402-b3fa-9cc5d194338a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\3Map\test">
+      <UniqueIdentifier>{4b25fd08-a8bd-4332-a7c4-afc5cd2bce39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\3Map\maps\1">
+      <UniqueIdentifier>{fb7e4c3d-ab1d-4759-8444-ac18235eff3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\3Map\maps\2">
+      <UniqueIdentifier>{ebdcf7a5-1fd0-4acb-9043-89d477576efc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\3Map\maps\3">
+      <UniqueIdentifier>{6cb48152-a410-49bc-bd1b-bd92d7319f2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet">
+      <UniqueIdentifier>{1b78c2ba-3c30-4f81-8d08-db37f4b2e3e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -195,9 +216,6 @@
     <ClInclude Include="collisionManager.h">
       <Filter>manager\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionTestScene.h">
-      <Filter>KatanaZero\3Map</Filter>
-    </ClInclude>
     <ClInclude Include="Caretaker.h">
       <Filter>KatanaZero\0Caretaker</Filter>
     </ClInclude>
@@ -210,8 +228,20 @@
     <ClInclude Include="struct.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Cmap.h">
+      <Filter>KatanaZero\3Map\Cmap</Filter>
+    </ClInclude>
     <ClInclude Include="textMap.h">
-      <Filter>KatanaZero\3Map</Filter>
+      <Filter>KatanaZero\3Map\maps\1</Filter>
+    </ClInclude>
+    <ClInclude Include="textMap2.h">
+      <Filter>KatanaZero\3Map\maps\2</Filter>
+    </ClInclude>
+    <ClInclude Include="textMap3.h">
+      <Filter>KatanaZero\3Map\maps\3</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionTestScene.h">
+      <Filter>KatanaZero\3Map\test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -296,9 +326,6 @@
     <ClCompile Include="collisionManager.cpp">
       <Filter>manager\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionTestScene.cpp">
-      <Filter>KatanaZero\3Map</Filter>
-    </ClCompile>
     <ClCompile Include="Caretaker.cpp">
       <Filter>KatanaZero\0Caretaker</Filter>
     </ClCompile>
@@ -308,8 +335,20 @@
     <ClCompile Include="mainState.cpp">
       <Filter>KatanaZero\0mainState</Filter>
     </ClCompile>
+    <ClCompile Include="Cmap.cpp">
+      <Filter>KatanaZero\3Map\Cmap</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionTestScene.cpp">
+      <Filter>KatanaZero\3Map\test</Filter>
+    </ClCompile>
     <ClCompile Include="textMap.cpp">
-      <Filter>KatanaZero\3Map</Filter>
+      <Filter>KatanaZero\3Map\maps\1</Filter>
+    </ClCompile>
+    <ClCompile Include="textMap2.cpp">
+      <Filter>KatanaZero\3Map\maps\2</Filter>
+    </ClCompile>
+    <ClCompile Include="textMap3.cpp">
+      <Filter>KatanaZero\3Map\maps\3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

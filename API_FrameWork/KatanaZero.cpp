@@ -19,11 +19,7 @@ HRESULT KatanaZero::init()
     m_ui = new UI;
     m_ui->init();
 
-    //------------------------------------------------------------------------------------------------
-    _test = dynamic_cast<CollisionTestScene*>(SCENE->addScene("충돌테스트", new CollisionTestScene));
-    _testmap1 = dynamic_cast<textMap*>(SCENE->addScene("테스트맵1", new textMap));
-    SCENE->changeScene("테스트맵1");
-    //------------------------------------------------------------------------------------------------
+    sceneInit();
 
     _state = MAINSTATE::INGAME;
     _caretaker = new Caretaker;
@@ -124,28 +120,28 @@ void KatanaZero::render()
             to_string(CAMERA->getRelativeMouse().x) + ", " +
             to_string(CAMERA->getRelativeMouse().y) + "\n";
         str += "vectorTest : " + to_string(res.x)+", " + to_string(res.y) + "\n";
-        //str += "vectorTest : " + to_string(temp1.Projection(temp2)) + "\n";
+        str += "Player x, y: " + to_string(PLAYER->getX()) + ", " + to_string(PLAYER->getY()) + "\n";
         
         ZORDER->UIDrawText(str, ZUISECOND, m_debugRc,
             CreateFont(15, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
                 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("굴림")),
                 RGB(0, 0, 0), DT_LEFT | DT_VCENTER); 
         //----------------------------------------------
-		SetPixel(getMemDC(), WINSIZEX / 2 - 1, 246, RGB(0, 0, 0));
-		SetPixel(getMemDC(), WINSIZEX / 2, 246, RGB(0, 0, 0));
-		SetPixel(getMemDC(), WINSIZEX / 2 + 1, 246, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2 - 1, 246, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2, 246, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2 + 1, 246, RGB(0, 0, 0));
 
-		SetPixel(getMemDC(), WINSIZEX / 2 - 1, 343, RGB(0, 0, 0));
-		SetPixel(getMemDC(), WINSIZEX / 2, 343, RGB(0, 0, 0));
-		SetPixel(getMemDC(), WINSIZEX / 2 + 1, 343, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2 - 1, 343, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2, 343, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2 + 1, 343, RGB(0, 0, 0));
 
-		SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
-		SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50, RGB(0, 0, 0));
-		SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
 
-		SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
-		SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50, RGB(0, 0, 0));
-		SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50, RGB(0, 0, 0));
+		//SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
     }
 
     switch (_state)
@@ -158,19 +154,25 @@ void KatanaZero::render()
     {
         m_ui->render();
         SCENE->render();
-        if(_isSlow || _slowAlpha > 0) ZORDER->ZorderAlphaRender(IMAGE->findImage("fadeImg"), ZUNIT - 0.5, 0, CAMERA->getRect().left, CAMERA->getRect().top, _slowAlpha);   //슬로우
+        if(_isSlow || _slowAlpha > 0) ZORDER->ZorderAlphaRender(IMAGE->findImage("fadeImg"), ZSLOWFADE, 0, CAMERA->getRect().left, CAMERA->getRect().top, _slowAlpha);   //슬로우
     }
         break;
     case MAINSTATE::REPLAY:
     {
         //m_ui->render();
-        //SCENE->render();
+        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
+        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
+        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
+        if(bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
     }
         break;
     case MAINSTATE::ROLLBACK:
     {
         //m_ui->render();
-        //SCENE->render();
+        image* map = dynamic_cast<Cmap*>(SCENE->curScene())->getMap();
+        image* map_front = dynamic_cast<Cmap*>(SCENE->curScene())->getMap_front();
+        ZORDER->ZorderRender(map, ZFLOORMAP, 0, 0, 0);
+        if (map_front) ZORDER->ZorderRender(map_front, ZABOVEMAP, 0, 0, 0);
     }
         break;
     case MAINSTATE::PAUSE:
@@ -182,6 +184,17 @@ void KatanaZero::render()
     ZORDER->ZorderTotalRender(_cameraBuffer->getMemDC());
     _cameraBuffer->render(getMemDC(), 0, 0, CAMERA->getRect().left, CAMERA->getRect().top, RecWidth(CAMERA->getRect()), RecHeight(CAMERA->getRect()));
     ZORDER->ZorderUITotalRender(getMemDC());
+}
+
+void KatanaZero::sceneInit()
+{
+    //------------------------------------------------------------------------------------------------
+    _test = dynamic_cast<CollisionTestScene*>(SCENE->addScene("충돌테스트", new CollisionTestScene));
+    _testmap1 = dynamic_cast<textMap*>(SCENE->addScene("테스트맵1", new textMap));
+    _testmap2 = dynamic_cast<textMap2*>(SCENE->addScene("테스트맵2", new textMap2));
+    _testmap3 = dynamic_cast<textMap3*>(SCENE->addScene("테스트맵3", new textMap3));
+    SCENE->changeScene("테스트맵3");
+    //------------------------------------------------------------------------------------------------
 }
 
 void KatanaZero::dropFrame()

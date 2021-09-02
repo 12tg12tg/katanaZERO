@@ -6,6 +6,8 @@
 //----------------------------
 #include "CollisionTestScene.h"
 #include "textMap.h"
+#include "textMap2.h"
+#include "textMap3.h"
 //-----------------------------
 
 
@@ -18,6 +20,8 @@ private:
 	//------------------------
 	CollisionTestScene* _test;
 	textMap* _testmap1;
+	textMap2* _testmap2;
+	textMap3* _testmap3;
 	//-------------------------
 
 
@@ -46,11 +50,14 @@ public:
 	void update();
 	void render();
 
+	void sceneInit();
+
 	void dropFrame();
 	void setIsDebug(bool isDebug)
 	{
 		_isDebug = isDebug;
 		COLLISION->setIsDebug(isDebug);
+		SCENE->curScene()->setIsDebug(isDebug);
 	}
 };
 

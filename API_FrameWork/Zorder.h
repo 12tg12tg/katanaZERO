@@ -6,11 +6,12 @@
 #define ZEFFECT1	2
 #define ZCOL1		3
 #define ZCOL2		4
-#define ZUNIT		5
-#define ZCOL3		6
-#define ZCOL4		7
-#define ZEFFECT2	8
-#define ZABOVEMAP	9
+#define ZSLOWFADE	5
+#define ZUNIT		6
+#define ZCOL3		7
+#define ZCOL4		8
+#define ZEFFECT2	9
+#define ZABOVEMAP	10
 
 #define ZUIFIRST	1
 #define ZUISECOND	2

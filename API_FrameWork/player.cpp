@@ -30,6 +30,10 @@ HRESULT player::init()
 	_specCount = 0.f;
 	_specOn = false;
 	_idleCount = 30.1f;
+	_isLand = true;
+	_colBlack = false;
+
+	_foward = FOWARD::RIGHT;
 
 	stateInit();
 	soundInit();
@@ -45,13 +49,14 @@ void player::release()
 void player::update()
 {
 	_FSM->update();	//이미지프레임 상태패턴 - 이동.
-	_col->setPos({ _x + 62, _y + 64 });
+
+	setCollider();	//콜박스이동.
 
 	//상태테스트
 	if (INPUT->isOnceKeyDown('J')) _FSM->ChangeState(PLAYERSTATE::DOORBREAK);
 	if (INPUT->isOnceKeyDown('K')) _FSM->ChangeState(PLAYERSTATE::DEAD);
 	if (INPUT->isOnceKeyDown('R')) _FSM->ChangeState(PLAYERSTATE::HURTCOVER);
-	if (INPUT->isOnceKeyDown('P')) _FSM->ChangeState(PLAYERSTATE::WALLSLIDE);
+
 
 	//잔상생성
 	makeSpectrum();
@@ -234,4 +239,9 @@ void player::makeSpectrum()
 		}
 	}
 
+}
+
+void player::setCollider()
+{
+	_col->setPos({ _x + 62, _y + 64 });	//콜박스이동.
 }
