@@ -1,5 +1,6 @@
 #pragma once
 #include "gameNode.h"
+#include "fan.h"
 class CollisionTestScene : public gameNode
 {
 private:
@@ -8,6 +9,8 @@ private:
 	Collider* _rotateCol;
 	vector<Collider*> _vCollider;
 	vector<Collider*>::iterator _viCollider;
+
+	fan* _fan;
 public:
 	CollisionTestScene();
 	~CollisionTestScene();

@@ -109,6 +109,12 @@
     <Filter Include="KatanaZero\4bullet">
       <UniqueIdentifier>{1b78c2ba-3c30-4f81-8d08-db37f4b2e3e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\4bullet\fan">
+      <UniqueIdentifier>{381f9235-1ad5-4e19-9364-7765a9ccee6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\Cbullet">
+      <UniqueIdentifier>{eb749145-2d65-41cf-a356-2ad81842634f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -243,6 +249,9 @@
     <ClInclude Include="CollisionTestScene.h">
       <Filter>KatanaZero\3Map\test</Filter>
     </ClInclude>
+    <ClInclude Include="fan.h">
+      <Filter>KatanaZero\4bullet\fan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -349,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="textMap3.cpp">
       <Filter>KatanaZero\3Map\maps\3</Filter>
+    </ClCompile>
+    <ClCompile Include="fan.cpp">
+      <Filter>KatanaZero\4bullet\fan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

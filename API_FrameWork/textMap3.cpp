@@ -1,6 +1,6 @@
 #include "framework.h"
 #include "textMap3.h"
-
+#include "PlayerState.h"
 textMap3::textMap3()
 {
 	_map = IMAGE->addImage("map3", "images/map/third_back.bmp", 1863, 1189);
@@ -31,11 +31,15 @@ HRESULT textMap3::init()
 
 	CAMERA->init(PLAYER->getX(), PLAYER->getY(), _map->getWidth(), _map->getHeight(), 0, 0, WINSIZEX / 2, WINSIZEY / 2,
 		WINSIZEX, WINSIZEY);
+
+	_fan = new fan;
+	_fan->init(1331, 167);
 	return S_OK;
 }
 
 void textMap3::release()
 {
+	SAFE_DELETE(_fan);
 }
 
 void textMap3::update()
@@ -44,7 +48,7 @@ void textMap3::update()
 	_isClear = true;
 	CheckClear();
 	goalCol();
-
+	checkPlayerDie();
 	//--------------------------------------------------
 	PLAYER->update();
 	ANIMATION->update();
@@ -57,14 +61,26 @@ void textMap3::update()
 void textMap3::render()
 {
 	//¸Ê
-	//ZORDER->ZorderRender(_addforslow, ZSLOWFADE, 1, 0, 0);
+	if(MAIN->getIsSlow()) ZORDER->ZorderRender(_addforslow, ZSLOWFADE, 1, 0, 0);
 	ZORDER->ZorderRender(_map, ZFLOORMAP, 0, 0, 0);
 	ZORDER->ZorderRender(_map_front, ZABOVEMAP, 0, 0, 0);
 
 	if (_isDebug) ZORDER->ZorderRender(_colmap, ZCOLMAP, 0, 0, 0);
 
+	//¼­Å§·¹ÀÌÅÍ
+	_fan->render();
+
+
 	//--------------------------------------------------
 	PLAYER->render();
 	COLLISION->render();
 	EFFECT->render();
+}
+
+void textMap3::checkPlayerDie()
+{
+	if (_fan->getCollider()->isColIng() && !_fan->canPass() && PLAYER->getState() != PLAYERSTATE::DEAD) {
+		float deathAngle = _fan->getCollider()->getPos().AngleTo(PLAYER->getCollider()->getPos());
+		PLAYER->getFSM()->SetDeath(deathAngle);
+	}
 }

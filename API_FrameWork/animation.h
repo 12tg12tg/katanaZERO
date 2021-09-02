@@ -47,6 +47,7 @@ public:
 	inline int getFrameWidth()const { return _frameWidth; }
 	inline int getFrameHeight()const { return _frameHeight; }
 
+	int getNowPlayIndex() { return _nowPlayIndex; }
 	int getFrameX() { return _frameList[_playList[_nowPlayIndex]].x / _frameWidth; }
 	int getFrameY() { return _frameList[_playList[_nowPlayIndex]].y / _frameHeight; }
 };

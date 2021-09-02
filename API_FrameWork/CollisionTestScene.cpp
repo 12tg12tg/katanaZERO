@@ -15,6 +15,8 @@ HRESULT CollisionTestScene::init()
 	_angle = 0;
 	_rotateCol = COLLISION->addCollider({WINSIZEX/2, WINSIZEY/2 }, { 100, 50 }, COLLIDER_TYPE::BULLET_ENEMY,
 		ZCOL3, true, _angle);
+	_fan = new fan;
+	_fan->init(WINSIZEX, WINSIZEY);
 	return S_OK;
 }
 
@@ -67,6 +69,7 @@ void CollisionTestScene::release()
 
 void CollisionTestScene::render()
 {
+	_fan->render();
 	PLAYER->render();
 	COLLISION->render();
 	EFFECT->render();

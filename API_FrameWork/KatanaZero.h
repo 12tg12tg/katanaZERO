@@ -51,6 +51,7 @@ public:
 	void render();
 
 	void sceneInit();
+	void collisionInit();
 
 	void dropFrame();
 	void setIsDebug(bool isDebug)

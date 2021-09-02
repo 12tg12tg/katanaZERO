@@ -21,6 +21,8 @@ private:
 	bool			_isIng;			//충돌중
 	bool			_isExit;		//충돌끝
 
+	bool			_canCollision;	//충돌가능상태?
+
 	map<DWORD, Collider*> _others;
 public:
 	Collider();
@@ -38,18 +40,23 @@ public:
 	vector2 getSize() { return _size; }
 	void setSize(const vector2& size) { _size = size; }
 
+	bool getCanCol() { return _canCollision; }
+	void setCanCol(bool cancol) { _canCollision = cancol; }
+
 	DWORD getID() { return _id; }
 	COLLIDER_TYPE getType() { return _type; }
 	RECT getRect() {
 		RECT rc = RectMake(_pos.x - _size.x / 2, _pos.y - _size.y / 2, _size.x, _size.y);
 		return rc;
 	}
+	float getBottom() { return _pos.y + _size.y / 2; }
 
 	bool isColEnter() { return _isEnter;}
 	bool isColIng() { return _isIng;}
 	bool isColExit() { return _isExit;}
 	
 	map<DWORD, Collider*>& getOthers() { return _others; }
+	bool findOthers(DWORD id);
 
 	friend collisionManager;
 };

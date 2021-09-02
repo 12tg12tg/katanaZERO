@@ -69,6 +69,19 @@ void PlayerFSM::SetState(PLAYERSTATE _eType)
 		}
 	}
 }
+void PlayerFSM::SetDeath(float angle)
+{
+	for (UINT i = 0; i < m_vecState.size(); ++i)
+	{
+		if (PLAYERSTATE::DEAD == m_vecState[i]->getThisState())
+		{
+			m_pCurState = m_vecState[i];
+			m_pPreState = m_vecState[i];
+			dynamic_cast<Player_Dead*>(m_pCurState)->init(angle);
+			return;
+		}
+	}
+}
 //====================================================
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
@@ -807,6 +820,12 @@ Player_Dead::~Player_Dead()
 
 void Player_Dead::init()
 {
+}
+
+void Player_Dead::init(float angle)
+{
+	_angle = angle;
+	_speed = 15;
 	PLAYER->setState(PLAYERSTATE::DEAD);
 	//프레임
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
@@ -823,6 +842,18 @@ void Player_Dead::update()
 {
 	//if (!PLAYER->getAni()->isPlay())
 	//	m_pFSM->ChangeState(PLAYERSTATE::IDLE);
+
+	if (_speed != 0) {
+		PLAYER->setX(PLAYER->getX() + cosf(_angle) * _speed);
+		PLAYER->setY(PLAYER->getY() + cosf(_angle) * _speed);
+		_speed -= 0.2;
+	}
+	if (_speed <= 0) {
+		_speed = 0;
+		MAIN->changeMainState(MAINSTATE::ROLLBACK);
+		/*통하지않을거야.. -> 클릭시 되감기 -> 리셋*/
+	}
+	PLAYER->setY(PLAYER->getY() + 10);
 }
 
 void Player_Dead::release()

@@ -1,6 +1,6 @@
 #include "framework.h"
 #include "KatanaZero.h"
-
+#include "PlayerState.h"
 KatanaZero::KatanaZero()
 {
     _cameraBuffer = IMAGE->addImage("cameraBuffer", WINSIZEX*2, WINSIZEY*2);
@@ -20,6 +20,7 @@ HRESULT KatanaZero::init()
     m_ui->init();
 
     sceneInit();
+    collisionInit();
 
     _state = MAINSTATE::INGAME;
     _caretaker = new Caretaker;
@@ -42,9 +43,16 @@ void KatanaZero::release()
 
 void KatanaZero::update()
 {
+    //외부에서 상태를 변경했는가
+    if (MAIN->getChangeState() != MAINSTATE::NONE) {
+        _state = MAIN->getChangeState();
+        MAIN->changeMainState(MAINSTATE::NONE);
+    }
+    //전역에 상태정보 입력
     MAIN->setIsSlow(_isSlow);
     MAIN->setMainState(_state);
 
+    //상태에맞는 update
     switch (_state)
     {
     case MAINSTATE::TITLE:
@@ -86,6 +94,8 @@ void KatanaZero::update()
             _caretaker->setRollbackDone(false);
             _caretaker->allVectorClear();
             _state = MAINSTATE::INGAME;
+            PLAYER->getFSM()->ChangeState(PLAYERSTATE::IDLE);
+            SCENE->curScene()->init();
         }
     }
         break;
@@ -197,8 +207,18 @@ void KatanaZero::sceneInit()
     //------------------------------------------------------------------------------------------------
 }
 
+void KatanaZero::collisionInit()
+{
+    COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::POTAL);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::BULLET_ENEMY);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::ENEMY_UNIT, COLLIDER_TYPE::BULLET_PLAYER);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::BULLET_PLAYER, COLLIDER_TYPE::BULLET_ENEMY);
+}
+
 void KatanaZero::dropFrame()
 {
+    if (PLAYER->getState() == PLAYERSTATE::DEAD) return;
+
     if (INPUT->isStayKeyDown(VK_LSHIFT)) {
         TIME->setGameTimeRate(TIME->getGameTimeRate() - 0.05f);
         if (TIME->getGameTimeRate() < 0.3f) {

@@ -19,6 +19,7 @@ public:
 	void AddState(PlayerState* _pState);
 	void ChangeState(PLAYERSTATE _eType);
 	void SetState(PLAYERSTATE _eType);
+	void SetDeath(float angle);
 	PlayerState* getState() { return m_pCurState; }
 	PlayerState* getPreState() { return m_pPreState; }
 };
@@ -181,12 +182,14 @@ public:
 class Player_Dead : public PlayerState
 {
 private:
-
+	float _angle;
+	float _speed;
 public:
 	Player_Dead();
 	~Player_Dead();
 
 	virtual void init();
+	virtual void init(float angle);
 	virtual void update();
 	virtual void release();
 };

@@ -9,7 +9,6 @@ textMap::textMap()
 	_map_front = _bwmap_front = nullptr;
 	_startPt = Vec2(4.5, 539);
 	_nextScene = "Å×½ºÆ®¸Ê2";
-	COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::POTAL);
 }
 
 textMap::~textMap()

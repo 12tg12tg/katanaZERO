@@ -38,3 +38,10 @@ void Collider::render()
 	else
 		ZORDER->ZorderRectangleColor(getRect(), _z, _color);
 }
+
+bool Collider::findOthers(DWORD id)
+{
+	auto iter = _others.find(id);
+	if (iter == _others.end()) return false;
+	else return true;
+}

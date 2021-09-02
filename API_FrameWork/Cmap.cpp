@@ -181,5 +181,6 @@ void Cmap::goalCol()
 	if(_isClear && _goal->isColEnter()){
 		COLLISION->erase(_goal);
 		SCENE->changeScene(_nextScene);		
+		/*이렇게하면 되겠군... -> 클릭시 리플레이 -> 우클릭시 씬체인지*/
 	}
 }
