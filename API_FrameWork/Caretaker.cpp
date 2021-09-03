@@ -25,7 +25,6 @@ void Caretaker::snapshot()
 	saveCount += 1 * TIME->getGameTimeRate();
 	if (saveCount >= 1) {
 		saveCount = 0;
-		//_vplayerhistory.push_back(PLAYER->save());
 		_vZorderhistory.push_back(ZORDER->save());
 		_vCamerahistory.push_back(CAMERA->save());
 	}
@@ -34,14 +33,13 @@ void Caretaker::snapshot()
 
 void Caretaker::replay()
 {
-	if (!isReplay) {
+	if (!isReplay && !replayDone) {
 		isReplay = true;
-		//_iplayerhistory = _vplayerhistory.begin();
 		_iZorderhistory = _vZorderhistory.begin();
 		_iCamerahistory = _vCamerahistory.begin();
 		saveCount = 0;
 	}
-	else {
+	else if(isReplay && !replayDone) {
 		//if (_iplayerhistory == _vplayerhistory.end()) {
 		//	isReplay = false;
 		//	replayDone = true;
@@ -70,9 +68,9 @@ void Caretaker::rollback()
 {
 	if (!isRollback) {
 		isRollback = true;
-		//i = _vplayerhistory.size()-1;
 		i = _vZorderhistory.size()-1;
 		saveCount = 0;
+		rollbackNum = _vZorderhistory.size() / 200;
 	}
 	else {
 		if (i < 0) {

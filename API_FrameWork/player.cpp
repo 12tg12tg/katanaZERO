@@ -16,7 +16,8 @@ HRESULT player::init()
 	_x = WINSIZEX / 2;
 	_y = WINSIZEY / 2;
 	_img = IMAGE->findImage("player_ALL1");
-	_col = COLLISION->addCollider({ _x + 62, _y + 40 },
+
+	if(!_col) _col = COLLISION->addCollider({ _x + 62, _y + 40 },
 		{ _img->getFrameWidth() * 1 / 5.f, _img->getFrameHeight() * 7 / 10.f },
 		COLLIDER_TYPE::PLAYER_UNIT, ZCOL3);
 	_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 0, 10, 11, false, true);

@@ -96,7 +96,7 @@ public:
 	void FadeInit(int time, FADEKIND fadeKind);	
 	void FadeStart();
 	void FadeUpdate();
-	void FadeRender(HDC hdc);
+	void FadeRender();
 	bool& getFadeIsStart() { return _fadeInfo.isStart; }
 
 	//카메라기능 : 피벗움직이기, 피벗바꾸기, 화면떨림

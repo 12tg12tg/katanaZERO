@@ -22,6 +22,8 @@ HRESULT KatanaZero::init()
     sceneInit();
     collisionInit();
 
+    _replayDone = false;
+
     _state = MAINSTATE::INGAME;
     _caretaker = new Caretaker;
     _caretaker->init();
@@ -65,24 +67,11 @@ void KatanaZero::update()
         m_ui->update();
         SCENE->update();
         _caretaker->snapshot();
-        if (INPUT->isOnceKeyDown('N')) {        /*연출테스트*/
-            _state = MAINSTATE::REPLAY;
-        }
-        if (INPUT->isOnceKeyDown('M')) {
-            _state = MAINSTATE::ROLLBACK;
-        }
     }
         break;
     case MAINSTATE::REPLAY:
     {
-        //m_ui->update();
-        _caretaker->replay();
-        CAMERA->update();
-        if (_caretaker->getReplayDone()) {
-            _caretaker->setReplayDone(false);
-            _caretaker->allVectorClear();
-            _state = MAINSTATE::INGAME;
-        }
+        updateReplay();
     }
         break;
     case MAINSTATE::ROLLBACK:
@@ -140,15 +129,12 @@ void KatanaZero::render()
 		//SetPixel(getMemDC(), WINSIZEX / 2 - 1, 246, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), WINSIZEX / 2, 246, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), WINSIZEX / 2 + 1, 246, RGB(0, 0, 0));
-
 		//SetPixel(getMemDC(), WINSIZEX / 2 - 1, 343, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), WINSIZEX / 2, 343, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), WINSIZEX / 2 + 1, 343, RGB(0, 0, 0));
-
 		//SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), WINSIZEX / 2, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
-
 		//SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 - 1, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50, RGB(0, 0, 0));
 		//SetPixel(getMemDC(), 976, WINSIZEY / 2 + 50 + 1, RGB(0, 0, 0));
@@ -160,6 +146,8 @@ void KatanaZero::render()
         break;
     case MAINSTATE::LOADING:
         break;
+
+
     case MAINSTATE::INGAME:
     {
         m_ui->render();
@@ -167,15 +155,15 @@ void KatanaZero::render()
         if(_isSlow || _slowAlpha > 0) ZORDER->ZorderAlphaRender(IMAGE->findImage("fadeImg"), ZSLOWFADE, 0, CAMERA->getRect().left, CAMERA->getRect().top, _slowAlpha);   //슬로우
     }
         break;
+
+
     case MAINSTATE::REPLAY:
     {
-        //m_ui->render();
-        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
-        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
-        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
-        if(bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
+        showReplay();
     }
         break;
+
+
     case MAINSTATE::ROLLBACK:
     {
         //m_ui->render();
@@ -190,6 +178,8 @@ void KatanaZero::render()
     case MAINSTATE::NONE:
         break;
     }
+
+
     //--------------------------------------------------------------------------
     ZORDER->ZorderTotalRender(_cameraBuffer->getMemDC());
     _cameraBuffer->render(getMemDC(), 0, 0, CAMERA->getRect().left, CAMERA->getRect().top, RecWidth(CAMERA->getRect()), RecHeight(CAMERA->getRect()));
@@ -203,7 +193,7 @@ void KatanaZero::sceneInit()
     _testmap1 = dynamic_cast<textMap*>(SCENE->addScene("테스트맵1", new textMap));
     _testmap2 = dynamic_cast<textMap2*>(SCENE->addScene("테스트맵2", new textMap2));
     _testmap3 = dynamic_cast<textMap3*>(SCENE->addScene("테스트맵3", new textMap3));
-    SCENE->changeScene("테스트맵3");
+    SCENE->changeScene("테스트맵1");
     //------------------------------------------------------------------------------------------------
 }
 
@@ -239,5 +229,68 @@ void KatanaZero::dropFrame()
 		_slowAlpha -= 5;
 		if (_slowAlpha < 0)_slowAlpha = 0;
 
+    }
+}
+
+void KatanaZero::showReplay()
+{
+    //페이드중이라면 기다림.
+    if (CAMERA->getFadeIsStart() && !_replayDone) {
+        m_ui->render();
+        SCENE->render();
+        CAMERA->FadeRender();
+    }
+    else if(!_replayDone) {
+        //m_ui->render();   //재생중. ui
+        //현재맵 흑백으로 깔기.
+        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
+        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
+        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
+        if (bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
+    }
+    else if (_replayDone) {
+        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
+        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
+        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
+        if (bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
+        if (CAMERA->getFadeIsStart()) {
+            CAMERA->FadeRender();
+        }
+    }
+}
+
+void KatanaZero::updateReplay()
+{
+    //페이드중이라면 계속 페이드 업데이트
+    if (CAMERA->getFadeIsStart()) {
+        CAMERA->FadeUpdate();
+    }
+    //리플 끝나거나 클릭시 caretaker변수 초기화, caretaker벡터클리어, INGAME상태로 돌아가기. 플레이어상태 원상복귀. 씬바꾸기.
+    else if(!_replayDone) {
+        //m_ui->update();
+        _caretaker->replay();
+        CAMERA->update();
+        if (_caretaker->getReplayDone() || INPUT->isOnceKeyDown(VK_LBUTTON)) {
+            _caretaker->setIsReplay(false);
+            _caretaker->setReplayDone(false);
+            _caretaker->allVectorClear();
+
+            CAMERA->FadeInit(60, FADEKIND::FADE_OUT);
+            CAMERA->FadeStart();
+            _replayDone = true;
+        }
+    }
+    //리플끝나고 씬전환 전 페이드아웃
+    else if (_replayDone) {
+
+        if (CAMERA->getFadeIsStart()) {
+            CAMERA->FadeUpdate();
+        }
+        else {
+            _replayDone = false;
+            _state = MAINSTATE::INGAME;
+            PLAYER->init();
+            SCENE->changeScene(dynamic_cast<Cmap*>(SCENE->curScene())->getNextSceneName());
+        }
     }
 }

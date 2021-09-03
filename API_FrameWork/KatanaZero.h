@@ -24,7 +24,8 @@ private:
 	textMap3* _testmap3;
 	//-------------------------
 
-
+	//리플레이 bool
+	bool _replayDone;
 
 
 
@@ -46,14 +47,17 @@ public:
 	~KatanaZero();
 
 	HRESULT init();
+	void sceneInit();
+	void collisionInit();
 	void release();
 	void update();
 	void render();
 
-	void sceneInit();
-	void collisionInit();
-
 	void dropFrame();
+
+	void showReplay();
+	void updateReplay();
+
 	void setIsDebug(bool isDebug)
 	{
 		_isDebug = isDebug;

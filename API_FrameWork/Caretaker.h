@@ -16,6 +16,7 @@ private:
 	bool isRollback;
 	bool rollbackDone;
 	int i;
+	int rollbackNum;
 	
 	float saveCount;
 public:

@@ -30,6 +30,7 @@ public:
 	virtual void CheckClear();
 	virtual void goalCol();
 
+	string getNextSceneName() { return _nextScene; }
 	image* getColmap() { return _colmap; }
 	image* getBwmap() { return _bwmap; }
 	image* getMap() { return _map; }

@@ -201,7 +201,7 @@ void camera::FadeUpdate()
 	}
 }
 
-void camera::FadeRender(HDC hdc)
+void camera::FadeRender()
 {
 	if (_fadeInfo.isStart)
 		ZORDER->UIAlphaRender(IMAGE->findImage("fadeImg"), ZUIFADE, 0, 0, 0, _fadeInfo.alpha);

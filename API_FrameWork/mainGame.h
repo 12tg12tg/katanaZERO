@@ -23,7 +23,8 @@ public:
 	virtual void update();
 	virtual void render(/*HDC hdc*/);
 
-
+	void fontInit();
+	void fontRelease();
 
 
 	RECT checkGameSize();

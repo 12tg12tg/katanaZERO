@@ -13,9 +13,11 @@ mainGame::~mainGame()
 HRESULT mainGame::init()
 {
 	gameNode::init(true);	//필요한동적할당
+	fontInit();
 
 	_KZmain = new KatanaZero;
 	_KZmain->init();
+
 
 	return S_OK;
 }
@@ -23,6 +25,7 @@ HRESULT mainGame::init()
 void mainGame::release()
 {
 	gameNode::release();	//해제
+	fontRelease();
 
 
 	SAFE_DELETE(_KZmain);
@@ -68,6 +71,19 @@ void mainGame::render(/*HDC hdc*/)	//그림그리는곳
 	if (_showFPS) TIME->render(_finalBuffer->getMemDC());
 	//hdc로 전송
 	_finalBuffer->render(getHDC());
+}
+
+
+void mainGame::fontInit()
+{
+	AddFontResourceA("DungGeunMo.ttf");
+	//...
+}
+
+void mainGame::fontRelease()
+{
+	RemoveFontResourceA("DungGeunMo.ttf");
+	//...
 }
 
 RECT mainGame::checkGameSize()
