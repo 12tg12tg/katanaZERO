@@ -37,6 +37,8 @@ public:
 	void startEffect(float z, int x, int y, float radian = 0, BYTE alpha = 255);
 	//재생중인 좌표 수정
 	void moveEffect(float x, float y);
+	void offsetEffect(float x, float y);
+
 	//이펙트 멈추기
 	void stopEffect();
 	//이펙트 재생중인지 상태값 가져오기

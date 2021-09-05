@@ -115,6 +115,24 @@
     <Filter Include="KatanaZero\4bullet\Cbullet">
       <UniqueIdentifier>{eb749145-2d65-41cf-a356-2ad81842634f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\4bullet\laser">
+      <UniqueIdentifier>{6bc78eab-c6ea-4096-a29e-beb515c35092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\5enemy">
+      <UniqueIdentifier>{5a62bd78-bd9f-4b19-912e-e92960d9ac72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\5enemy\Cenemy">
+      <UniqueIdentifier>{ec477f5c-4c16-447c-bfb3-73e60af128c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\5enemy\door">
+      <UniqueIdentifier>{9bee6b37-a7ec-43c1-ae82-f947c7c57b3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\playerSlash">
+      <UniqueIdentifier>{297b65af-37bb-4800-a4f6-718cdc8ecb58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\5enemy\NewFilter1">
+      <UniqueIdentifier>{d6454607-9c5f-4a9b-81c3-2689b3e389cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -252,6 +270,21 @@
     <ClInclude Include="fan.h">
       <Filter>KatanaZero\4bullet\fan</Filter>
     </ClInclude>
+    <ClInclude Include="laser.h">
+      <Filter>KatanaZero\4bullet\laser</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>KatanaZero\5enemy\Cenemy</Filter>
+    </ClInclude>
+    <ClInclude Include="door.h">
+      <Filter>KatanaZero\5enemy\door</Filter>
+    </ClInclude>
+    <ClInclude Include="Cbullet.h">
+      <Filter>KatanaZero\4bullet\Cbullet</Filter>
+    </ClInclude>
+    <ClInclude Include="playerSlash.h">
+      <Filter>KatanaZero\4bullet\playerSlash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -361,6 +394,21 @@
     </ClCompile>
     <ClCompile Include="fan.cpp">
       <Filter>KatanaZero\4bullet\fan</Filter>
+    </ClCompile>
+    <ClCompile Include="laser.cpp">
+      <Filter>KatanaZero\4bullet\laser</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>KatanaZero\5enemy\Cenemy</Filter>
+    </ClCompile>
+    <ClCompile Include="door.cpp">
+      <Filter>KatanaZero\5enemy\door</Filter>
+    </ClCompile>
+    <ClCompile Include="Cbullet.cpp">
+      <Filter>KatanaZero\4bullet\Cbullet</Filter>
+    </ClCompile>
+    <ClCompile Include="playerSlash.cpp">
+      <Filter>KatanaZero\4bullet\playerSlash</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,9 @@ camera::camera()
 	_distanceX = 0.f;
 	_distanceY = 0.f;
 	_isShake = false;
+	IMAGE->addImage("fadeImg", WINSIZEX, WINSIZEY);
+	IMAGE->addImage("fadeleftdot", "images/fadeImg/leftdot.bmp", 1933, 768, true);
+	IMAGE->addImage("faderightdot", "images/fadeImg/rightdot.bmp", 1933, 768, true);
 }
 
 camera::~camera()
@@ -174,37 +177,108 @@ void camera::release()
 
 void camera::FadeInit(int time, FADEKIND fadeKind)
 {
-	IMAGE->addImage("fadeImg", WINSIZEX, WINSIZEY);
-	_fadeInfo.minus = 255 / time;
+	switch (fadeKind)
+	{
+	case FADE_IN:
+	case FADE_OUT:
+		_fadeInfo._fadeImg = IMAGE->findImage("fadeImg");
+		_fadeInfo.minus = 255 / time;
+		break;
+	case FADE_LEFT_IN:
+	case FADE_RIGHT_OUT:
+		_fadeInfo._fadeImg = IMAGE->findImage("faderightdot");
+		_fadeInfo.minus = WINSIZEX / time;
+		break;
+	case FADE_LEFT_OUT:
+	case FADE_RIGHT_IN:
+		_fadeInfo._fadeImg = IMAGE->findImage("fadeleftdot");
+		_fadeInfo.minus = WINSIZEX / time;
+		break;
+	}
 	_fadeInfo.fadeKind = fadeKind;
-	_fadeInfo.alpha = (fadeKind == FADE_IN) ? 255 : 0;
 	_fadeInfo.isStart = false;
 }
 
 void camera::FadeStart()
 {
 	_fadeInfo.isStart = true;
-	_fadeInfo.alpha = (_fadeInfo.fadeKind == FADE_IN) ? 255 : 0;
+	switch (_fadeInfo.fadeKind)
+	{
+	case FADE_IN:
+		_fadeInfo.alpha = 255;
+		break;
+	case FADE_OUT:
+		_fadeInfo.alpha = 0;
+		break;
+	case FADE_LEFT_IN:
+		_fadeInfo.x = 0;
+		_fadeInfo.y = 0;
+		break;
+	case FADE_LEFT_OUT:
+		_fadeInfo.x = WINSIZEX;
+		_fadeInfo.y = 0;
+		break;
+	case FADE_RIGHT_IN:
+		_fadeInfo.x = WINSIZEX - _fadeInfo._fadeImg->getWidth();
+		_fadeInfo.y = 0;
+		break;
+	case FADE_RIGHT_OUT:
+		_fadeInfo.x = -_fadeInfo._fadeImg->getWidth();
+		_fadeInfo.y = 0;
+		break;
+	default:
+		break;
+	}
 }
 
 void camera::FadeUpdate()
 {
-	if (_fadeInfo.fadeKind == FADE_IN)
+	switch (_fadeInfo.fadeKind)
 	{
+	case FADE_IN:
 		_fadeInfo.alpha -= _fadeInfo.minus;
 		if (_fadeInfo.alpha <= 0) _fadeInfo.isStart = false;
-	}
-	else
-	{
+		break;
+	case FADE_OUT:
 		_fadeInfo.alpha += _fadeInfo.minus;
 		if (_fadeInfo.alpha >= 255) _fadeInfo.isStart = false;
+		break;
+	case FADE_LEFT_IN:
+		_fadeInfo.x -= _fadeInfo.minus;
+		if(_fadeInfo.x < -(_fadeInfo._fadeImg->getWidth())) _fadeInfo.isStart = false;
+		break;
+	case FADE_LEFT_OUT:
+		_fadeInfo.x -= _fadeInfo.minus;
+		if(_fadeInfo.x < WINSIZEX - _fadeInfo._fadeImg->getWidth()) _fadeInfo.isStart = false;
+		break;
+	case FADE_RIGHT_IN:
+		_fadeInfo.x += _fadeInfo.minus;
+		if(_fadeInfo.x > WINSIZEX) _fadeInfo.isStart = false;
+		break;
+	case FADE_RIGHT_OUT:
+		_fadeInfo.x += _fadeInfo.minus;
+		if (_fadeInfo.x > 0) _fadeInfo.isStart = false;
+		break;
 	}
 }
 
 void camera::FadeRender()
 {
-	if (_fadeInfo.isStart)
-		ZORDER->UIAlphaRender(IMAGE->findImage("fadeImg"), ZUIFADE, 0, 0, 0, _fadeInfo.alpha);
+	if (_fadeInfo.isStart) {
+		switch (_fadeInfo.fadeKind)
+		{
+		case FADE_IN:
+		case FADE_OUT:
+			ZORDER->UIAlphaRender(_fadeInfo._fadeImg, ZUIFADE, 0, 0, 0, _fadeInfo.alpha);
+			break;
+		case FADE_LEFT_IN:
+		case FADE_RIGHT_OUT:
+		case FADE_LEFT_OUT:
+		case FADE_RIGHT_IN:
+			ZORDER->UIRender(_fadeInfo._fadeImg, ZUIFADE, 0, _fadeInfo.x, _fadeInfo.y);
+			break;
+		}
+	}
 }
 
 void camera::movePivot(float x, float y)

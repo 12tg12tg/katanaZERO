@@ -183,6 +183,12 @@ void effect::moveEffect(float x, float y)
 	_y = y - (_effectAni->getFrameHeight() / 2);
 }
 
+void effect::offsetEffect(float x, float y)
+{
+	_x += x;
+	_y += y;
+}
+
 void effect::stopEffect()
 {
 	_isRunning = false;

@@ -8,6 +8,9 @@ private:
 	image* _topUi;
 	image* _cursor;
 	image* _battery;
+	image* _rightClick;
+	int _rightClickCount;
+	animation* _rightClickAni;
 	int _batteryFrameY;
 
 	//3개 네온
@@ -35,6 +38,12 @@ private:
 
 	//중단프로그래스바
 	progressBar* _timerPg;
+
+	//좌측프로그래스바
+	float _slowGauge;
+	float _maxSlow;
+	int _slowDelay;
+	int _delay;
 public:
 	UI();
 	~UI();
@@ -47,7 +56,10 @@ public:
 	void neonInit();
 	void neonUpdate();
 	void neonRender();
+	
+	void slowGauge();
+	void slowReset();
 
-
+	void setMapTimer(float cur, float max){	_timerPg->setGauge(cur, max);}
 };
 

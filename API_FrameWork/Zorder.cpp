@@ -33,6 +33,19 @@ void Zorder::ZorderFrameRender(image* img, float z, float bottom, int destX, int
 	_vZorder.push_back(_zo);
 }
 
+void Zorder::ZorderFrameRender(image* img, float z, float bottom, int destX, int destY, int currentFrameX, int currentFrameY, int sourX, int sourY, int sourWidth, int sourHeight)
+{
+	tagZorder _zo(IMG_FRAME_SOUR, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.frameX = currentFrameX;
+	_zo.frameY = currentFrameY;
+	_zo.sourX = sourX;
+	_zo.sourY = sourY;
+	_zo.sourWidth = sourWidth;
+	_zo.sourHeight = sourHeight;
+	_vZorder.push_back(_zo);
+}
+
 void Zorder::ZorderAlphaRender(image* img, float z, float bottom, int destX, int destY, BYTE alpha)
 {
 	tagZorder _zo(IMG_ALPHA, img, z, destX, destY);
@@ -256,6 +269,19 @@ void Zorder::UIFrameRender(image* img, float z, float bottom, int destX, int des
 	_zo.bottom = bottom;
 	_zo.frameX = frameX;
 	_zo.frameY = frameY;
+	_vUiZorder.push_back(_zo);
+}
+
+void Zorder::UIFrameRender(image* img, float z, float bottom, int destX, int destY, int currentFrameX, int currentFrameY, int sourX, int sourY, int sourWidth, int sourHeight)
+{
+	tagZorder _zo(IMG_FRAME_SOUR, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.frameX = currentFrameX;
+	_zo.frameY = currentFrameY;
+	_zo.sourX = sourX;
+	_zo.sourY = sourY;
+	_zo.sourWidth = sourWidth;
+	_zo.sourHeight = sourHeight;
 	_vUiZorder.push_back(_zo);
 }
 
@@ -499,6 +525,29 @@ void Zorder::SaveFrameRender(image* img, image* bw, float z, float bottom, int d
 	_bwzo.bottom = bottom;
 	_bwzo.frameX = frameX;
 	_bwzo.frameY = frameY;
+	_vBWMoment.push_back(_bwzo);
+}
+
+void Zorder::SaveFrameRender(image* img, image* bwimg, float z, float bottom, int destX, int destY, int currentFrameX, int currentFrameY, int sourX, int sourY, int sourWidth, int sourHeight)
+{
+	tagZorder _zo(IMG_FRAME_SOUR, img, z, destX, destY);
+	_zo.bottom = bottom;
+	_zo.frameX = currentFrameX;
+	_zo.frameY = currentFrameY;
+	_zo.sourX = sourX;
+	_zo.sourY = sourY;
+	_zo.sourWidth = sourWidth;
+	_zo.sourHeight = sourHeight;
+	_vMoment.push_back(_zo);
+
+	tagZorder _bwzo(IMG_FRAME_SOUR, bwimg, z, destX, destY);
+	_bwzo.bottom = bottom;
+	_bwzo.frameX = currentFrameX;
+	_bwzo.frameY = currentFrameY;
+	_bwzo.sourX = sourX;
+	_bwzo.sourY = sourY;
+	_bwzo.sourWidth = sourWidth;
+	_bwzo.sourHeight = sourHeight;
 	_vBWMoment.push_back(_bwzo);
 }
 
@@ -888,6 +937,9 @@ void Zorder::ZorderTotalRender(HDC hdc)
 		case IMG_FRAME:
 			_vZorder[i].img->frameRender(hdc, _vZorder[i].destX, _vZorder[i].destY, _vZorder[i].frameX, _vZorder[i].frameY);
 			break;
+		case IMG_FRAME_SOUR:
+			_vZorder[i].img->frameRender(hdc, _vZorder[i].destX, _vZorder[i].destY, _vZorder[i].frameX, _vZorder[i].frameY, _vZorder[i].sourX, _vZorder[i].sourY, _vZorder[i].sourWidth, _vZorder[i].sourHeight);
+			break;
 		case IMG_ALPHA:
 			_vZorder[i].img->alphaRender(hdc, _vZorder[i].destX, _vZorder[i].destY, _vZorder[i].alpha);
 			break;
@@ -999,6 +1051,8 @@ void Zorder::ZorderUITotalRender(HDC hdc)
 		case IMG_FRAME:
 			_vUiZorder[i].img->frameRender(hdc, _vUiZorder[i].destX, _vUiZorder[i].destY, _vUiZorder[i].frameX, _vUiZorder[i].frameY);
 			break;
+		case IMG_FRAME_SOUR:
+			_vUiZorder[i].img->frameRender(hdc, _vUiZorder[i].destX, _vUiZorder[i].destY, _vUiZorder[i].frameX, _vUiZorder[i].frameY, _vUiZorder[i].sourX, _vUiZorder[i].sourY, _vUiZorder[i].sourWidth, _vUiZorder[i].sourHeight);
 		case IMG_ALPHA:
 			_vUiZorder[i].img->alphaRender(hdc, _vUiZorder[i].destX, _vUiZorder[i].destY, _vUiZorder[i].alpha);
 			break;

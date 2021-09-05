@@ -3,6 +3,7 @@
 
 UI::UI()
 {
+	IMAGE->addImage("배터리파편", "images/particle/mint1px.bmp", 2, 2);
 }
 
 UI::~UI()
@@ -20,32 +21,50 @@ HRESULT UI::init()
 	_timerPg = new progressBar;
 	_timerPg->initOnlyFront("images/ui/timerProgress.bmp", 588, 6, 200, 24);
 
+	_rightClick = IMAGE->addFrameImage("우클릭", "images/ui/right_click.bmp", 412, 77, 2, 1, true);
+	_rightClickAni = ANIMATION->addNoneKeyAnimation("우클릭", 2, false, true);
+
+	_rightClickCount = 0;
+	_maxSlow = 580;
+	_slowDelay = 150;
+	_slowGauge = _maxSlow;
+	_delay = 0;
 	neonInit();
 	return S_OK;
 }
 
 void UI::release()
 {
+	SAFE_DELETE(_timerPg);
 }
 
 void UI::update()
 {
-	_timerPg->setGauge(100, 100);
 	neonUpdate();
+	slowGauge();
 }
 
 void UI::render()
 {
-	//always
-	ZORDER->UIRender(_topUi, ZUITOP, _topUi->getHeight(), 0, 0);
-	ZORDER->UIRender(_cursor, ZUIMOUSE, CAMERA->getRelativeMouse().y,
-		CAMERA->getClientMouse().x - _cursor->getWidth() / 2,
-		CAMERA->getClientMouse().y - _cursor->getHeight() / 2);
-	ZORDER->UIFrameRender(_battery, ZUITOP2, _topUi->getHeight(), 22, 14, 0, _batteryFrameY);
-	_timerPg->render(ZUITOP2);
-
-	//often
-	neonRender();
+	if (MAIN->getMainState() == MAINSTATE::INGAME) {
+		_rightClickCount = 0;
+		//always
+		ZORDER->UIRender(_topUi, ZUITOP, _topUi->getHeight(), 0, 0);
+		ZORDER->UIRender(_cursor, ZUIMOUSE, CAMERA->getRelativeMouse().y,
+			CAMERA->getClientMouse().x - _cursor->getWidth() / 2,
+			CAMERA->getClientMouse().y - _cursor->getHeight() / 2);
+		ZORDER->UIFrameRender(_battery, ZUITOP2, _topUi->getHeight(), 22, 14, 0, _batteryFrameY);
+		_timerPg->render(ZUITOP2);
+		//often
+		neonRender();		
+	}
+	else if (MAIN->getMainState() == MAINSTATE::REPLAY) {
+		_rightClickCount++;
+		if (_rightClickCount > 80) {
+			ZORDER->UIAniRender(_rightClick, ZUITOP, 0, 1022, 587, _rightClickAni);
+			ANIMATION->update();
+		}		
+	}
 }
 
 
@@ -74,8 +93,8 @@ void UI::neonInit()
 void UI::neonUpdate()
 {
 	if (!isNeon_left) {
-		neonNum_left = RND->getInt(7);
-		neonPeriod_left = RND->getInt(1200);
+		neonNum_left = RND->getInt(10);
+		neonPeriod_left = RND->getInt(500);
 		neonCount_left = 0;
 		neonNumCount_left = 0;
 		isNeon_left = true;
@@ -84,8 +103,8 @@ void UI::neonUpdate()
 		neonCount_left++;
 	}
 	if (!isNeon_mid) {
-		neonNum_mid = RND->getInt(7);
-		neonPeriod_mid = RND->getInt(600);
+		neonNum_mid = RND->getInt(10);
+		neonPeriod_mid = RND->getInt(500);
 		neonCount_mid = 0;
 		neonNumCount_mid = 0;
 		isNeon_mid = true;
@@ -94,8 +113,8 @@ void UI::neonUpdate()
 		neonCount_mid++;
 	}
 	if (!isNeon_right) {
-		neonNum_right = RND->getInt(7);
-		neonPeriod_right = RND->getInt(600);
+		neonNum_right = RND->getInt(10);
+		neonPeriod_right = RND->getInt(500);
 		neonCount_right = 0;
 		neonNumCount_right = 0;
 		isNeon_right = true;
@@ -141,5 +160,44 @@ void UI::neonRender()
 		}
 	}
 	
+}
+
+void UI::slowGauge()
+{
+	if (MAIN->getIsSlow()) {
+		--_slowGauge;
+		EFFECT->addParticle("배터리파편", ZUIEFFECT, 14-RND->getInt(10), 25+RND->getInt(30)-15, 3, RND->getFloatFromTo(PI_8 * 5, PI_8*11), 15, 1, false, 255, true);
+		EFFECT->addParticle("배터리파편", ZUIEFFECT, 160+RND->getInt(10), 25+RND->getInt(30)-15, 3, RND->getFloatFromTo(-PI_8 * 3, PI_8*3), 15, 1, false, 255, true);
+		if (_slowGauge < 0) _slowGauge = 0;
+	}
+	else {
+		_slowGauge += 0.5;
+		if (_slowGauge > _maxSlow) _slowGauge = _maxSlow;
+	}
+
+	//없을때가 11, 만땅이 0
+	float ratio = (float)_slowGauge / (float)_maxSlow;
+	_batteryFrameY = 12 * ratio;
+	if (_batteryFrameY == 12) _batteryFrameY = 11;
+	_batteryFrameY = 11 - _batteryFrameY;
+
+	if (_batteryFrameY == 11) {
+		MAIN->setCantSlow(true);
+	}
+	if(MAIN->getCantSlow()){
+		++_delay;
+		if (_delay > _slowDelay) {
+			_delay = 0;
+			MAIN->setCantSlow(false);
+		}
+	}
+
+
+}
+
+void UI::slowReset()
+{
+	_slowGauge = _maxSlow;
+	_delay = 0;
 }
 

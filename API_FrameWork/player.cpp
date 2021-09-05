@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "player.h"
 #include "PlayerState.h"
+#include "playerSlash.h"
 player::player()
 {
 }
@@ -11,56 +12,57 @@ player::~player()
 
 HRESULT player::init()
 {
+	_slash = new playerSlash;
 	imageInit();
-	_z = ZUNIT;
+
+	_z = ZPLAYER;
 	_x = WINSIZEX / 2;
 	_y = WINSIZEY / 2;
 	_img = IMAGE->findImage("player_ALL1");
 
-	if(!_col) _col = COLLISION->addCollider({ _x + 62, _y + 40 },
+	if (!_col) _col = COLLISION->addCollider({ _x + 62, _y + 40 },
 		{ _img->getFrameWidth() * 1 / 5.f, _img->getFrameHeight() * 7 / 10.f },
 		COLLIDER_TYPE::PLAYER_UNIT, ZCOL3);
 	_ani = ANIMATION->addNoneKeyAnimation("player_ALL1", 0, 10, 11, false, true);
-	_alpha = 0;
-	_speed = 0.f;
-	_maxSpeed = 9.f;
-	_frameCount = 0;
-
-	_attDash = false;
-	_viglitch = _vglitch.begin();
-	_specCount = 0.f;
-	_specOn = false;
-	_idleCount = 30.1f;
-	_isLand = true;
-	_colBlack = false;
-
+	
 	_foward = FOWARD::RIGHT;
-
 	stateInit();
 	soundInit();
+
+	reInit();
+
 	return S_OK;
 }
 
 void player::release()
 {
 	_FSM->release();
+	_slash->release();
+	SAFE_DELETE(_slash);
 	SAFE_DELETE(_FSM);
 }
 
 void player::update()
 {
-	_FSM->update();	//이미지프레임 상태패턴 - 이동.
+	if (!_isLaserDie) {
+		_FSM->update();	//이미지프레임 상태패턴 - 이동.
+		_slash->update();
 
-	setCollider();	//콜박스이동.
+		setCollider();	//콜박스이동.
 
+		//잔상생성
+		makeSpectrum();
+	}
+	else {
+		laserDie();	//레이저사망시
+	}
 	//상태테스트
-	if (INPUT->isOnceKeyDown('J')) _FSM->ChangeState(PLAYERSTATE::DOORBREAK);
-	if (INPUT->isOnceKeyDown('K')) _FSM->ChangeState(PLAYERSTATE::DEAD);
-	if (INPUT->isOnceKeyDown('R')) _FSM->ChangeState(PLAYERSTATE::HURTCOVER);
+	//if (INPUT->isOnceKeyDown('J')) _FSM->ChangeState(PLAYERSTATE::DOORBREAK);
+	//if (INPUT->isOnceKeyDown('K')) _FSM->ChangeState(PLAYERSTATE::DEAD);
+	//if (INPUT->isOnceKeyDown('R')) _FSM->ChangeState(PLAYERSTATE::HURTCOVER);
 
 
-	//잔상생성
-	makeSpectrum();
+
 }
 
 void player::render()
@@ -94,35 +96,42 @@ void player::render()
 	//case MAINSTATE::NONE:
 	//	break;
 	//}
-	
-	//애니랜더 - 슬로일때 알파값증가
-	if (MAIN->getIsSlow() && _alpha < 200) _alpha += 5;
-	else if (!MAIN->getIsSlow() && _alpha > 0) _alpha -= 5;
-	//평범과 네온 인쇄
-	ZORDER->ZorderAniRender(_img, _z, _bottom, _x, _y, _ani);
-	if(_alpha > 0) ZORDER->ZorderAniAlphaRender(IMAGE->findImage("player_neon1_ALL1"), _z+1, _bottom, _x, _y, _ani, _alpha);
-	
-	//세이브저장
-	ZORDER->SaveAniRender(_img, IMAGE->findImage("player_bw_ALL1"), _z, _bottom, _x, _y, _ani);
+	if (!_isLaserDie) {
+		//애니랜더 - 슬로일때 알파값증가
+		if (MAIN->getIsSlow() && _alpha < 200) _alpha += 5;
+		else if (!MAIN->getIsSlow() && _alpha > 0) _alpha -= 5;
+		//평범과 네온 인쇄
+		ZORDER->ZorderAniRender(_img, _z, _bottom, _x, _y, _ani);
+		if (_alpha > 0) ZORDER->ZorderAniAlphaRender(IMAGE->findImage("player_neon1_ALL1"), _z + 1, _bottom, _x, _y, _ani, _alpha);
 
-	//잔상
-	for (_ispectrum = _spectrum.begin(); _ispectrum != _spectrum.end(); )
-	{
-		ZORDER->ZorderAlphaFrameRender(*_viglitch, _z - 1, _bottom, _ispectrum->pos.x, _ispectrum->pos.y,
-			_ispectrum->frame.x, _ispectrum->frame.y, _ispectrum->alpha);
-		++_viglitch;
-		if (_viglitch == _vglitch.end()) _viglitch = _vglitch.begin();
+		//세이브저장
+		ZORDER->SaveAniRender(_img, IMAGE->findImage("player_bw_ALL1"), _z, _bottom, _x, _y, _ani);
 
-		if (_ispectrum->alpha <= 100)
-			_ispectrum = _spectrum.erase(_ispectrum);
-		else {
-			_ispectrum->alpha -= 10;
-			++_ispectrum;
+		//잔상
+		for (_ispectrum = _spectrum.begin(); _ispectrum != _spectrum.end(); )
+		{
+			ZORDER->ZorderAlphaFrameRender(*_viglitch, ZGLITCH, _bottom, _ispectrum->pos.x, _ispectrum->pos.y,
+				_ispectrum->frame.x, _ispectrum->frame.y, _ispectrum->alpha);
+			++_viglitch;
+			if (_viglitch == _vglitch.end()) _viglitch = _vglitch.begin();
+
+			if (_ispectrum->alpha <= 80)
+				_ispectrum = _spectrum.erase(_ispectrum);
+			else {
+				_ispectrum->alpha -= 15;
+				++_ispectrum;
+			}
 		}
 	}
-	
-
-
+	else {
+		EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x+RND->getInt(30)-15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
+		EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x+RND->getInt(30)-15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
+		EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x+RND->getInt(30)-15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
+		ZORDER->ZorderFrameRender(IMAGE->findImage("player_laserDie"), _z, _bottom, _x, _y + _laserX, _ani->getFrameX(),
+			_ani->getFrameY(), 0, _laserX, _img->getFrameWidth(), _img->getFrameHeight() - _laserX);
+		ZORDER->SaveFrameRender(_img, IMAGE->findImage("player_bw_ALL1"), _z, _bottom, _x, _y + _laserX, _ani->getFrameX(),
+			_ani->getFrameY(), 0, _laserX, _img->getFrameWidth(), _img->getFrameHeight() - _laserX);
+	}
 
 	/*테스트*/
 	//TCHAR str[128];
@@ -133,17 +142,46 @@ void player::render()
 
 }
 
+void player::reInit()
+{
+	_alpha = 0;
+	_speed = 0.f;
+	_maxSpeed = 9.f;
+	_frameCount = 0;
+
+	_attDash = false;
+	_viglitch = _vglitch.begin();
+	_specCount = 0.f;
+	_specOn = false;
+	_idleCount = 30.1f;
+	_isLand = true;
+	_colBlack = false;
+
+	_isLaserDie = false;
+	_laserCount = 0;
+	_laserX = 0;
+
+	_col->setCanCol(true);
+	_foward = FOWARD::RIGHT;
+}
+
 void player::imageInit()
 {
+	//기본
 	IMAGE->addFrameImage("player_ALL1", "images/player/player_all1.bmp", 744 * 2, 1440 * 2, 12, 30, true);
 	IMAGE->addFrameImage("player_bw_ALL1", "images/player/player_bw_all.bmp", 744 * 2, 1440 * 2, 12, 30, true);
 	IMAGE->addFrameImage("player_neon1_ALL1", "images/player/player_neon1_all.bmp", 744 * 2, 1440 * 2, 12, 30, true);
 	
+	//공격
 	IMAGE->addFrameImage("player_slash_left_bw", "images/effect/slash_left_bw.bmp", 630 * 2, 30 * 2, 6, 1, true);
 	IMAGE->addFrameImage("player_slash_right_bw", "images/effect/slash_right_bw.bmp", 630 * 2, 30 * 2, 6, 1, true);
 	EFFECT->addEffect("player_slash_left", "images/effect/slash_left.bmp", 630 * 2, 30 * 2, 105 * 2, 30 * 2, 20, 0.01666, 3, true, false, true, IMAGE->findImage("player_slash_left_bw"));
 	EFFECT->addEffect("player_slash_right", "images/effect/slash_right.bmp", 630 * 2, 30 * 2, 105 * 2, 30 * 2, 20, 0.01666, 3, true, false, true, IMAGE->findImage("player_slash_right_bw"));
 
+	//레이저사망
+	IMAGE->addFrameImage("player_laserDie", "images/player/player_all1_laserDie.bmp", 744 * 2, 1440 * 2, 12, 30, true);
+	
+	//글리치
 	IMAGE->addFrameImage("player_glitch_pink", "images/player/player_all1_glitch_pink2.bmp", 744 * 2, 1440 * 2, 12, 30, true);
 	IMAGE->addFrameImage("player_glitch_red", "images/player/player_all1_glitch_red2.bmp", 744 * 2, 1440 * 2, 12, 30, true);
 	IMAGE->addFrameImage("player_glitch_green", "images/player/player_all1_glitch_green2.bmp", 744 * 2, 1440 * 2, 12, 30, true);
@@ -155,6 +193,20 @@ void player::imageInit()
 	_vglitch.push_back(IMAGE->findImage("player_neon1_ALL1"));
 	_vglitch.push_back(IMAGE->findImage("player_glitch_blue"));
 	//_vglitch.push_back(IMAGE->findImage("player_neon1_ALL1"));
+
+	//점프이펙
+	IMAGE->addFrameImage("jumpcloud_bw", "images/effect/jumpcloud_bw.bmp", 128 * 2, 51 * 2, 4, 1, true);
+	EFFECT->addEffect("jumpcloud", "images/effect/jumpcloud.bmp", 128 * 2, 51 * 2, 32 * 2, 51 * 2, 15, 0.01666, 1, false, false, true, IMAGE->findImage("jumpcloud_bw"));
+
+	//발먼지
+	IMAGE->addFrameImage("dust_left_bw", "images/effect/dust_left_bw.bmp", 133*2, 19*2, 7, 1, true);
+	IMAGE->addFrameImage("dust_right_bw", "images/effect/dust_right_bw.bmp", 133*2, 19*2, 7, 1, true);
+	EFFECT->addEffect("dust_left", "images/effect/dust_left.bmp", 133*2, 19 *2, 19 *2, 19 *2, 15, 0.01666, 4, false, false, true, IMAGE->findImage("dust_left_bw"));
+	EFFECT->addEffect("dust_right", "images/effect/dust_right.bmp", 133 *2, 19 *2, 19 *2, 19 *2, 15, 0.01666, 4, false, false, true, IMAGE->findImage("dust_left_bw"));
+
+	//착지이펙
+	IMAGE->addFrameImage("landcloud_bw", "images/effect/landcloud_bw.bmp", 350 * 2, 14 * 2, 7, 1, true);
+	EFFECT->addEffect("landcloud", "images/effect/landcloud.bmp", 350 * 2, 14 * 2, 50 * 2, 14 * 2, 15, 0.01666, 1, false, false, true, IMAGE->findImage("landcloud_bw"));
 }
 
 void player::stateInit()
@@ -166,7 +218,7 @@ void player::stateInit()
 	_FSM->AddState(new Player_Crouch);
 	_FSM->AddState(new Player_Jump);
 	_FSM->AddState(new Player_Fall);
-	_FSM->AddState(new Player_Attack);
+	_FSM->AddState(new Player_Attack(_slash));
 	_FSM->AddState(new Player_Doorbreak);
 	_FSM->AddState(new Player_Dead);
 	_FSM->AddState(new Player_HurtCover);
@@ -233,7 +285,7 @@ void player::makeSpectrum()
 			_specOn = false;
 			_specCount = 0;
 			tagGlitch temp;
-			temp.alpha = 180;
+			temp.alpha = 200;
 			temp.frame = vector2(_ani->getFrameX(), _ani->getFrameY());
 			temp.pos = vector2(_x, _y);
 			_spectrum.push_back(temp);
@@ -245,4 +297,16 @@ void player::makeSpectrum()
 void player::setCollider()
 {
 	_col->setPos({ _x + 62, _y + 64 });	//콜박스이동.
+	_rc = _col->getRect();
+}
+
+void player::laserDie()
+{
+	if (!_isLaserDie) return;
+	_ani->stop();
+	_col->setCanCol(false);
+	++_laserX;
+	if (_laserX == _img->getFrameHeight()) {
+		MAIN->changeMainState(MAINSTATE::ROLLBACK);
+	}
 }

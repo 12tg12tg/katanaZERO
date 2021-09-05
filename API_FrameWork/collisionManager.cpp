@@ -73,6 +73,7 @@ void collisionManager::render()
 
 void collisionManager::erase(Collider* collider)
 {
+	if (collider == nullptr) return;
 	auto mIter = m_totalCollider.find((UINT)collider->getType());
 	if (mIter == m_totalCollider.end()) return;
 	list<Collider*>& ltCollider = mIter->second;
@@ -106,6 +107,7 @@ void collisionManager::CollisionCheck(COLLIDER_TYPE left, COLLIDER_TYPE right)
 
 bool collisionManager::isCollision(Collider* pleft, Collider* pright)
 {
+	if (!(pleft->getCanCol() && pright->getCanCol())) return false;
 	if (!pleft->_isRotate && !pright->_isRotate) {
 		float fDist = abs(pleft->getPos().x - pright->getPos().x);
 		float fSize = pleft->getSize().x / 2.f + pright->getSize().x / 2.f;

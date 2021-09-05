@@ -56,13 +56,11 @@ void mainGame::update()
 void mainGame::render(/*HDC hdc*/)	//그림그리는곳
 {
 	PatBlt(_finalBuffer->getMemDC(), 0, 0, _finalBuffer->getWidth(), _finalBuffer->getHeight(), BLACKNESS);
-	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
+	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, BLACKNESS);
 	//========================================================
 						/*렌더링 공간*/
 
 	_KZmain->render();
-
-
 
 
 	//========================================================
@@ -77,12 +75,16 @@ void mainGame::render(/*HDC hdc*/)	//그림그리는곳
 void mainGame::fontInit()
 {
 	AddFontResourceA("DungGeunMo.ttf");
+	AddFontResourceA("소야논8.ttf");
+	//AddFontResourceA("neodgm.ttf");
 	//...
 }
 
 void mainGame::fontRelease()
 {
 	RemoveFontResourceA("DungGeunMo.ttf");
+	RemoveFontResourceA("소야논8.ttf");
+	//RemoveFontResourceA("neodgm.ttf");
 	//...
 }
 

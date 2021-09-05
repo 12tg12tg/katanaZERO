@@ -496,30 +496,7 @@ void image::render(HDC hdc, const int destX, const int destY)
 			_imageInfo->hMemDC, 0, 0, SRCCOPY);
 	}
 }
-//void image::★★★(HDC hdc, const int destX, const int destY, int plusSize)
-//{
-//	if (_isTrans)
-//	{
-//		//Gdi가 비트맵파일을 불러올때 특정 색상을 제외하고 복사해주는 함수.
-//		GdiTransparentBlt(
-//			hdc,						//복사될 장소의 DC
-//			destX,							//복사될 좌표의 시작점x
-//			destY,							//복사될 좌표의 시작점y
-//			_imageInfo->width + plusSize,			//복사될 이미지의 가로크기
-//			_imageInfo->height + plusSize,			//복사될 이미지의 세로크기
-//			_imageInfo->hMemDC,			//복사될 대상 DC
-//			0,							//복사 시작 지점의 x
-//			0,							//복사 시작 지점의 y
-//			_imageInfo->width,			//복사영역 가로 크기
-//			_imageInfo->height,			//복사영역 세로 크기
-//			_transColor);
-//	}
-//	else {
-//		//BitBlt : DC영역끼리 고속 복사.
-//		BitBlt(hdc, destX, destY, _imageInfo->width + plusSize, _imageInfo->height + plusSize,
-//			_imageInfo->hMemDC, 0, 0, SRCCOPY);
-//	}
-//}
+
 void image::render(HDC hdc, const int destX, const int destY, const int sourX, const int sourY, const int sourWidth, const int sourheight)
 {
 	if (_isTrans)
@@ -599,36 +576,8 @@ void image::frameRender(HDC hdc, const int destX, const int destY)
 	}
 }
 
-//void image::☆☆☆(HDC hdc, const int destX, const int destY, int plusSize)
-//{
-//	if (_isTrans)
-//	{
-//		//Gdi가 비트맵파일을 불러올때 특정 색상을 제외하고 복사해주는 함수.
-//		GdiTransparentBlt(
-//			hdc,												//복사될 장소의 DC
-//			destX,												//복사될 좌표의 시작점x
-//			destY,												//복사될 좌표의 시작점y
-//			_imageInfo->frameWidth + plusSize,					//복사될 이미지의 가로크기
-//			_imageInfo->frameHeight + plusSize,					//복사될 이미지의 세로크기
-//			_imageInfo->hMemDC,									//복사될 대상 DC
-//			_imageInfo->currentFrameX * _imageInfo->frameWidth,	//복사 시작 지점의 x
-//			_imageInfo->currentFrameY * _imageInfo->frameHeight,//복사 시작 지점의 y
-//			_imageInfo->frameWidth,								//복사영역 가로 크기
-//			_imageInfo->frameHeight,							//복사영역 세로 크기
-//			_transColor);
-//	}
-//	else {
-//		//BitBlt : DC영역끼리 고속 복사.
-//		BitBlt(hdc, destX, destY, _imageInfo->frameWidth+ plusSize, _imageInfo->frameHeight+ plusSize,
-//			_imageInfo->hMemDC,
-//			_imageInfo->currentFrameX * _imageInfo->frameWidth,
-//			_imageInfo->currentFrameY * _imageInfo->frameHeight, SRCCOPY);
-//	}
-//}
-
 void image::frameRender(HDC hdc, const int destX, const int destY, const int currentFrameX, const int currentFrameY)
 {
-
 	_imageInfo->currentFrameX = currentFrameX;
 	_imageInfo->currentFrameY = currentFrameY;
 
@@ -654,6 +603,41 @@ void image::frameRender(HDC hdc, const int destX, const int destY, const int cur
 			_imageInfo->hMemDC,
 			_imageInfo->currentFrameX * _imageInfo->frameWidth,
 			_imageInfo->currentFrameY * _imageInfo->frameHeight, SRCCOPY);
+	}
+}
+
+void image::frameRender(HDC hdc, const int destX, const int destY, const int currentFrameX, const int currentFrameY, const int sourX, const int sourY, const int sourWidth, const int sourHeight)
+{
+	assert(_imageInfo->frameWidth >= sourX + sourWidth);	//다음프레임 침범이 아니라면 여기를 통과
+	assert(_imageInfo->frameHeight >= sourY + sourHeight);
+	assert((_imageInfo->currentFrameX + 1) * _imageInfo->frameWidth >= _imageInfo->currentFrameX * _imageInfo->frameWidth + sourX + sourWidth);
+	assert((_imageInfo->currentFrameY + 1) * _imageInfo->frameHeight >= _imageInfo->currentFrameY * _imageInfo->frameHeight + sourY + sourHeight);
+
+	_imageInfo->currentFrameX = currentFrameX;
+	_imageInfo->currentFrameY = currentFrameY;
+
+	if (_isTrans)
+	{
+		//Gdi가 비트맵파일을 불러올때 특정 색상을 제외하고 복사해주는 함수.
+		GdiTransparentBlt(
+			hdc,						//복사될 장소의 DC
+			destX,							//복사될 좌표의 시작점x
+			destY,							//복사될 좌표의 시작점y
+			sourWidth,			//복사될 이미지의 가로크기
+			sourHeight,			//복사될 이미지의 세로크기
+			_imageInfo->hMemDC,			//복사될 대상 DC
+			_imageInfo->currentFrameX * _imageInfo->frameWidth + sourX,	//복사 시작 지점의 x
+			_imageInfo->currentFrameY * _imageInfo->frameHeight + sourY,//복사 시작 지점의 y
+			sourWidth,			//복사영역 가로 크기
+			sourHeight,			//복사영역 세로 크기
+			_transColor);
+	}
+	else {
+		//BitBlt : DC영역끼리 고속 복사.
+		BitBlt(hdc, destX, destY, sourWidth, sourHeight,
+			_imageInfo->hMemDC,
+			_imageInfo->currentFrameX * _imageInfo->frameWidth + sourX,
+			_imageInfo->currentFrameY * _imageInfo->frameHeight + sourY, SRCCOPY);
 	}
 }
 

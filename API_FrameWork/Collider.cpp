@@ -10,6 +10,7 @@ Collider::Collider()
 	, _isExit(false)
 	, _isRotate(false)
 	, _rotate(0)
+	, _canCollision(true)
 {
 }
 

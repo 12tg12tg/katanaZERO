@@ -103,6 +103,7 @@ public:
 	void frameRender(HDC hdc);
 	void frameRender(HDC hdc, const int destX, const int destY);
 	void frameRender(HDC hdc, const int destX, const int destY, const int currentFrameX, const int currentFrameY);
+	void frameRender(HDC hdc, const int destX, const int destY, const int currentFrameX, const int currentFrameY, const int sourX, const int sourY, const int sourWidth, const int sourHeight);
 
 	//∑Á«¡ ∑ª¥ı
 	void loopRender(HDC hdc, const LPRECT drawArea, int offsetX, int offsetY);

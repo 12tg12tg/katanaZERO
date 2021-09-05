@@ -6,31 +6,35 @@
 #define ZEFFECT1	2
 #define ZCOL1		3
 #define ZCOL2		4
-#define ZSLOWFADE	5
-#define ZUNIT		6
-#define ZCOL3		7
-#define ZCOL4		8
-#define ZEFFECT2	9
-#define ZABOVEMAP	10
+#define ZUNITBACK	5
+#define ZSLOWFADE	6
+#define ZUNIT		7
+#define ZGLITCH		8
+#define ZPLAYER		9
+#define ZCOL3		10
+#define ZCOL4		11
+#define ZEFFECT2	12
+#define ZABOVEMAP	13
 
 #define ZUIFIRST	1
 #define ZUISECOND	2
 #define ZUITHIRD	3
 #define ZUIFIRTH	4
-#define ZUIFADE		5
-#define ZUIMOUSE	6
-#define ZUITOP		7
-#define ZUITOP2		8
+#define ZUIMOUSE	5
+#define ZUITOP		6
+#define ZUITOP2		7
+#define ZUIEFFECT	8
+#define ZUIFADE		9
 
 //최대레이어
-#define ZMAXLAYER	10
+#define ZMAXLAYER	13
 
 //색상정의
 #define MINT		RGB(88, 245, 206)
 
 enum ZORDERKIND
 {
-	IMG_NOMAL, IMG_NOMAL_SOUR, IMG_FRAME, IMG_ALPHA, IMG_ALPHA_SOUR, IMG_ALPHA_FRAME,
+	IMG_NOMAL, IMG_NOMAL_SOUR, IMG_FRAME, IMG_FRAME_SOUR, IMG_ALPHA, IMG_ALPHA_SOUR, IMG_ALPHA_FRAME,
 	IMG_ROTATE, IMG_ROTATE_FRAME, IMG_ROTATE_ALPHA, IMG_ROTATE_ALPHAFRAME,
 	IMG_STRETCH, IMG_STRETCH_FRAME, IMG_ROTATESTRETCH, IMG_ROTATESTRETCHFRAME,
 	IMG_ANI, IMG_ANIALPHA, OBJ_RECT, OBJ_COLORRECT, OBJ_RECTROTATE,
@@ -115,6 +119,7 @@ public:
 	void ZorderRender(image* img, float z, float bottom, int destX, int destY);
 	void ZorderRender(image* img, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight);
 	void ZorderFrameRender(image* img, float z, float bottom, int destX, int destY, int frameX = 0, int frameY = 0);
+	void ZorderFrameRender(image* img, float z, float bottom, int destX, int destY, int currentFrameX, int currentFrameY, int sourX, int sourY, int sourWidth, int sourHeight);
 	void ZorderAlphaRender(image* img, float z, float bottom, int destX, int destY, BYTE alpha);
 	void ZorderAlphaRender(image* img, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, BYTE alpha);
 	void ZorderAlphaFrameRender(image* img, float z, float bottom, int destX, int destY, int frameX, int frameY, BYTE alpha);
@@ -143,6 +148,7 @@ public:
 	void UIRender(image* img, float z, float bottom, int destX, int destY);
 	void UIRender(image* img, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight);
 	void UIFrameRender(image* img, float z, float bottom, int destX, int destY, int frameX = 0, int frameY = 0);
+	void UIFrameRender(image* img, float z, float bottom, int destX, int destY, int currentFrameX, int currentFrameY, int sourX, int sourY, int sourWidth, int sourHeight);
 	void UIAlphaRender(image* img, float z, float bottom, int destX, int destY, BYTE alpha);
 	void UIAlphaRender(image* img, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, BYTE alpha);
 	void UIAlphaFrameRender(image* img, float z, float bottom, int destX, int destY, int frameX, int frameY, BYTE alpha);
@@ -168,6 +174,7 @@ public:
 	void SaveRender(image* img, image* bw, float z, float bottom, int destX, int destY);
 	void SaveRender(image* img, image* bw, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight);
 	void SaveFrameRender(image* img, image* bw, float z, float bottom, int destX, int destY, int frameX = 0, int frameY = 0);
+	void SaveFrameRender(image* img, image* bwimg, float z, float bottom, int destX, int destY, int currentFrameX, int currentFrameY, int sourX, int sourY, int sourWidth, int sourHeight);
 	void SaveAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, BYTE alpha);
 	void SaveAlphaRender(image* img, image* bw, float z, float bottom, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, BYTE alpha);
 	void SaveAlphaFrameRender(image* img, image* bw, float z, float bottom, int destX, int destY, int frameX, int frameY, BYTE alpha);

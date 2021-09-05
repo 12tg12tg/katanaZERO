@@ -31,6 +31,15 @@ enum class PLAYERSTATE	//카타나제로
 	DEAD
 };
 
+enum class ENEMYSTATE
+{
+	IDLE,
+	FIND,
+	MOVE,
+	ATTACK,
+	DEAD
+};
+
 enum class COLLIDER_TYPE
 {
 	PLAYER_UNIT,
@@ -38,6 +47,8 @@ enum class COLLIDER_TYPE
 	ENEMY_UNIT,
 	BULLET_ENEMY,
 	POTAL,
+	LASER,
+	DOOR,
 
 	END = 32,
 };

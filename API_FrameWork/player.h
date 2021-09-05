@@ -2,6 +2,7 @@
 #include "singleton.h"
 #define PLAYERSIZEUP 2
 class PlayerFSM;
+class playerSlash;
 class player : public Singleton<player>
 {
 private:
@@ -48,6 +49,15 @@ private:
 	bool _colYello;
 	bool _ignoreBlack;
 
+	//공격
+	playerSlash* _slash;
+
+	//레이저사망
+	bool _isLaserDie;
+	int _laserCount;
+	int _laserX;
+
+	//잔상
 	bool _specOn;
 	float _specCount;
 	float _idleCount;
@@ -63,6 +73,7 @@ public:
 	void release();
 	void update();
 	void render();
+	void reInit();
 
 	//초기화
 	void imageInit();
@@ -74,6 +85,10 @@ public:
 
 	//콜라이더세팅
 	void setCollider();
+
+	//Laser 피격시
+	void laserDie();
+
 
 	//getter & setter
 	float getX() { return _x; }
@@ -101,6 +116,8 @@ public:
 	bool getIgnoreBlack() { return _ignoreBlack; }
 	void setIgnoreBlack(bool igblack) { _ignoreBlack = igblack; }
 	PlayerFSM* getFSM() { return _FSM; }
+	bool getLaserDie() {return _isLaserDie;	}
+	void setLaserDie(bool ld) { _isLaserDie = ld; }
 public:
 	////메멘토패턴 저장,복구
 	//Memento save()const { return Memento(_img, _z, _col->getRect().bottom, _x, _y, _ani->getFrameX(), _ani->getFrameY()); }

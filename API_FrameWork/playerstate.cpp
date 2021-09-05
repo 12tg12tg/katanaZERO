@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "PlayerState.h"
 #include "effect.h"
+#include "playerSlash.h"
 //====================================================
 void PlayerState::jump()
 {
@@ -16,7 +17,7 @@ void PlayerState::attack()
 	}
 }
 //====================================================
-PlayerFSM::PlayerFSM(){}
+PlayerFSM::PlayerFSM() {}
 
 PlayerFSM::~PlayerFSM(){}
 
@@ -256,6 +257,7 @@ void Player_Run::init()
 		break;
 	}
 	_sountCount = 0;
+	_effectCount = 0;
 }
 
 void Player_Run::update()
@@ -267,11 +269,49 @@ void Player_Run::update()
 		else if (PLAYER->getFoward() == FOWARD::LEFT)
 			ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 130, 121, 14, false, true);
 	}
+	//발먼지
+	++_effectCount;
+	if (_effectCount%2==0 && _effectCount < 9) {
+		float x;
+		float bottom = PLAYER->getCollider()->getRect().bottom - 10;
+		if (PLAYER->getFoward() == FOWARD::RIGHT) {
+			x = PLAYER->getCollider()->getRect().left - 15;
+			effect* temp = EFFECT->play("dust_right", ZEFFECT1, x + RND->getInt(20)-10,
+				bottom + RND->getInt(30) - 15);
+			_rdust.push_back(temp);
+		}
+		else if (PLAYER->getFoward() == FOWARD::LEFT) {
+			x = PLAYER->getCollider()->getRect().right + 15;
+			effect* temp = EFFECT->play("dust_left", ZEFFECT1, x + RND->getInt(20) - 10,
+				bottom + RND->getInt(30) - 15);
+			_ldust.push_back(temp);
+		}
+	}
+	for (_idust = _rdust.begin(); _idust != _rdust.end(); ){
+		if (!(*_idust)->getIsRunning()) {
+			_idust = _rdust.erase(_idust);
+			continue;
+		}
+		else {
+			(*_idust)->offsetEffect(-2, 0);
+			++_idust;
+		}
+	}
+	for (_idust = _ldust.begin(); _idust != _ldust.end(); ) {
+		if (!(*_idust)->getIsRunning()) {
+			_idust = _ldust.erase(_idust);
+			continue;
+		}
+		else {
+			(*_idust)->offsetEffect(2, 0);
+			++_idust;
+		}
+	}
+
 	//이동
 	float speed, maxspeed;
 	speed = PLAYER->getSpeed();
 	maxspeed = PLAYER->getMaxSpeed();
-
 	if (PLAYER->getFoward() == FOWARD::RIGHT)
 		PLAYER->setX(PLAYER->getX() + PLAYER->getSpeed() * TIME->getGameTimeRate());
 	else if (PLAYER->getFoward() == FOWARD::LEFT)
@@ -487,6 +527,9 @@ void Player_Jump::init()
 	}
 	//사운드
 	SOUND->play("jump", 0.1f);
+	//이펙트
+	EFFECT->play("jumpcloud", ZEFFECT1, PLAYER->getCollider()->getPos().x,
+		PLAYER->getCollider()->getBottom() - 52);
 }
 
 
@@ -651,7 +694,9 @@ void Player_Fall::update()
 
 	//종료조건 - 벽잡기
 	if (PLAYER->getColYello() && 
-		(INPUT->isStayKeyDown('D') || INPUT->isStayKeyDown('A') || m_pFSM->getPreState()->getThisState()==PLAYERSTATE::FLIP)) {
+		((PLAYER->getFoward()==FOWARD::RIGHT && INPUT->isStayKeyDown('D')) ||
+			(PLAYER->getFoward() == FOWARD::LEFT && INPUT->isStayKeyDown('A')) ||
+			m_pFSM->getPreState()->getThisState()==PLAYERSTATE::FLIP)) {
 		PLAYER->setAttDash(false);
 		m_pFSM->ChangeState(PLAYERSTATE::WALLSLIDE);
 	}
@@ -664,6 +709,9 @@ void Player_Fall::update()
 		m_pFSM->ChangeState(PLAYERSTATE::IDLE);
 		//사운드
 		SOUND->play("land", 0.1f);
+		//이펙트
+		EFFECT->play("landcloud", ZEFFECT1, PLAYER->getCollider()->getPos().x,
+			PLAYER->getCollider()->getBottom() - 16);
 	}
 	//공격
 	this->attack();
@@ -675,7 +723,7 @@ void Player_Fall::release()
 
 //====================================================
 
-Player_Attack::Player_Attack()
+Player_Attack::Player_Attack(playerSlash* sl) : _slash(sl)
 {
 	m_eState = PLAYERSTATE::ATTACK;
 }
@@ -715,6 +763,10 @@ void Player_Attack::init()
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 204, 210, 24, false, false);
 		break;
 	}
+	//공격 - 콜라이더추가
+	_attackCenterX = PLAYER->getCollider()->getPos().x + 52 * cosf(_attAngle);
+	_attackCenterY = PLAYER->getCollider()->getPos().y - 52 * sinf(_attAngle);
+	_slash->fire(_attackCenterX, _attackCenterY, _attAngle);
 	//사운드
 	switch (RND->getInt(3))
 	{
@@ -820,40 +872,60 @@ Player_Dead::~Player_Dead()
 
 void Player_Dead::init()
 {
+	_timeOver = true;
+	PLAYER->setState(PLAYERSTATE::DEAD);
+	//프레임
+	if (PLAYER->getFoward() == FOWARD::RIGHT) {
+		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 228, 236, 5, false, false);
+	}
+	else if (PLAYER->getFoward() == FOWARD::LEFT) {
+		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 323, 315, 5, false, false);
+	}
+	CAMERA->setShake(5, 3, 1);
 }
 
 void Player_Dead::init(float angle)
 {
+	_timeOver = false;
 	_angle = angle;
-	_speed = 15;
+	_speed = 20;
 	PLAYER->setState(PLAYERSTATE::DEAD);
 	//프레임
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
-		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 228, 236, 8, false, false);
+		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 228, 236, 5, false, false);
 	}
 	else if (PLAYER->getFoward() == FOWARD::LEFT) {
-		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 323, 315, 8, false, false);
+		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 323, 315, 5, false, false);
 	}
 	//사운드
 	SOUND->play("dead", 0.1f);
+	//쉐이크
+	CAMERA->setShake(10, 5, 1);
 }
 
 void Player_Dead::update()
 {
 	//if (!PLAYER->getAni()->isPlay())
 	//	m_pFSM->ChangeState(PLAYERSTATE::IDLE);
-
-	if (_speed != 0) {
-		PLAYER->setX(PLAYER->getX() + cosf(_angle) * _speed);
-		PLAYER->setY(PLAYER->getY() + cosf(_angle) * _speed);
-		_speed -= 0.2;
+	if (!_timeOver) {
+		if (_speed != 0) {
+			PLAYER->setX(PLAYER->getX() + cosf(_angle) * _speed);
+			PLAYER->setY(PLAYER->getY() + cosf(_angle) * _speed);
+			_speed -= 0.15;
+		}
+		if (_speed <= 0) {
+			_speed = 0;
+			MAIN->changeMainState(MAINSTATE::ROLLBACK);
+			/*통하지않을거야.. -> 클릭시 되감기 -> 리셋*/
+		}
+		PLAYER->setY(PLAYER->getY() + 10);
 	}
-	if (_speed <= 0) {
-		_speed = 0;
-		MAIN->changeMainState(MAINSTATE::ROLLBACK);
-		/*통하지않을거야.. -> 클릭시 되감기 -> 리셋*/
+	else {
+		PLAYER->setY(PLAYER->getY() + 10);
+		if (!PLAYER->getAni()->isPlay()) {
+			MAIN->changeMainState(MAINSTATE::ROLLBACK);
+		}
 	}
-	PLAYER->setY(PLAYER->getY() + 10);
 }
 
 void Player_Dead::release()

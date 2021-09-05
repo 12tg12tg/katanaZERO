@@ -72,6 +72,8 @@ void effectManager::update()
         _vParticle[i].x += cosf(_vParticle[i].angle) * _vParticle[i].speed;
         _vParticle[i].y -= sinf(_vParticle[i].angle) * _vParticle[i].speed;
         _vParticle[i].count--;
+        //중력적용.
+        _vParticle[i].y += _vParticle[i].gravity;
         //일정주기마다 알파값, 앵글 변경
         if (_vParticle[i].count % 5 == 0) {
             _vParticle[i].angle = _vParticle[i].angle + RADIAN(RND->getInt(10) - 5);
@@ -108,12 +110,22 @@ void effectManager::render()
     //파티클 랜더
     for (int i = 0; i < _vParticle.size(); i++)
     {
-        if (_vParticle[i].isAlpha)
-            ZORDER->ZorderAlphaRender(IMAGE->findImage(_vParticle[i].imgKey), _vParticle[i].z,
-                _vParticle[i].y, _vParticle[i].x, _vParticle[i].y, _vParticle[i].alpha);
-        else
-            ZORDER->ZorderRender(IMAGE->findImage(_vParticle[i].imgKey), _vParticle[i].z, _vParticle[i].y,
-                _vParticle[i].x, _vParticle[i].y);
+        if (!_vParticle[i].isUI) {
+            if (_vParticle[i].isAlpha)
+                ZORDER->ZorderAlphaRender(IMAGE->findImage(_vParticle[i].imgKey), _vParticle[i].z,
+                    _vParticle[i].y, _vParticle[i].x, _vParticle[i].y, _vParticle[i].alpha);
+            else
+                ZORDER->ZorderRender(IMAGE->findImage(_vParticle[i].imgKey), _vParticle[i].z, _vParticle[i].y,
+                    _vParticle[i].x, _vParticle[i].y);
+        }
+        else {
+            if (_vParticle[i].isAlpha)
+                ZORDER->UIAlphaRender(IMAGE->findImage(_vParticle[i].imgKey), _vParticle[i].z,
+                    _vParticle[i].y, _vParticle[i].x, _vParticle[i].y, _vParticle[i].alpha);
+            else
+                ZORDER->UIRender(IMAGE->findImage(_vParticle[i].imgKey), _vParticle[i].z, _vParticle[i].y,
+                    _vParticle[i].x, _vParticle[i].y);
+        }
     }
 
 }
@@ -181,7 +193,7 @@ effect* effectManager::play(string effectKey, float z, int x, int y, float radia
     }
 }
 
-HRESULT effectManager::addParticle(string key, float z, float x, float y, float angle, int count, bool isAlpha, BYTE alpha)
+HRESULT effectManager::addParticle(string key, float z, float x, float y, float power, float angle, int count, float gravity, bool isAlpha, BYTE alpha, bool isUI)
 {
     tagParticle ptcle;
     ptcle.imgKey = key;
@@ -194,8 +206,10 @@ HRESULT effectManager::addParticle(string key, float z, float x, float y, float 
     ptcle.isAlpha = isAlpha;
     ptcle.alpha = alpha;
     ptcle.count = RND->getFromTo(count - 20, count + 20);
-    ptcle.speed = 0.2+RND->getInt(100) / 100.0f;
+    ptcle.speed = power;//0.2+RND->getInt(100) / 100.0f;
     ptcle.isPlay = false;
+    ptcle.gravity = gravity;
+    ptcle.isUI = isUI;
     _vParticle.push_back(ptcle);
     return S_OK;
 }

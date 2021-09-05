@@ -17,15 +17,19 @@ struct tagShakeTime
 
 enum FADEKIND
 {
-	FADE_IN, FADE_OUT
+	FADE_IN, FADE_OUT,
+	FADE_LEFT_IN, FADE_LEFT_OUT,
+	FADE_RIGHT_IN, FADE_RIGHT_OUT,
 };
 
 struct tagFadeInfo	
 {
+	image* _fadeImg;
 	FADEKIND fadeKind;
 	bool isStart;
 	int minus;
 	int alpha;
+	int x, y;
 };
 
 class camera : public Singleton<camera>

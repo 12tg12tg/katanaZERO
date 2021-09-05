@@ -24,7 +24,7 @@ void SceneManager::release()
         //삭제
         if (iter->second.gn != NULL)
         {
-            iter->second.gn->release();
+            //iter->second.gn->release();
             SAFE_DELETE(iter->second.gn);
             iter = _sceneList.erase(iter);
         }
@@ -44,7 +44,7 @@ void SceneManager::releaseLight()
         //날려도 되는 노드만 삭제
         if (iter->second.islight && iter->second.gn != NULL)
         {
-            iter->second.gn->release();
+            //iter->second.gn->release();
             SAFE_DELETE(iter->second.gn);
             iter = _sceneList.erase(iter);
         }
@@ -105,7 +105,7 @@ HRESULT SceneManager::changeScene(string sceneName)
     if (SUCCEEDED(find->second.gn->init()))
     {
         //혹시 기존에 씬이 있다면 릴리즈
-        //if (_currentScene) _currentScene->release();          //씬이동할대 릴리즈하지않는다.
+        if (_currentScene) _currentScene->release();
         
         _currentScene = find->second.gn;
         return S_OK;

@@ -14,6 +14,8 @@ struct tagParticle
 	int count;
 	float speed;
 	bool isPlay;
+	float gravity;
+	bool isUI;
 };
 
 
@@ -50,6 +52,7 @@ public:
 	void addEffect(string effectKey, char* imageName, int imageW, int imageH, int frameW, int frameH, int fps, float elapsedTime, int buffer, bool isRotate = false , bool isAlpha = false, bool isSave = false, image* bwImage = nullptr);
 	effect* play(string effectKey, float z, int x, int y, float radian = 0, BYTE alpha = 255);
 
-	HRESULT addParticle(string key, float z, float x, float y, float angle, int count = 20, bool isAlpha = false, BYTE alpha = 0);
+	HRESULT addParticle(string key, float z, float x, float y, float power, float angle, int count, float gravity, bool isAlpha = false, BYTE alpha = 0, bool isUI = false);
+	void deleteParticle() { _vParticle.clear(); }
 };
 

@@ -2,12 +2,14 @@
 #include "player.h"
 //====================================================
 class PlayerState;
+class playerSlash;
 class PlayerFSM
 {
 private:
 	vector<PlayerState*> m_vecState;
 	PlayerState* m_pCurState;
 	PlayerState* m_pPreState;
+
 public:
 	PlayerFSM();
 	~PlayerFSM();
@@ -74,6 +76,10 @@ class Player_Run : public PlayerState
 private:
 	float _accel;
 	float _sountCount;
+	int _effectCount;
+	list<effect*> _ldust;
+	list<effect*> _rdust;
+	list<effect*>::iterator _idust;
 public:
 	Player_Run();
 	~Player_Run();
@@ -157,8 +163,11 @@ private:
 	bool _effectOn;
 	float _effectCount;
 	effect* _slashEff;
+	playerSlash* _slash;
+	float _attackCenterX;
+	float _attackCenterY;
 public:
-	Player_Attack();
+	Player_Attack(playerSlash* sl);
 	~Player_Attack();
 
 	virtual void init();
@@ -184,6 +193,8 @@ class Player_Dead : public PlayerState
 private:
 	float _angle;
 	float _speed;
+	
+	bool _timeOver;
 public:
 	Player_Dead();
 	~Player_Dead();
@@ -192,6 +203,7 @@ public:
 	virtual void init(float angle);
 	virtual void update();
 	virtual void release();
+	bool getTimeover() { return _timeOver; }
 };
 //====================================================
 class Player_HurtCover : public PlayerState

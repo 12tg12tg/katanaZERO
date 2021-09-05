@@ -25,7 +25,11 @@ private:
 	//-------------------------
 
 	//리플레이 bool
+	bool _firstFadeOut;
+	bool _secondFadeIn;
 	bool _replayDone;
+	int _RPcount;
+	bool _RPfadeIn;
 
 
 

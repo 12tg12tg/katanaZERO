@@ -54,6 +54,12 @@ public:
 	bool isColEnter() { return _isEnter;}
 	bool isColIng() { return _isIng;}
 	bool isColExit() { return _isExit;}
+	bool isThere(COLLIDER_TYPE type) {
+		for (auto iter = _others.begin(); iter != _others.end(); iter++){
+			if (iter->second->getType() == type) return true;
+		}
+		return false;
+	}
 	
 	map<DWORD, Collider*>& getOthers() { return _others; }
 	bool findOthers(DWORD id);

@@ -1,5 +1,6 @@
 #pragma once
 #include "gameNode.h"
+#include "UI.h"
 class Cmap : public gameNode
 {
 protected:
@@ -17,6 +18,11 @@ protected:
 
 	float prevx, prevy;
 	RECT prevRc;
+
+	float _timelimit;
+	float _timeCount;
+
+	bool _timeOver;
 public:
 	Cmap();
 	~Cmap();
@@ -29,6 +35,7 @@ public:
 	virtual void coltoMap();
 	virtual void CheckClear();
 	virtual void goalCol();
+	virtual void timeCheck();
 
 	string getNextSceneName() { return _nextScene; }
 	image* getColmap() { return _colmap; }

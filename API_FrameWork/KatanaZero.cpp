@@ -18,11 +18,16 @@ HRESULT KatanaZero::init()
     PLAYER->init();
     m_ui = new UI;
     m_ui->init();
+    MAIN->setUIlink(m_ui);
 
     sceneInit();
     collisionInit();
 
     _replayDone = false;
+    _RPcount = 0;
+    _RPfadeIn = false;
+    _firstFadeOut = false;
+    _secondFadeIn = false;
 
     _state = MAINSTATE::INGAME;
     _caretaker = new Caretaker;
@@ -38,6 +43,7 @@ void KatanaZero::release()
     PLAYER->release();
     PLAYER->releaseSingleton();
     MAIN->releaseSingleton();
+    m_ui->release();
     SAFE_DELETE(m_ui);
     SAFE_DELETE(_caretaker);
 
@@ -54,6 +60,10 @@ void KatanaZero::update()
     MAIN->setIsSlow(_isSlow);
     MAIN->setMainState(_state);
 
+    //페이드업데이트 - 반드시 상태이전에 실행. 자연스럽게.
+    CAMERA->FadeUpdate();
+
+
     //상태에맞는 update
     switch (_state)
     {
@@ -64,7 +74,6 @@ void KatanaZero::update()
     case MAINSTATE::INGAME:
     {
         dropFrame();            //슬로우기능
-        m_ui->update();
         SCENE->update();
         _caretaker->snapshot();
     }
@@ -83,7 +92,11 @@ void KatanaZero::update()
             _caretaker->setRollbackDone(false);
             _caretaker->allVectorClear();
             _state = MAINSTATE::INGAME;
+            EFFECT->deleteParticle();
+            MAIN->getUIlink()->slowReset();
+            PLAYER->reInit();
             PLAYER->getFSM()->ChangeState(PLAYERSTATE::IDLE);
+            SCENE->curScene()->release();
             SCENE->curScene()->init();
         }
     }
@@ -93,6 +106,8 @@ void KatanaZero::update()
     case MAINSTATE::NONE:
         break;
     }
+
+    m_ui->update();
     SOUND->update();
 }
 
@@ -179,7 +194,7 @@ void KatanaZero::render()
         break;
     }
 
-
+    CAMERA->FadeRender();
     //--------------------------------------------------------------------------
     ZORDER->ZorderTotalRender(_cameraBuffer->getMemDC());
     _cameraBuffer->render(getMemDC(), 0, 0, CAMERA->getRect().left, CAMERA->getRect().top, RecWidth(CAMERA->getRect()), RecHeight(CAMERA->getRect()));
@@ -193,7 +208,7 @@ void KatanaZero::sceneInit()
     _testmap1 = dynamic_cast<textMap*>(SCENE->addScene("테스트맵1", new textMap));
     _testmap2 = dynamic_cast<textMap2*>(SCENE->addScene("테스트맵2", new textMap2));
     _testmap3 = dynamic_cast<textMap3*>(SCENE->addScene("테스트맵3", new textMap3));
-    SCENE->changeScene("테스트맵1");
+    SCENE->changeScene("테스트맵3");
     //------------------------------------------------------------------------------------------------
 }
 
@@ -203,12 +218,14 @@ void KatanaZero::collisionInit()
     COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::BULLET_ENEMY);
     COLLISION->CollisionCheck(COLLIDER_TYPE::ENEMY_UNIT, COLLIDER_TYPE::BULLET_PLAYER);
     COLLISION->CollisionCheck(COLLIDER_TYPE::BULLET_PLAYER, COLLIDER_TYPE::BULLET_ENEMY);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::BULLET_PLAYER, COLLIDER_TYPE::DOOR);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::DOOR);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::LASER);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::ENEMY_UNIT, COLLIDER_TYPE::LASER);
 }
 
 void KatanaZero::dropFrame()
 {
-    if (PLAYER->getState() == PLAYERSTATE::DEAD) return;
-
     if (INPUT->isStayKeyDown(VK_LSHIFT)) {
         TIME->setGameTimeRate(TIME->getGameTimeRate() - 0.05f);
         if (TIME->getGameTimeRate() < 0.3f) {
@@ -216,7 +233,10 @@ void KatanaZero::dropFrame()
         }
         _isSlow = true;
     }
-    if (INPUT->isOnceKeyUp(VK_LSHIFT)) {
+    if (INPUT->isOnceKeyUp(VK_LSHIFT) ||
+        PLAYER->getState() == PLAYERSTATE::DEAD || PLAYER->getLaserDie() ||
+        MAIN->getCantSlow())
+    {
         TIME->setGameTimeRate(1.0f);
         _isSlow = false;
     }
@@ -234,62 +254,101 @@ void KatanaZero::dropFrame()
 
 void KatanaZero::showReplay()
 {
-    //페이드중이라면 기다림.
-    if (CAMERA->getFadeIsStart() && !_replayDone) {
+    if (!_firstFadeOut) {
         m_ui->render();
         SCENE->render();
-        CAMERA->FadeRender();
+        //CAMERA->FadeRender();
+        /*텍스트*/
+        RECT txtRc = RectMake(555, 375, 290, 38);
+        string str = "그래, 이렇게 하면 되겠지.";
+        ZORDER->UIDrawText(str, ZUIFADE + 1, txtRc,
+            CreateFont(30, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
+                0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("소야논8")),
+            RGB(255, 255, 255), DT_LEFT | DT_VCENTER);
     }
-    else if(!_replayDone) {
-        //m_ui->render();   //재생중. ui
-        //현재맵 흑백으로 깔기.
-        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
-        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
-        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
-        if (bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
-    }
-    else if (_replayDone) {
-        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
-        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
-        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
-        if (bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
-        if (CAMERA->getFadeIsStart()) {
-            CAMERA->FadeRender();
+    else if (!_secondFadeIn) {
+        /*텍스트*/
+        RECT txtRc = RectMake(555, 375, 290, 38);
+        string str = "그래, 이렇게 하면 되겠지.";
+        ZORDER->UIDrawText(str, ZUIFADE + 1, txtRc,
+            CreateFont(30, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
+                0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("소야논8")),
+            RGB(255, 255, 255), DT_LEFT | DT_VCENTER);
+        if (!CAMERA->getFadeIsStart()) {
+            ZORDER->UIAlphaRender(IMAGE->findImage("fadeImg"), ZUIFADE, 0, 0, 0, 255);
         }
+        else {
+            image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
+            image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
+            ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
+            if (bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
+            //CAMERA->FadeRender();
+        }
+    }
+    else if (!_replayDone) {
+        m_ui->render();   //재생중. ui
+        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
+        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
+        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
+        if (bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
+    }
+    else {
+        //m_ui->render();   //재생중. ui
+        image* bwmap = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap();
+        image* bwmap_front = dynamic_cast<Cmap*>(SCENE->curScene())->getBwmap_front();
+        ZORDER->ZorderRender(bwmap, ZFLOORMAP, 0, 0, 0);
+        if (bwmap_front) ZORDER->ZorderRender(bwmap_front, ZABOVEMAP, 0, 0, 0);
+        //CAMERA->FadeRender();
     }
 }
 
 void KatanaZero::updateReplay()
 {
-    //페이드중이라면 계속 페이드 업데이트
-    if (CAMERA->getFadeIsStart()) {
-        CAMERA->FadeUpdate();
+    if (!_firstFadeOut) {
+        //CAMERA->FadeUpdate();
+        if (!CAMERA->getFadeIsStart()) {
+            _firstFadeOut = true;
+        }
     }
-    //리플 끝나거나 클릭시 caretaker변수 초기화, caretaker벡터클리어, INGAME상태로 돌아가기. 플레이어상태 원상복귀. 씬바꾸기.
-    else if(!_replayDone) {
-        //m_ui->update();
-        _caretaker->replay();
+    else if (!_secondFadeIn) {
+        _RPcount++;
+        if (_RPcount == 80) {
+            CAMERA->FadeInit(60, FADEKIND::FADE_IN);
+            CAMERA->FadeStart();
+        }
+        else if (_RPcount > 80) {
+            _caretaker->replay();
+            CAMERA->update();
+            //CAMERA->FadeUpdate();
+            if (!CAMERA->getFadeIsStart()) {
+                _secondFadeIn = true;
+            }
+        }
+    }
+    else if(!_replayDone){
+        _caretaker->replay();       //되감기
         CAMERA->update();
-        if (_caretaker->getReplayDone() || INPUT->isOnceKeyDown(VK_LBUTTON)) {
+        if (_caretaker->getReplayDone() || INPUT->isOnceKeyDown(VK_RBUTTON)) {
             _caretaker->setIsReplay(false);
             _caretaker->setReplayDone(false);
             _caretaker->allVectorClear();
 
-            CAMERA->FadeInit(60, FADEKIND::FADE_OUT);
+            CAMERA->FadeInit(20, FADEKIND::FADE_LEFT_OUT);
             CAMERA->FadeStart();
             _replayDone = true;
         }
     }
-    //리플끝나고 씬전환 전 페이드아웃
-    else if (_replayDone) {
-
-        if (CAMERA->getFadeIsStart()) {
-            CAMERA->FadeUpdate();
-        }
-        else {
+    else {
+        //CAMERA->FadeUpdate();
+        if (!CAMERA->getFadeIsStart()) {
+            _firstFadeOut = false;
+            _secondFadeIn = false;
+            _RPcount = 0;
             _replayDone = false;
             _state = MAINSTATE::INGAME;
-            PLAYER->init();
+            EFFECT->deleteParticle();
+            MAIN->getUIlink()->slowReset();
+            PLAYER->reInit();
             SCENE->changeScene(dynamic_cast<Cmap*>(SCENE->curScene())->getNextSceneName());
         }
     }

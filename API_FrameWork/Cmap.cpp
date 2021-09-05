@@ -12,6 +12,9 @@ Cmap::~Cmap()
 
 HRESULT Cmap::init()
 {
+	CAMERA->FadeInit(20, FADE_LEFT_IN);
+	CAMERA->FadeStart();
+	_timeOver = false;
     return S_OK;
 }
 
@@ -173,17 +176,27 @@ void Cmap::coltoMap()
 
 void Cmap::CheckClear()
 {
-
 }
 
 void Cmap::goalCol()
 {
 	if(_isClear && _goal->isColEnter()){
 		COLLISION->erase(_goal);
-		CAMERA->FadeInit(80, FADEKIND::FADE_OUT);
+		CAMERA->FadeInit(70, FADEKIND::FADE_OUT);
 		CAMERA->FadeStart();
 		MAIN->changeMainState(MAINSTATE::REPLAY);
 		//SCENE->changeScene(_nextScene);		
 		/*이렇게하면 되겠군... -> 클릭시 리플레이 -> 우클릭시 씬체인지*/
+	}
+}
+
+void Cmap::timeCheck()
+{
+	//타이머
+	_timeCount -= 1 * TIME->getGameTimeRate();
+	MAIN->getUIlink()->setMapTimer(_timeCount, _timelimit);
+	if (!_timeOver && _timeCount < 0) {
+		_timeOver = true;
+		PLAYER->getFSM()->ChangeState(PLAYERSTATE::DEAD);
 	}
 }
