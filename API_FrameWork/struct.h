@@ -43,6 +43,9 @@ struct tagEnemy
 	int bloodRemainIndex;
 	Vec2 patrolpointX;
 	int destinationX;
+	int destinationY;
+	float angle;
+	CHASEPOINT cpoint;
 };
 
 struct tagBullet

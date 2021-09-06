@@ -214,7 +214,6 @@ void Cmap::coltoMapEnemy(enemy* enemy)
 
 		if (!(r == 255 && g == 0 && b == 255) && !(r == 0 && g == 0 && b == 0))
 		{
-				iter->x = iter->x - 1;
 				isRcol = true;
 				iter->isRightCol = true;
 				//TCHAR str[128];
@@ -234,7 +233,6 @@ void Cmap::coltoMapEnemy(enemy* enemy)
 
 		if (!(r == 255 && g == 0 && b == 255) && !(r == 0 && g == 0 && b == 0))
 		{
-			iter->x = iter->x + 1;
 			isLcol = true;
 			iter->isLeftCol = true;
 			//TCHAR str[128];
@@ -255,7 +253,6 @@ void Cmap::coltoMapEnemy(enemy* enemy)
 
 		if (!(r == 255 && g == 0 && b == 255) && !(r == 0 && g == 0 && b == 0))
 		{
-			iter->y = iter->y + 2;
 			isUcol = true;
 			iter->isUpCol = true;
 			//TCHAR str[128];
@@ -278,7 +275,6 @@ void Cmap::coltoMapEnemy(enemy* enemy)
 			if (!(r == 255 && g == 0 && b == 255))
 			{
 				if ((r == 0 && g == 0 && b == 0) && iter->ignoreBlack) break;
-				iter->y = iter->y - 1;
 				isUcol = true;
 				iter->isLand = true;
 				//TCHAR str[128];
@@ -290,11 +286,8 @@ void Cmap::coltoMapEnemy(enemy* enemy)
 				iter->isLand = false;
 			}
 		}
-
-
-
-
 	}
+
 		////¸ó½ºÅÍ¿Í ¸Ê - À§, ¾Æ·¡, ÁÂ, ¿ì
 		////if (prevx == PLAYER->getCollider()->getPos().x &&
 		////	prevy == PLAYER->getCollider()->getPos().y) return;

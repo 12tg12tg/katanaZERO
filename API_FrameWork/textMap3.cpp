@@ -41,14 +41,15 @@ HRESULT textMap3::init()
 	_laser->fire(898, 170, 491);
 
 	_grunt = new grunt(true, false, Vec2(0, 0));
-	_grunt->addEnemy(773, 560, FOWARD::LEFT, Vec2(0, 0));
-	_grunt->addEnemy(550, 560, FOWARD::RIGHT, Vec2(0, 0));
+	_grunt->addEnemy(773, 560+19, FOWARD::LEFT, Vec2(0, 0));
+	_grunt->addEnemy(550, 560+19, FOWARD::RIGHT, Vec2(0, 0));
 
 	return S_OK;
 }
 
 void textMap3::release()
 {
+	COLLISION->erase(_goal);
 	_fan->release();
 	_laser->release();
 	_grunt->release();

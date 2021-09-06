@@ -1,15 +1,19 @@
 #include "framework.h"
 #include "grunt.h"
 #include "effect.h"
-grunt::grunt(bool isLaser, bool isStair, Vec2 checkPoint)
-	:_isLaser(isLaser), _isStair(isStair), _checkPoint(checkPoint)
+grunt::grunt(bool isLaser, bool isStair, Vec2 downPoint, Vec2 upPoint)
+	:_isLaser(isLaser), _isStair(isStair), _DownPoint(downPoint), _UpPoint(upPoint)
 {
 	IMAGE->addImage("followMark", "images/enemy/enemy_follow.bmp", 16, 20, true);
 	IMAGE->addFrameImage("grunt_all", "images/enemy/grunt_all.bmp", 896 * 2, 504 * 2, 16, 12, true);
 	IMAGE->addFrameImage("grunt_all_bw", "images/enemy/grunt_all_bw.bmp", 896 * 2, 504 * 2, 16, 12, true);
 	IMAGE->addFrameImage("grunt_all_laserdie", "images/enemy/grunt_all_laserdie.bmp", 896 * 2, 504 * 2, 16, 12, true);
 	IMAGE->addFrameImage("blood", "images/effect/blood.bmp", 800, 158, 10, 2, true);
+	IMAGE->addFrameImage("blood_bw", "images/effect/blood_bw.bmp", 800, 158, 10, 2, true);
 	IMAGE->addFrameImage("bloodremain", "images/effect/bloodRemain.bmp", 432, 288, 3, 2, true);
+	IMAGE->addFrameImage("bloodremain_bw", "images/effect/bloodRemain_bw.bmp", 432, 288, 3, 2, true);
+
+	_goDownAngle = _UpPoint.AngleTo(_DownPoint);
 }
 
 grunt::~grunt()
@@ -46,9 +50,11 @@ void grunt::addEnemy(float x, float y, FOWARD foward, Vec2 patrolpoint)
 	newEnemy.deatheffect = nullptr;
 	newEnemy.ignoreBlack = false;
 	newEnemy.deathSpeed = 0;
-	newEnemy.isLand = false;
+	newEnemy.isLand = true;
 	newEnemy.bloodOn = false;
 	newEnemy.patrolpointX = patrolpoint;
+	newEnemy.destinationY = 0;
+	newEnemy.angle = 0;
 	_vEnemy.push_back(newEnemy);
 }
 
@@ -80,6 +86,7 @@ void grunt::render()
 {
 	for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end(); ++_viEnemy)
 	{
+		//일반상태
 		ZORDER->ZorderAniRender(_viEnemy->img, _viEnemy->z, _viEnemy->bottom, _viEnemy->x, _viEnemy->y, _viEnemy->ani);
 		ZORDER->SaveAniRender(_viEnemy->img, _viEnemy->bwimg, _viEnemy->z, _viEnemy->bottom, _viEnemy->x, _viEnemy->y, _viEnemy->ani);
 		if (_viEnemy->findPlayer && !_viEnemy->isDeath) {
@@ -87,10 +94,17 @@ void grunt::render()
 				_viEnemy->col->getRect().top, _viEnemy->col->getPos().x,
 				_viEnemy->col->getRect().top - 30);
 		}
+		//죽었을때
 		if (_viEnemy->isDeath) {
 			if (_viEnemy->bloodAni->isPlay()) {
-				if(_viEnemy->foward == FOWARD::LEFT) ZORDER->ZorderAniRender(IMAGE->findImage("blood"), ZEFFECT2, 0, _viEnemy->col->getPos().x + 10, _viEnemy->col->getPos().y - IMAGE->findImage("blood")->getFrameHeight(), _viEnemy->bloodAni);
-				else ZORDER->ZorderAniRender(IMAGE->findImage("blood"), ZEFFECT2, 0, _viEnemy->col->getPos().x - IMAGE->findImage("blood")->getFrameWidth(), _viEnemy->col->getPos().y - IMAGE->findImage("blood")->getFrameHeight(), _viEnemy->bloodAni);
+				if (_viEnemy->foward == FOWARD::LEFT) {
+					ZORDER->ZorderAniRender(IMAGE->findImage("blood"), ZEFFECT2, 0, _viEnemy->col->getPos().x + 10, _viEnemy->col->getPos().y - IMAGE->findImage("blood")->getFrameHeight(), _viEnemy->bloodAni);
+					ZORDER->SaveAniRender(IMAGE->findImage("blood"), IMAGE->findImage("blood_bw"), ZEFFECT2, 0, _viEnemy->col->getPos().x + 10, _viEnemy->col->getPos().y - IMAGE->findImage("blood")->getFrameHeight(), _viEnemy->bloodAni);
+				}
+				else {
+					ZORDER->ZorderAniRender(IMAGE->findImage("blood"), ZEFFECT2, 0, _viEnemy->col->getPos().x - IMAGE->findImage("blood")->getFrameWidth(), _viEnemy->col->getPos().y - IMAGE->findImage("blood")->getFrameHeight(), _viEnemy->bloodAni);
+					ZORDER->SaveAniRender(IMAGE->findImage("blood"), IMAGE->findImage("blood_bw"), ZEFFECT2, 0, _viEnemy->col->getPos().x - IMAGE->findImage("blood")->getFrameWidth(), _viEnemy->col->getPos().y - IMAGE->findImage("blood")->getFrameHeight(), _viEnemy->bloodAni);
+				}
 			}
 			if ((_viEnemy->bloodAni->getFrameX() == 4 && _viEnemy->bloodAni->getFrameY() == 0) ||
 				(_viEnemy->bloodAni->getFrameX() == 5 && _viEnemy->bloodAni->getFrameY() == 1)) {
@@ -98,13 +112,21 @@ void grunt::render()
 				_viEnemy->bloodRemainIndex = RND->getInt(3);
 			}
 		}
+		//시체되고난후
 		if (_viEnemy->bloodOn) {
-			if (_viEnemy->foward == FOWARD::RIGHT)
+			if (_viEnemy->foward == FOWARD::RIGHT) {
 				ZORDER->ZorderFrameRender(IMAGE->findImage("bloodremain"), ZEFFECT1, 0, _viEnemy->col->getPos().x - IMAGE->findImage("blood")->getFrameWidth() - 36, _viEnemy->col->getPos().y - IMAGE->findImage("bloodremain")->getFrameHeight(), _viEnemy->bloodRemainIndex, 0);
-			if (_viEnemy->foward == FOWARD::LEFT)
+				ZORDER->SaveFrameRender(IMAGE->findImage("bloodremain"), IMAGE->findImage("bloodremain_bw"),  ZEFFECT1, 0, _viEnemy->col->getPos().x - IMAGE->findImage("blood")->getFrameWidth() - 36, _viEnemy->col->getPos().y - IMAGE->findImage("bloodremain")->getFrameHeight(), _viEnemy->bloodRemainIndex, 0);
+			}
+			if (_viEnemy->foward == FOWARD::LEFT) {
 				ZORDER->ZorderFrameRender(IMAGE->findImage("bloodremain"), ZEFFECT1, 0, _viEnemy->col->getPos().x + 10, _viEnemy->col->getPos().y - IMAGE->findImage("bloodremain")->getFrameHeight(), _viEnemy->bloodRemainIndex, 1);
+				ZORDER->SaveFrameRender(IMAGE->findImage("bloodremain"), IMAGE->findImage("bloodremain_bw"), ZEFFECT1, 0, _viEnemy->col->getPos().x + 10, _viEnemy->col->getPos().y - IMAGE->findImage("bloodremain")->getFrameHeight(), _viEnemy->bloodRemainIndex, 1);
+			}
 		}
 	}
+
+	//if (playerisDownside) ZORDER->UITextOut("플레이어는 아래", ZMAXLAYER, 500, 500, RGB(255,255, 255));
+	//else ZORDER->UITextOut("플레이어는 위", ZMAXLAYER, 500, 500, RGB(255, 255, 255));
 }
 
 void grunt::move()
@@ -157,9 +179,13 @@ void grunt::move()
 			}
 		}
 		else {
-			//발견시 아직 미구상.
-
-
+			//발견시 바로 IDLE로 올껀데
+			//1. 플레이어가 위에있는지 아래있는지 판단.(수시로 판단)
+			//2. 같은층에 있다면, 플레이어의 위치를 목표로삼고 빠르게 RUN. (목표는 수시로 갱신)
+			//3. 아래층에 있다면, checkPoint를 목표로 RUN.
+			//4. checkPoint에 갔다면, (X픽셀충돌을 타고 왼쪽아래로 이동.X) (체크포인트 두개를 이용한 각도로 이동)
+			//5. 사거리안으로 들어왔다면 무조건 공격. ( 수시로 판단)
+			checkRoute();
 
 
 
@@ -172,13 +198,13 @@ void grunt::move()
 				_viEnemy->x = _viEnemy->patrolpointX.x;
 			}
 			//아니라면 속도만큼 이동.
-			else _viEnemy->x -= _viEnemy->speed;
+			else _viEnemy->x -= _viEnemy->speed * TIME->getGameTimeRate();
 		}
 		else {
-			if (_viEnemy->patrolpointX.y - _viEnemy->x < _viEnemy->speed) {
+			if (_viEnemy->patrolpointX.y - _viEnemy->x < _viEnemy->speed ) {
 				_viEnemy->x = _viEnemy->patrolpointX.y;
 			}
-			else _viEnemy->x += _viEnemy->speed;
+			else _viEnemy->x += _viEnemy->speed * TIME->getGameTimeRate();
 		}
 		if (_viEnemy->x == _viEnemy->patrolpointX.x || _viEnemy->x == _viEnemy->patrolpointX.y) {
 			_viEnemy->state = ENEMYSTATE::IDLE;
@@ -187,8 +213,48 @@ void grunt::move()
 		}
 		break;
 	case ENEMYSTATE::ATTACK:
+
+
+
+
+
+
+
 		break;
 	case ENEMYSTATE::RUN:
+		if (_viEnemy->destinationY == 0) {
+			//직선 이동.
+			//가깝다면 자석
+			if (abs(_viEnemy->destinationX - _viEnemy->x) < _viEnemy->speed) {
+				_viEnemy->x = _viEnemy->destinationX;
+				_viEnemy->state = ENEMYSTATE::IDLE;
+				_viEnemy->haveToChangeAni = true;
+			}
+			//아니라면 속도만큼 이동.
+			else {
+				if (_viEnemy->foward == FOWARD::LEFT)
+					_viEnemy->x -= _viEnemy->speed * TIME->getGameTimeRate();
+				else
+					_viEnemy->x += _viEnemy->speed * TIME->getGameTimeRate();
+			}
+		}
+		else {
+			//각도가지고이동.
+			//가깝다면 자석
+			float tempX = _viEnemy->x + cosf(_viEnemy->angle) * _viEnemy->speed;
+			float tempY = _viEnemy->y - sinf(_viEnemy->angle) * _viEnemy->speed;
+			if (UTIL::getDistance(tempX, tempY, _viEnemy->destinationX, _viEnemy->destinationY) <= _viEnemy->speed) {
+				_viEnemy->x = _viEnemy->destinationX * TIME->getGameTimeRate();
+				_viEnemy->y = _viEnemy->destinationY * TIME->getGameTimeRate();
+				_viEnemy->state = ENEMYSTATE::IDLE;
+				_viEnemy->haveToChangeAni = true;
+			}
+			else {
+				_viEnemy->x = tempX;
+				_viEnemy->y = tempY;
+			}
+		}
+
 		break;
 	case ENEMYSTATE::TURN:
 		break;
@@ -296,12 +362,45 @@ void grunt::findPlayer()
 	//발견했다! - 죽을떄까지 발견상태
 	if (!_viEnemy->findPlayer && _viEnemy->searchCol->isThere(COLLIDER_TYPE::PLAYER_UNIT))
 	{
-		//충돌하고있는 콜라이더중 가장 가까운가? (문, 레이저검사)
-		//_viEnemy->col->getOthers();
-
+		//충돌하고있는 콜라이더중 가장 가까운가? (문 검사)
+		FOWARD playerFoward;
+		FOWARD doorFoward;
+		float playerDis = 0;
+		float otherMin = 10000;
+		auto& vOthers = _viEnemy->searchCol->getOthers();
+		auto viOthers = vOthers.begin();
+		for (viOthers; viOthers != vOthers.end(); ++viOthers)
+		{
+			if (viOthers->second->getType() == COLLIDER_TYPE::PLAYER_UNIT) {
+				playerDis = _viEnemy->searchCol->getPos().Distance(viOthers->second->getPos());
+				playerFoward = _viEnemy->col->getPos().whichFoward(_viEnemy->searchCol->getPos());
+				if (playerFoward == FOWARD::LEFT || playerFoward == FOWARD::LEFTDOWN || playerFoward == FOWARD::LEFTUP) {
+					playerFoward = FOWARD::LEFT;
+				}
+				else {
+					playerFoward = FOWARD::RIGHT;
+				}
+			}
+		}
+		for (viOthers = vOthers.begin(); viOthers != vOthers.end(); ++viOthers)
+		{
+			if (viOthers->second->getType() == COLLIDER_TYPE::DOOR) {
+				doorFoward = _viEnemy->col->getPos().whichFoward(viOthers->second->getPos());
+				if (doorFoward == FOWARD::LEFT || doorFoward == FOWARD::LEFTDOWN || doorFoward == FOWARD::LEFTUP) {
+					doorFoward = FOWARD::LEFT;
+				}
+				else {
+					doorFoward = FOWARD::RIGHT;
+				}
+				if (doorFoward != playerFoward) break;
+				otherMin = _viEnemy->searchCol->getPos().Distance(viOthers->second->getPos());
+			}
+		}
+		if (playerDis > otherMin) return;	//불합격! 발견안한거임!
 
 		//통과했다면
 		_viEnemy->findPlayer = true;
+		_viEnemy->speed = 4.f;
 		_viEnemy->state = ENEMYSTATE::IDLE;
 
 		if(PLAYER->getCollider()->getPos().x > _viEnemy->col->getPos().x)
@@ -350,8 +449,165 @@ void grunt::getgravity()
 	}
 }
 
+void grunt::checkRoute()
+{
+	if (_isStair) {
+		//발견시 바로 IDLE로 올껀데
+		//1. 플레이어가 위에있는지 아래있는지 판단.(수시로 판단)
+		//2. 같은층에 있다면, 플레이어의 위치를 목표로삼고 빠르게 RUN. (목표는 수시로 갱신)
+		//3. 아래층에 있다면, checkPoint를 목표로 RUN.
+		//4. checkPoint에 갔다면, (X픽셀충돌을 타고 왼쪽아래로 이동.X) (체크포인트 두개를 이용한 각도로 이동)
+		//5. 사거리안으로 들어왔다면 무조건 공격. ( 수시로 판단)
+		//	1 플레이어위치판단
+		float playerPosY = PLAYER->getY();
+		if (playerPosY <= _UpPoint.y + 50) playerisDownside = false;
+		else playerisDownside = true;
+
+		//	2 자신의 상태 판단.
+		if (Vec2(_viEnemy->x, _viEnemy->y) == _UpPoint) {
+			_viEnemy->cpoint = CHASEPOINT::UPPOINT;
+		}
+		else if (_viEnemy->y == _UpPoint.y) {
+			_viEnemy->cpoint = CHASEPOINT::UPSTAIR;
+		}
+		else if (Vec2(_viEnemy->x, _viEnemy->y) == _DownPoint) {
+			_viEnemy->cpoint = CHASEPOINT::DOWNPOINT;
+		}
+		else if (_viEnemy->y == _DownPoint.y) {
+			_viEnemy->cpoint = CHASEPOINT::DOWNSTAIR;
+		}
+		else {
+			_viEnemy->cpoint = CHASEPOINT::ONSTAIR;
+		}
+
+		//	3 상태별로 목표지점 설정
+		switch (_viEnemy->cpoint)
+		{
+		case CHASEPOINT::UPSTAIR:
+			if (playerisDownside) {
+				_viEnemy->destinationX = _UpPoint.x;
+				_viEnemy->destinationY = 0;
+			}
+			else {
+				_viEnemy->destinationX = PLAYER->getX();
+				_viEnemy->destinationY = 0;
+			}
+			break;
+		case CHASEPOINT::UPPOINT:
+			if (playerisDownside) {
+				_viEnemy->destinationX = _DownPoint.x;
+				_viEnemy->destinationY = _DownPoint.y;
+				_viEnemy->angle = _goDownAngle;
+			}
+			else {
+				_viEnemy->destinationX = PLAYER->getX();
+				_viEnemy->destinationY = 0;
+			}
+			break;
+		case CHASEPOINT::ONSTAIR:
+			if (playerisDownside) {
+				_viEnemy->destinationX = _DownPoint.x;
+				_viEnemy->destinationY = _DownPoint.y;
+				_viEnemy->angle = _goDownAngle;
+			}
+			else {
+				_viEnemy->destinationX = _UpPoint.x;
+				_viEnemy->destinationY = _UpPoint.y;
+				_viEnemy->angle = _goDownAngle-PI;
+			}
+			break;
+		case CHASEPOINT::DOWNPOINT:
+			if (playerisDownside) {
+				_viEnemy->destinationX = PLAYER->getX();
+				_viEnemy->destinationY = 0;
+			}
+			else {
+				_viEnemy->destinationX = _UpPoint.x;
+				_viEnemy->destinationY = _UpPoint.y;
+				_viEnemy->angle = _goDownAngle - PI;
+			}
+			break;
+		case CHASEPOINT::DOWNSTAIR:
+			if (playerisDownside) {
+				_viEnemy->destinationX = PLAYER->getX();
+				_viEnemy->destinationY = 0;
+			}
+			else {
+				_viEnemy->destinationX = _DownPoint.x;
+				_viEnemy->destinationY = 0;
+			}
+			break;
+		}
+		// 4 방향설정
+		if (_viEnemy->destinationX > _viEnemy->x) {
+			_viEnemy->foward = FOWARD::RIGHT;
+		}
+		else {
+			_viEnemy->foward = FOWARD::LEFT;
+		}
+
+		//	5 상태 RUN으로. RUN->FIND->RUN->FIND->... (사거리안이면 ATTACK들럿다가 FIND)
+		_viEnemy->state = ENEMYSTATE::RUN;
+		_viEnemy->haveToChangeAni = true;
+	}
+	else {
+		_viEnemy->destinationX = PLAYER->getCollider()->getPos().x;//계단없는맵에서는 걍 닭쫒는개마냥 x만따라다니자	
+		if (_viEnemy->destinationX > _viEnemy->x) {
+			_viEnemy->foward = FOWARD::RIGHT;
+		}
+		else {
+			_viEnemy->foward = FOWARD::LEFT;
+		}
+		_viEnemy->state = ENEMYSTATE::RUN;
+		_viEnemy->haveToChangeAni = true;
+	}
+}
+
+
 void grunt::setCollider()
 {
 	_viEnemy->col->setPos(Vec2(_viEnemy->x + _viEnemy->img->getFrameWidth() / 2, _viEnemy->y + _viEnemy->img->getFrameHeight() * 3 / 5));
 	_viEnemy->searchCol->setPos(Vec2(_viEnemy->col->getPos().x, _viEnemy->col->getBottom() - 8));
+}
+
+void grunt::doorCollision()
+{
+	////문충돌
+	//if (_viEnemy->state != ENEMYSTATE::DEAD && _viEnemy->col->isThere(COLLIDER_TYPE::PLAYER_UNIT)) {
+	//	RECT temp;
+	//	RECT door = _viEnemy->col->getRect();
+	//	RECT player = PLAYER->getCollider()->getRect();
+	//	if (IntersectRect(&temp, &door, &player)) {
+	//		int fromtop, frombottom, fromleft, fromright;
+	//		int centerx, centery;
+	//		int min;
+	//		centerx = temp.left + (temp.right - temp.left) / 2;
+	//		centery = temp.top + (temp.bottom - temp.top) / 2;
+	//		fromtop = centery - door.top;
+	//		frombottom = door.bottom - centery;
+	//		fromleft = centerx - door.left;
+	//		fromright = door.right - centerx;
+
+	//		min = (fromtop >= frombottom) ? frombottom : fromtop;
+	//		min = (min >= fromleft) ? fromleft : min;
+	//		min = (min >= fromright) ? fromright : min;
+	//		if (min == fromtop && min <= 10)
+	//		{
+	//			//PLAYER->setY(door.top - (player.bottom - player.top));
+	//		}
+	//		else if (min == frombottom)
+	//		{
+	//			//PLAYER->setY(door.bottom);
+	//		}
+	//		else if (min == fromleft)
+	//		{
+	//			//PLAYER->setX(door.left - (player.right - player.left));
+	//		}
+	//		else if (min == fromright)
+	//		{
+	//			PLAYER->setX(door.right - (player.left - PLAYER->getX()));
+	//		}
+	//	}
+	//	PLAYER->setCollider();
+	//}
 }

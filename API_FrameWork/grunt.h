@@ -5,11 +5,16 @@ class grunt : public enemy
 private:
 	bool _isLaser;
 	bool _isStair;
-	Vec2 _checkPoint;
+	Vec2 _DownPoint;
+	Vec2 _UpPoint;
+
+	float _goDownAngle;
+
+	bool playerisDownside;
 
 	float maxgravity=8.f;
 public:
-	grunt(bool isLaser, bool isStair = false, Vec2 checkPoint = { 0, 0 });
+	grunt(bool isLaser, bool isStair = false, Vec2 downPoint = { 0, 0 }, Vec2 upPoint = { 0, 0 });
 	~grunt();
 
 	virtual void addEnemy(float x, float y, FOWARD foward, Vec2 patrolpoint);
@@ -23,6 +28,8 @@ public:
 	virtual void findPlayer();
 	virtual void deathMove();
 	virtual void getgravity();
+	void checkRoute();
+	void doorCollision();
 
 	virtual void setCollider();
 };

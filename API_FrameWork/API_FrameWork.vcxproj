@@ -165,6 +165,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="gameNode.h" />
     <ClInclude Include="grunt.h" />
+    <ClInclude Include="gruntPunch.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
     <ClInclude Include="Input.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="fan.cpp" />
     <ClCompile Include="gameNode.cpp" />
     <ClCompile Include="grunt.cpp" />
+    <ClCompile Include="gruntPunch.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
     <ClCompile Include="Input.cpp" />

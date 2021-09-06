@@ -136,6 +136,9 @@
     <Filter Include="KatanaZero\5enemy\grunt">
       <UniqueIdentifier>{9ff248c9-57cb-45b7-a97e-039278509a1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\4bullet\gruntPunch">
+      <UniqueIdentifier>{70b562b1-5625-4ddf-a95d-53cd0784a4b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -291,6 +294,9 @@
     <ClInclude Include="grunt.h">
       <Filter>KatanaZero\5enemy\grunt</Filter>
     </ClInclude>
+    <ClInclude Include="gruntPunch.h">
+      <Filter>KatanaZero\4bullet\gruntPunch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -418,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="grunt.cpp">
       <Filter>KatanaZero\5enemy\grunt</Filter>
+    </ClCompile>
+    <ClCompile Include="gruntPunch.cpp">
+      <Filter>KatanaZero\4bullet\gruntPunch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

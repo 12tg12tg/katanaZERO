@@ -56,6 +56,7 @@ HRESULT textMap2::init()
 
 void textMap2::release()
 {
+	COLLISION->erase(_goal);
 	_laser->release();
 	SAFE_DELETE(_laser);
 }

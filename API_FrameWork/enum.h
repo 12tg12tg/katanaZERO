@@ -66,3 +66,12 @@ enum class MAINSTATE
 	PAUSE,
 	NONE
 };
+
+enum class CHASEPOINT
+{
+	UPSTAIR,
+	UPPOINT,
+	ONSTAIR,
+	DOWNPOINT,
+	DOWNSTAIR
+};
