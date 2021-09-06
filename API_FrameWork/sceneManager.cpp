@@ -102,11 +102,11 @@ HRESULT SceneManager::changeScene(string sceneName)
     if (find->second.gn == _currentScene) return E_FAIL;
 
     //여기까지 왔다면 문제가 없다. 즉 씬을 초기화 하고 변경하자.
-    if (SUCCEEDED(find->second.gn->init()))
+    if (/*SUCCEEDED(find->second.gn->init())*/ true)
     {
         //혹시 기존에 씬이 있다면 릴리즈
         if (_currentScene) _currentScene->release();
-        
+        find->second.gn->init();
         _currentScene = find->second.gn;
         return S_OK;
     }

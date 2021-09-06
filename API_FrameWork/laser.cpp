@@ -48,6 +48,12 @@ void laser::update()
 {
 	for (_viBullet = _vBullet.begin(); _viBullet != _vBullet.end(); ++_viBullet)
 	{
+		assert(_viBullet->col != nullptr);
+	}
+
+
+	for (_viBullet = _vBullet.begin(); _viBullet != _vBullet.end(); ++_viBullet)
+	{
 		//레이저 온오프설정
 		if (!_laserOn) {
 			_viBullet->col->setCanCol(false);

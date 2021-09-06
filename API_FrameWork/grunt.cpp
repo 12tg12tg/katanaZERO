@@ -292,7 +292,7 @@ void grunt::deathCheck()
 
 void grunt::findPlayer()
 {
-	
+	if (_viEnemy->isDeath) return;
 	//발견했다! - 죽을떄까지 발견상태
 	if (!_viEnemy->findPlayer && _viEnemy->searchCol->isThere(COLLIDER_TYPE::PLAYER_UNIT))
 	{
