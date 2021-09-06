@@ -38,6 +38,12 @@ private:
 
 	//중단프로그래스바
 	progressBar* _timerPg;
+	bool _isTimeFade;
+	float _fadeAlphaMax;
+	int _fadePeriod;
+	float _minus;
+	float _fadeAlpha;
+	bool _isDecrease;
 
 	//좌측프로그래스바
 	float _slowGauge;
@@ -58,7 +64,8 @@ public:
 	void neonRender();
 	
 	void slowGauge();
-	void slowReset();
+	void reinit();
+	void progressFade();
 
 	void setMapTimer(float cur, float max){	_timerPg->setGauge(cur, max);}
 };

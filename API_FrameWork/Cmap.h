@@ -1,6 +1,7 @@
 #pragma once
 #include "gameNode.h"
 #include "UI.h"
+#include "enemy.h"
 class Cmap : public gameNode
 {
 protected:
@@ -33,6 +34,7 @@ public:
 	virtual void render();
 
 	virtual void coltoMap();
+	virtual void coltoMapEnemy(enemy* enemy);
 	virtual void CheckClear();
 	virtual void goalCol();
 	virtual void timeCheck();

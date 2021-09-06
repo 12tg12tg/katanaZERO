@@ -133,6 +133,9 @@
     <Filter Include="KatanaZero\5enemy\NewFilter1">
       <UniqueIdentifier>{d6454607-9c5f-4a9b-81c3-2689b3e389cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\5enemy\grunt">
+      <UniqueIdentifier>{9ff248c9-57cb-45b7-a97e-039278509a1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -285,6 +288,9 @@
     <ClInclude Include="playerSlash.h">
       <Filter>KatanaZero\4bullet\playerSlash</Filter>
     </ClInclude>
+    <ClInclude Include="grunt.h">
+      <Filter>KatanaZero\5enemy\grunt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -409,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="playerSlash.cpp">
       <Filter>KatanaZero\4bullet\playerSlash</Filter>
+    </ClCompile>
+    <ClCompile Include="grunt.cpp">
+      <Filter>KatanaZero\5enemy\grunt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

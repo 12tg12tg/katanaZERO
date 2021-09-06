@@ -3,6 +3,18 @@
 #define NOCOLCOLOR	RGB(20, 255, 20)
 #define COLCOLOR	RGB(255, 20, 20)
 class collisionManager;
+class Collider;
+struct ColEnter
+{
+	DWORD id;
+	COLLIDER_TYPE type;
+	Collider* col;
+
+	ColEnter(DWORD id, COLLIDER_TYPE type, Collider* col)
+		:id(id), type(type), col(col)
+	{
+	}
+};
 class Collider
 {
 private:
@@ -18,6 +30,7 @@ private:
 	float			_rotate;		//회전각
 
 	bool			_isEnter;		//방금충돌
+	vector<ColEnter> _enterVec;		//방금충돌
 	bool			_isIng;			//충돌중
 	bool			_isExit;		//충돌끝
 
@@ -51,17 +64,23 @@ public:
 	}
 	float getBottom() { return _pos.y + _size.y / 2; }
 
-	bool isColEnter() { return _isEnter;}
-	bool isColIng() { return _isIng;}
-	bool isColExit() { return _isExit;}
-	bool isThere(COLLIDER_TYPE type) {
-		for (auto iter = _others.begin(); iter != _others.end(); iter++){
-			if (iter->second->getType() == type) return true;
+	void eraseThisInEngerVec(DWORD id) {
+		for (auto iter = _enterVec.begin(); iter != _enterVec.end(); ++iter) {
+			if (iter->id == id) {
+				_enterVec.erase(iter);
+				return;
+			}
 		}
-		return false;
 	}
+	bool isColEnter() { return _isEnter; }
+	bool isColIng() { return _isIng; }
+	bool isColExit() { return _isExit; }
+
+	bool isEnterThere(COLLIDER_TYPE type);
+	bool isThere(COLLIDER_TYPE type);
 	
 	map<DWORD, Collider*>& getOthers() { return _others; }
+	vector<ColEnter>& getEnters() { return _enterVec; }
 	bool findOthers(DWORD id);
 
 	friend collisionManager;

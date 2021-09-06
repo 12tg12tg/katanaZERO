@@ -35,8 +35,10 @@ enum class ENEMYSTATE
 {
 	IDLE,
 	FIND,
-	MOVE,
 	ATTACK,
+	RUN,
+	WALK,
+	TURN,
 	DEAD
 };
 
@@ -49,6 +51,7 @@ enum class COLLIDER_TYPE
 	POTAL,
 	LASER,
 	DOOR,
+	SEARCH,
 
 	END = 32,
 };

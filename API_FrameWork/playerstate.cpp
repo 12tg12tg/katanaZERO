@@ -496,7 +496,6 @@ void Player_Crouch::release()
 Player_Jump::Player_Jump()
 {
 	m_eState = PLAYERSTATE::JUMP;
-	_maxJumpPower = 155;
 	_maxDashPower = 10;
 }
 
@@ -506,18 +505,18 @@ Player_Jump::~Player_Jump()
 
 void Player_Jump::init()
 {
+	//상태 및 bool - 수정안해도됨.
 	PLAYER->setIsLand(false);
 	PLAYER->setState(PLAYERSTATE::JUMP);
+
+	//이전 달리기일때 속도 일정유지 - 수정안해도됨.
 	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::RUN) {
-		_accelB = PLAYER->getSpeed()/2;
+		_accelB = PLAYER->getSpeed()/5;
 	}
 	else {
 		_accelB = 0;
 	}
-	_count = 0;
-	_accelA = 60;
-	_graphX = 0;
-	_startX = PLAYER->getX();
+	//시작지점 및 애니 설정 - 수정안해도됨.
 	_startY = PLAYER->getY();
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 48, 51, 12, false, true);
@@ -525,17 +524,30 @@ void Player_Jump::init()
 	else if (PLAYER->getFoward() == FOWARD::LEFT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 154, 151, 12, false, true);
 	}
-	//사운드
+	//사운드 - 수정안해도됨.
 	SOUND->play("jump", 0.1f);
-	//이펙트
+	//이펙트 - 수정안해도됨.
 	EFFECT->play("jumpcloud", ZEFFECT1, PLAYER->getCollider()->getPos().x,
 		PLAYER->getCollider()->getBottom() - 52);
+
+	//sin 그래프따라서 가던 부분 - 수정해야됨.
+	_gravity = 0.5f;
+	_jumpPower = 5.f;
+	_count = 0.f;
+	/* 수정방안 */
+	//점프파워값만큼 위로 상승.
+	//단, 중력값만큼 점프파워 감소.
+	//점프파워가 0을 찍으면, 중력만 작용. - 여기서 다음 FALL 상태로 보내주면 끝.
+	//중력은 0부터 점차 증가하며, 최대치까지만 커짐. - FALL 담당.
+
+
+
 }
 
 
 void Player_Jump::update()
 {
-	//좌우 입력 - 방향전환
+	//좌우 입력 - 방향전환 - 수정안해도됨.
 	if (INPUT->isStayKeyDown('A') && INPUT->isStayKeyDown('D')) {
 	}
 	else if (PLAYER->getFoward() == FOWARD::RIGHT && INPUT->isOnceKeyDown('A')) {
@@ -549,39 +561,53 @@ void Player_Jump::update()
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 48, 51, 12, false, true);
 	}
 
-	//점프력조절 - 누적
-	if (INPUT->isStayKeyDown('W')) {
-		_accelA += 4.8;
-		if (_accelA > _maxJumpPower)
-			_accelA = _maxJumpPower;
+	//점프력조절 - 누적 - ★
+	_count += 1;
+	if (_count < 7) {
+		if (INPUT->isStayKeyDown('W')) {
+			_jumpPower += 1.f;
+		}
 	}
-	//대쉬력조절 - 누적
-	if (PLAYER->getFoward() == FOWARD::RIGHT && INPUT->isStayKeyDown('D')) {
-		_accelB += 1;
-	}
-	if (PLAYER->getFoward() == FOWARD::LEFT && INPUT->isStayKeyDown('A')) {
-		_accelB += 1;
+
+	//대쉬력조절 - 누적 - 수정안해도됨.
+	if (_count < 7) {
+		if (PLAYER->getFoward() == FOWARD::RIGHT && INPUT->isStayKeyDown('D')) {
+			_accelB += 1.f;
+		}
+		if (PLAYER->getFoward() == FOWARD::LEFT && INPUT->isStayKeyDown('A')) {
+			_accelB += 1.f;
+		}
 	}
 	if (_accelB > _maxDashPower) _accelB = _maxDashPower;
-	
-
-	//점프 - Y변경, X변경
-	PLAYER->setY(_startY - sinf(_graphX) * _accelA);
-	_graphX += PI / 32 * TIME->getGameTimeRate();
-	if(PLAYER->getFoward() == FOWARD::RIGHT)
+	//좌우 - X변경 - 수정안해도됨.
+	if (PLAYER->getFoward() == FOWARD::RIGHT)
 		PLAYER->setX(PLAYER->getX() + _accelB * TIME->getGameTimeRate());
 	if (PLAYER->getFoward() == FOWARD::LEFT)
 		PLAYER->setX(PLAYER->getX() - _accelB * TIME->getGameTimeRate());
+
 	
-	//점프탈출조건 - sin 90도까지 돌았거나 윗벽에부딫혔을때(예정)
-	if (_count > 16) {
+	//점프 - Y변경, X변경
+	PLAYER->setY(PLAYER->getY() - _jumpPower * TIME->getGameTimeRate());
+	_jumpPower -= _gravity * TIME->getGameTimeRate();
+	
+	//점프탈출조건 - 점프력이 0이하라면 - ★
+	if (_jumpPower <= 0) {
 		PLAYER->setSpeed(_accelB);
 		m_pFSM->ChangeState(PLAYERSTATE::FALL);
 	}
 
-	_count += 1* TIME->getGameTimeRate();
+	//벽잡기
+	if (PLAYER->getColYello() &&
+		((PLAYER->getFoward() == FOWARD::RIGHT && INPUT->isStayKeyDown('D')) ||
+			(PLAYER->getFoward() == FOWARD::LEFT && INPUT->isStayKeyDown('A')) ||
+			m_pFSM->getPreState()->getThisState() == PLAYERSTATE::FLIP)) {
+		PLAYER->setAttDash(false);
+		PLAYER->setSpeed(_jumpPower);
+		m_pFSM->ChangeState(PLAYERSTATE::WALLSLIDE);
+	}
 
-	//공격
+
+	//공격 - 수정안해도됨.
 	this->attack();
 }
 
@@ -623,7 +649,7 @@ void Player_Fall::init()
 	case PLAYERSTATE::WALLSLIDE:
 	case PLAYERSTATE::DEAD:
 		_accelB = (PLAYER->getSpeed() > _maxDashPower)? _maxDashPower : PLAYER->getSpeed();
-		_gravity = 0.f;
+		_gravity = 2.f;
 		break;
 	case PLAYERSTATE::FLIP:
 		_accelB = 5;
@@ -669,15 +695,19 @@ void Player_Fall::update()
 		_accelB += 1;
 	}
 	if (_accelB > _maxDashPower) _accelB = _maxDashPower;
+	//좌우이동속도 점점감소
+	_accelB -= 0.05f;
+	if (_accelB < 0)_accelB = 0;
+
 	//강제낙하
 	if (INPUT->isOnceKeyDown('S') && !PLAYER->getIgnoreBlack()) {
 		_onGravity = false;
 		_gravity = 20;
 	}
 
-	//Y변경
+	//공중체공및 Y변경
 	_delay += 1 * TIME->getGameTimeRate();
-	if (_onGravity && _delay > 3) {
+	if (_onGravity && _delay > 1) {
 		++_count;
 		if (_count % 5 == 0) {
 			_gravity += 3.f;
@@ -703,7 +733,7 @@ void Player_Fall::update()
 
 
 	//종료조건 -  랜드충돌bool 변수에 의해/*수정*/ 
-	if (/*PLAYER->getY() > 501*/PLAYER->getIsLand()) {
+	if (PLAYER->getIsLand()) {
 		PLAYER->setSpeed(_accelB);
 		PLAYER->setAttDash(false);
 		m_pFSM->ChangeState(PLAYERSTATE::IDLE);
@@ -901,6 +931,10 @@ void Player_Dead::init(float angle)
 	SOUND->play("dead", 0.1f);
 	//쉐이크
 	CAMERA->setShake(10, 5, 1);
+	//피격이펙트
+	float startX = PLAYER->getCollider()->getPos().x + 1566 * cos((float)PI+_angle);
+	float startY = PLAYER->getCollider()->getPos().y - 1566 * sinf((float)PI+_angle);
+	_hitEffect = EFFECT->play("hitEffect", ZEFFECT2, startX, startY, _angle, 150);
 }
 
 void Player_Dead::update()
@@ -908,9 +942,14 @@ void Player_Dead::update()
 	//if (!PLAYER->getAni()->isPlay())
 	//	m_pFSM->ChangeState(PLAYERSTATE::IDLE);
 	if (!_timeOver) {
+		//이펙트이동
+		_hitEffect->offsetEffect(cosf(_angle) * 100, -sinf(_angle) * 100);
+
+
+		//이동
 		if (_speed != 0) {
 			PLAYER->setX(PLAYER->getX() + cosf(_angle) * _speed);
-			PLAYER->setY(PLAYER->getY() + cosf(_angle) * _speed);
+			PLAYER->setY(PLAYER->getY() - sinf(_angle) * _speed);			//? 뭔데 코사인이엇을까? 왜 안이상했을까?
 			_speed -= 0.15;
 		}
 		if (_speed <= 0) {
@@ -1045,14 +1084,55 @@ void Player_WallSlide::init()
 		int arr[] = { 359 };
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", arr, sizeof(arr) / sizeof(int), 12, false);
 	}
+	
+	//이전속도
+	if(m_pFSM->getPreState()->getThisState()==PLAYERSTATE::JUMP) _speed = PLAYER->getSpeed()*1.3;
+	else if(m_pFSM->getPreState()->getThisState()==PLAYERSTATE::FALL) _speed = 0;
+	_gravity = 0.f;
+	_maxgravity = 5.f;
+	_goUp = false;
+
 	//사운드
 	SOUND->play("grabwall", 0.1f);
 }
 
 void Player_WallSlide::update()
 {
-	if (INPUT->isOnceKeyDown('W'))
+	//미끄러지기
+	if (_speed > 0) {
+		_goUp = true;
+		_speed -= _gravity;
+	}
+	if(_goUp && _speed < 0) {
+		_speed = 0;
+		_goUp = false;
+		_gravity = 0.f;
+	}
+
+	//ZORDER->UITextOut(string("canWall : " + to_string(PLAYER->getStillWall())), ZMAXLAYER, 500, 500, RGB(255, 255, 255));
+	//ZORDER->UITextOut(string("down : " + to_string(PLAYER->getIsLand())), ZMAXLAYER, 500, 520, RGB(255, 255, 255));
+
+
+	//중력가속
+	_gravity += 0.04f;
+	if (_gravity > _maxgravity) _gravity = _maxgravity;
+
+	//이동
+	if(_goUp) PLAYER->setY(PLAYER->getY() - _speed);
+	else PLAYER->setY(PLAYER->getY() + _gravity);
+
+	//구르기
+	if (INPUT->isOnceKeyDown('W')) {
 		m_pFSM->ChangeState(PLAYERSTATE::FLIP);
+	}
+
+	//탈출조건
+	bool isLand = PLAYER->getIsLand();
+	bool stillWall = PLAYER->getStillWall();
+	if (isLand || !stillWall) {
+		m_pFSM->ChangeState(PLAYERSTATE::IDLE);
+	}
+
 	//공격
 	this->attack();
 }

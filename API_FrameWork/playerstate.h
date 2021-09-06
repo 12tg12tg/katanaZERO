@@ -118,14 +118,14 @@ public:
 class Player_Jump : public PlayerState
 {
 private:
-	float _count;
-	float _accelA;
 	float _accelB;
-	float _startX;
 	float _startY;
-	float _graphX;
-	float _maxJumpPower;
 	float _maxDashPower;
+
+	float _jumpPower;
+	float _gravity;
+	float _count;
+
 public:
 	Player_Jump();
 	~Player_Jump();
@@ -195,6 +195,7 @@ private:
 	float _speed;
 	
 	bool _timeOver;
+	effect* _hitEffect;
 public:
 	Player_Dead();
 	~Player_Dead();
@@ -235,7 +236,10 @@ public:
 class Player_WallSlide : public PlayerState
 {
 private:
-
+	float _speed;
+	float _gravity;
+	float _maxgravity;
+	bool _goUp;
 public:
 	Player_WallSlide();
 	~Player_WallSlide();

@@ -4,6 +4,7 @@
 UI::UI()
 {
 	IMAGE->addImage("배터리파편", "images/particle/mint1px.bmp", 2, 2);
+	IMAGE->addImage("purplefade", "images/ui/purplefade.bmp", 1365, 768);
 }
 
 UI::~UI()
@@ -29,6 +30,12 @@ HRESULT UI::init()
 	_slowDelay = 150;
 	_slowGauge = _maxSlow;
 	_delay = 0;
+	_isTimeFade = false;
+	_fadeAlphaMax = 100;
+	_fadePeriod = 0;
+	_minus = 0;
+	_fadeAlpha = 0.f;
+	_isDecrease = false;
 	neonInit();
 	return S_OK;
 }
@@ -42,6 +49,7 @@ void UI::update()
 {
 	neonUpdate();
 	slowGauge();
+	progressFade();
 }
 
 void UI::render()
@@ -57,6 +65,8 @@ void UI::render()
 		_timerPg->render(ZUITOP2);
 		//often
 		neonRender();		
+		//purple fade
+		if(_fadeAlpha > 0) ZORDER->UIAlphaRender(IMAGE->findImage("purplefade"), ZUIFADE, 0, 0, 0, (BYTE)_fadeAlpha);
 	}
 	else if (MAIN->getMainState() == MAINSTATE::REPLAY) {
 		_rightClickCount++;
@@ -192,12 +202,70 @@ void UI::slowGauge()
 		}
 	}
 
-
 }
 
-void UI::slowReset()
+void UI::reinit()
 {
 	_slowGauge = _maxSlow;
 	_delay = 0;
+	_isTimeFade = false;
+	_fadeAlphaMax = 100;
+	_fadePeriod = 0;
+	_minus = 0;
+	_fadeAlpha = 0.f;
+	_isDecrease = false;
+}
+
+void UI::progressFade()
+{
+	float ratio = _timerPg->getRatio();
+
+	//깜박깜박
+	if (ratio > 0.25f && ratio <= 0.4f) {
+		_isTimeFade = true;
+		_fadePeriod = 100;
+		_fadeAlphaMax = 35;
+
+		_minus = _fadeAlphaMax / _fadePeriod;	//1
+	}
+	else if (ratio > 0.1f && ratio <= 0.25f) {
+		_fadePeriod = 50;
+		_fadeAlphaMax = 100;
+
+		_minus = _fadeAlphaMax / _fadePeriod;	//3
+	}
+	else if (ratio <= 0.1f) {
+		_fadePeriod = 50;
+		_fadeAlphaMax = 150;
+
+		_minus = _fadeAlphaMax / _fadePeriod;	//10
+	}
+	else {
+		_isTimeFade = false;
+	}
+
+	//알파값증감.
+	if (_isTimeFade) {
+		//증가중
+		if (!_isDecrease) {
+			if (_fadeAlpha < _fadeAlphaMax) {
+				_fadeAlpha += _minus;
+			}
+			else {
+				_fadeAlpha = _fadeAlphaMax;
+				_isDecrease = true;
+			}
+		}
+		//감소중
+		else {
+			if (_fadeAlpha > 0) {
+				_fadeAlpha -= _minus;
+			}
+			else {
+				_fadeAlpha = 0;
+				_isDecrease = false;
+			}
+		}
+	}
 }
 

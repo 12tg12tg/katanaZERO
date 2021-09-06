@@ -2,6 +2,7 @@
 #include "Cmap.h"
 #include "fan.h"
 #include "laser.h"
+#include "grunt.h"
 class textMap3 : public Cmap
 {
 private:
@@ -9,6 +10,7 @@ private:
 
 	fan* _fan;
 	laser* _laser;
+	grunt* _grunt;
 public:
 	textMap3();
 	~textMap3();

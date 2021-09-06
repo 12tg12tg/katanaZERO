@@ -42,7 +42,25 @@ void Collider::render()
 
 bool Collider::findOthers(DWORD id)
 {
+	if (_others.size() == 0) return false;
 	auto iter = _others.find(id);
 	if (iter == _others.end()) return false;
 	else return true;
+}
+
+bool Collider::isEnterThere(COLLIDER_TYPE type) {
+	if (_enterVec.size() == 0) return false;
+	for (auto iter = _enterVec.begin(); iter != _enterVec.end(); ++iter)
+	{
+		if (iter->type == type) return true;
+	}
+	return false;
+}
+
+bool Collider::isThere(COLLIDER_TYPE type) {
+	if (_others.size() == 0) return false;
+	for (auto iter = _others.begin(); iter != _others.end(); ++iter) {
+		if (iter->second->getType() == type) return true;
+	}
+	return false;
 }

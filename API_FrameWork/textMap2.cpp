@@ -15,6 +15,7 @@ textMap2::textMap2()
 	IMAGE->addFrameImage("space", "images/ui/space.bmp", 60*2, 14*2, 2, 1, true);
 	int arr[] = { 0, 1, 1 };
 	_butAni = ANIMATION->addNoneKeyAnimation("space", arr, sizeof(arr)/sizeof(int), 2, true);
+
 }
 
 textMap2::~textMap2()
@@ -68,6 +69,7 @@ void textMap2::update()
 	_isClear = true;
 	CheckClear();
 	goalCol();
+
 	_laser->update();
 
 	RECT temp;

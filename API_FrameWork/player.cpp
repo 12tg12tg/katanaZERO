@@ -161,6 +161,9 @@ void player::reInit()
 	_laserCount = 0;
 	_laserX = 0;
 
+	_colYello = false;
+	_stillWall = false;
+
 	_col->setCanCol(true);
 	_foward = FOWARD::RIGHT;
 }
@@ -207,6 +210,9 @@ void player::imageInit()
 	//ÂøÁöÀÌÆå
 	IMAGE->addFrameImage("landcloud_bw", "images/effect/landcloud_bw.bmp", 350 * 2, 14 * 2, 7, 1, true);
 	EFFECT->addEffect("landcloud", "images/effect/landcloud.bmp", 350 * 2, 14 * 2, 50 * 2, 14 * 2, 15, 0.01666, 1, false, false, true, IMAGE->findImage("landcloud_bw"));
+
+	//ÀúÀå¾ÈÇÏ´Â ÀÏÀÚ ÀÌÆåÆ®
+	EFFECT->addEffect("hitEffect", "images/effect/hiteffect.bmp", 395, 18, 395, 6, 4, 0.01666, 10, true, true, false);
 }
 
 void player::stateInit()

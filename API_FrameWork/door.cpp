@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "door.h"
 #include "PlayerState.h"
+#include "playerSlash.h"
 door::door()
 {
 }
@@ -55,14 +56,13 @@ void door::update()
 					PLAYER->getFSM()->ChangeState(PLAYERSTATE::DOORBREAK);
 				}
 			}
-			else if (_viEnemy->col->isColEnter() && _viEnemy->col->isThere(COLLIDER_TYPE::BULLET_PLAYER)) {
+			else if (_viEnemy->col->isEnterThere(COLLIDER_TYPE::BULLET_PLAYER)) {
 				//사운드
 				SOUND->play("doorbreak", 0.1f);
 				_viEnemy->state = ENEMYSTATE::DEAD;
 			}
 			break;
 		case ENEMYSTATE::FIND:
-		case ENEMYSTATE::MOVE:
 		case ENEMYSTATE::ATTACK:
 			break;
 		case ENEMYSTATE::DEAD:
@@ -71,7 +71,11 @@ void door::update()
 				_viEnemy->isfirstTime = true;
 				COLLISION->erase(_viEnemy->col);
 				ANIMATION->changeNonKeyAnimation(_viEnemy->ani, "door", 18, 0, 15, false, false);
-				/*fire*/
+
+				//공격계산
+				float _attackCenterX = _viEnemy->col->getPos().x - 100;
+				float _attackCenterY = _viEnemy->col->getPos().y;
+				PLAYER->getPlayerSlash()->fire(_attackCenterX, _attackCenterY, PI);
 			}
 			break;
 		}

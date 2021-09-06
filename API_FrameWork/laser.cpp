@@ -56,16 +56,28 @@ void laser::update()
 			_viBullet->col->setCanCol(true);
 		}
 
-		//충돌시 애니변경
-		if (_viBullet->col->isColEnter()) {
+
+		//충돌시 애니변경 - 플레이어
+		//if (_viBullet->col->isColEnter() && _viBullet->col->isThere(COLLIDER_TYPE::PLAYER_UNIT)) {
+		if (_viBullet->col->isEnterThere(COLLIDER_TYPE::PLAYER_UNIT)) {
 			ANIMATION->changeNonKeyAnimation(_viBullet->ani, "laser", 4, 5, 15, true, false);
 			if (!(PLAYER->getState() == PLAYERSTATE::ROLL || PLAYER->getState() == PLAYERSTATE::FLIP)) {
 				SOUND->play("laser_blast", 0.3f);
 				PLAYER->setLaserDie(true);
 			}
-			else SOUND->play("laser_explosion", 0.3f);
+			else
+				SOUND->play("laser_explosion", 0.3f);
 			if(!CAMERA->getIsShake()) CAMERA->setShake(10, 5, 1);
 		}
+		//충돌시 애니변경 - 적
+		//if (_viBullet->col->isColEnter() && _viBullet->col->isThere(COLLIDER_TYPE::ENEMY_UNIT)) {
+		if (_viBullet->col->isEnterThere(COLLIDER_TYPE::ENEMY_UNIT)) {
+			ANIMATION->changeNonKeyAnimation(_viBullet->ani, "laser", 4, 5, 15, true, false);
+			SOUND->play("laser_blast", 0.3f);
+			//적에서 레이저에닿앗는지 확인할것.
+		}
+
+		//비충돌시 원래애니로.
 		if (!_viBullet->ani->isPlay()) {
 			ANIMATION->changeNonKeyAnimation(_viBullet->ani, "laser", 0, 3, 15, false, true);
 		}

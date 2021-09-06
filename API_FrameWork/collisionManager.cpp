@@ -81,6 +81,14 @@ void collisionManager::erase(Collider* collider)
 	for (ltIter; ltIter != ltCollider.end(); ++ltIter)
 	{
 		if ((*ltIter)->getID() == collider->getID()) {
+			//애랑 충돌enter이던 놈의 벡터 수정해주기
+			auto& thisVector = collider->_enterVec;
+			auto iter = thisVector.begin();
+			for (iter; iter != thisVector.end(); ++iter)
+			{
+				iter->col->eraseThisInEngerVec(collider->_id);
+			}
+
 			//얘랑 충돌중이던 콜라이더의 list 수정해주기
 			auto& thisMap = collider->getOthers();
 			auto thisIter = thisMap.begin();
@@ -89,6 +97,10 @@ void collisionManager::erase(Collider* collider)
 				auto& otherMap = thisIter->second->getOthers();
 				auto otherIter = otherMap.find(collider->getID());
 				otherMap.erase(otherIter);
+				if (otherMap.size() == 0) {
+					thisIter->second->_isEnter = false;
+					thisIter->second->_isIng = false;
+				}
 			}
 			//할당공간지우기
 			SAFE_DELETE(*ltIter);
@@ -107,7 +119,11 @@ void collisionManager::CollisionCheck(COLLIDER_TYPE left, COLLIDER_TYPE right)
 
 bool collisionManager::isCollision(Collider* pleft, Collider* pright)
 {
-	if (!(pleft->getCanCol() && pright->getCanCol())) return false;
+	if (!(pleft->getCanCol() && pright->getCanCol())) {
+		pleft->eraseThisInEngerVec(pright->_id);
+		pright->eraseThisInEngerVec(pleft->_id);
+		return false;
+	}
 	if (!pleft->_isRotate && !pright->_isRotate) {
 		float fDist = abs(pleft->getPos().x - pright->getPos().x);
 		float fSize = pleft->getSize().x / 2.f + pright->getSize().x / 2.f;
@@ -175,8 +191,11 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 				{
 					m_mapID.insert(make_pair(colID.ID, true));
 					(*listIter1)->_isEnter = true;
+					(*listIter1)->_enterVec.push_back(ColEnter((*listIter2)->_id, (*listIter2)->_type, (*listIter2)));		//추가한부분
 					(*listIter1)->getOthers().insert(make_pair((*listIter2)->getID(), (*listIter2)));
+
 					(*listIter2)->_isEnter = true;
+					(*listIter2)->_enterVec.push_back(ColEnter((*listIter1)->_id, (*listIter1)->_type, (*listIter1)));
 					(*listIter2)->getOthers().insert(make_pair((*listIter1)->getID(), (*listIter1)));
 				}
 				//충돌기록은 있는데, 이전에 충돌하지 않고있었다면
@@ -184,14 +203,19 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 				{
 					idIter->second = true;
 					(*listIter1)->_isEnter = true;
+					(*listIter1)->_enterVec.push_back(ColEnter((*listIter2)->_id, (*listIter2)->_type, (*listIter2)));		//추가한부분
 					(*listIter1)->getOthers().insert(make_pair((*listIter2)->getID(), (*listIter2)));
+
 					(*listIter2)->_isEnter = true;
+					(*listIter2)->_enterVec.push_back(ColEnter((*listIter1)->_id, (*listIter1)->_type, (*listIter1)));
 					(*listIter2)->getOthers().insert(make_pair((*listIter1)->getID(), (*listIter1)));
 				}
 				//충돌기록도있고, 이전에 충돌중이었다면
 				else {
 					(*listIter1)->_isEnter = false;
+					(*listIter1)->eraseThisInEngerVec((*listIter2)->_id);		//추가한부분
 					(*listIter2)->_isEnter = false;
+					(*listIter2)->eraseThisInEngerVec((*listIter1)->_id);		//추가한부분
 					(*listIter1)->_isIng = true;
 					(*listIter2)->_isIng = true;
 				}

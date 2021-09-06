@@ -6,11 +6,11 @@ textMap3::textMap3()
 	_map = IMAGE->addImage("map3", "images/map/third_back.bmp", 1863, 1189);
 	_bwmap = IMAGE->addImage("map3_bw", "images/map/third_back_bw.bmp", 1863, 1189);
 	_colmap = IMAGE->addImage("map3_col", "images/map/third_col.bmp", 1863, 1189, true);
-	_map_front = IMAGE->addImage("map3_front", "images/map/third_front.bmp", 1863, 1189, true);
+	_map_front = IMAGE->addImage("map3_front", "images/map/third_front.bmp", 88, 222, true);
 	_bwmap_front = IMAGE->addImage("map3_front_bw", "images/map/third_front_bw.bmp", 1863, 1189, true);
 	_addforslow = IMAGE->addImage("map3_addforslow", "images/map/third_back_addforslow.bmp", 60, 222, true);
 	_startPt = Vec2(42, 974);
-	_timelimit = 2000;
+	_timelimit = 4000;
 
 	_nextScene = "º¸½º¸Ê";
 }
@@ -39,6 +39,11 @@ HRESULT textMap3::init()
 	_fan->init(1331, 167);
 	_laser = new laser;
 	_laser->fire(898, 170, 491);
+
+	_grunt = new grunt(true, false, Vec2(0, 0));
+	_grunt->addEnemy(773, 560, FOWARD::LEFT, Vec2(0, 0));
+	_grunt->addEnemy(550, 560, FOWARD::RIGHT, Vec2(0, 0));
+
 	return S_OK;
 }
 
@@ -46,8 +51,10 @@ void textMap3::release()
 {
 	_fan->release();
 	_laser->release();
+	_grunt->release();
 	SAFE_DELETE(_fan);
 	SAFE_DELETE(_laser);
+	SAFE_DELETE(_grunt);
 }
 
 void textMap3::update()
@@ -56,11 +63,18 @@ void textMap3::update()
 	timeCheck();
 
 	coltoMap();
+	//ÀûÃæµ¹
+	coltoMapEnemy(_grunt);
+
+
+
 	_isClear = true;
 	CheckClear();
 	goalCol();
 	checkPlayerDie();
 	_laser->update();
+	_grunt->update();
+
 	//--------------------------------------------------
 	PLAYER->update();
 	ANIMATION->update();
@@ -78,13 +92,14 @@ void textMap3::render()
 	//¸Ê
 	ZORDER->ZorderRender(_addforslow, ZSLOWFADE, 1, 1318, 154);
 	ZORDER->ZorderRender(_map, ZFLOORMAP, 0, 0, 0);
-	ZORDER->ZorderRender(_map_front, ZABOVEMAP, 0, 0, 0);
+	ZORDER->ZorderRender(_map_front, ZABOVEMAP, 0, 1365, 154);
 
 	if (_isDebug) ZORDER->ZorderRender(_colmap, ZCOLMAP, 0, 0, 0);
 
 	//¼­Å§·¹ÀÌÅÍ
 	_fan->render();
 	_laser->render();
+	_grunt->render();
 
 	//--------------------------------------------------
 	PLAYER->render();

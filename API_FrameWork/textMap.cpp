@@ -34,6 +34,12 @@ HRESULT textMap::init()
 	_door = new door;
 	_door->addEnemy(441, 225);
 
+	_grunt = new grunt(false, true, Vec2(1038, 354));
+	_grunt->addEnemy(756, 254, FOWARD::RIGHT, Vec2(583, 1039));
+	//_grunt->addEnemy(1500, 254, FOWARD::LEFT, Vec2(1040, 1500));
+	_grunt->addEnemy(450, 254, FOWARD::LEFT, Vec2(0, 0));
+	_grunt->addEnemy(200, 254, FOWARD::RIGHT, Vec2(0, 0));
+
 	_timeCount = _timelimit;
     return S_OK;
 }
@@ -41,7 +47,9 @@ HRESULT textMap::init()
 void textMap::release()
 {
 	_door->release();
+	_grunt->release();
 	SAFE_DELETE(_door);
+	SAFE_DELETE(_grunt);
 }
 
 void textMap::update()
@@ -50,10 +58,16 @@ void textMap::update()
 	timeCheck();
 	//충돌
 	coltoMap();
+	//적충돌
+	coltoMapEnemy(_grunt);
+
+
+
 	_isClear = true;
 	CheckClear();
 	goalCol();
 	_door->update();
+	_grunt->update();
     //--------------------------------------------------
 	PLAYER->update();
 	ANIMATION->update();
@@ -72,6 +86,9 @@ void textMap::render()
 	ZORDER->ZorderRender(_map, ZFLOORMAP, 0, 0, 0);
 	if(_isDebug) ZORDER->ZorderRender(_colmap, ZCOL1, 0, 0, 0);
 	_door->render();
+	_grunt->render();
+
+
 	//--------------------------------------------------
 	PLAYER->render();
 	COLLISION->render();

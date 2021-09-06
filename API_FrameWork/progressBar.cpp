@@ -14,6 +14,8 @@ HRESULT progressBar::init(char* frontImage, char* backImage, float x, float y, i
 	_x = x;
 	_y = y;
 
+	_ratio = 0.f;
+
 	_rcProgress = RectMake(x, y, width, height);
 	_progressBarFront = new image;
 	_progressBarFront->init(frontImage, x, y, width, height, true, RGB(255, 0, 255));
@@ -91,6 +93,7 @@ void progressBar::render(float z)
 
 void progressBar::setGauge(float currentGauge, float maxGauge, BYTE alpha)
 {
+	_ratio = (currentGauge / maxGauge);
 	_width = (currentGauge / maxGauge) * _progressBarFront->getWidth();
 	_alpha = alpha;
 }

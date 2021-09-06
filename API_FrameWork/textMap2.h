@@ -8,6 +8,9 @@ private:
 	RECT _butRgn;
 	animation* _butAni;
 	bool _canTurnOnOff;
+
+
+
 public:
 	textMap2();
 	~textMap2();

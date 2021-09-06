@@ -47,6 +47,7 @@ private:
 	bool _isLand;
 	bool _colBlack;
 	bool _colYello;
+	bool _stillWall;
 	bool _ignoreBlack;
 
 	//공격
@@ -113,11 +114,14 @@ public:
 	bool getColYello() { return _colYello; }
 	void setColBlack(bool colBlack) { _colBlack = colBlack; }
 	void setColYello(bool colyel) { _colYello = colyel; }
+	void setStillWall(bool sw) { _stillWall = sw; }
+	bool getStillWall() { return _stillWall; }
 	bool getIgnoreBlack() { return _ignoreBlack; }
 	void setIgnoreBlack(bool igblack) { _ignoreBlack = igblack; }
 	PlayerFSM* getFSM() { return _FSM; }
 	bool getLaserDie() {return _isLaserDie;	}
 	void setLaserDie(bool ld) { _isLaserDie = ld; }
+	playerSlash* getPlayerSlash() {	return _slash;	}
 public:
 	////메멘토패턴 저장,복구
 	//Memento save()const { return Memento(_img, _z, _col->getRect().bottom, _x, _y, _ani->getFrameX(), _ani->getFrameY()); }

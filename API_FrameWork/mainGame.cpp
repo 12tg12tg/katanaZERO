@@ -44,8 +44,16 @@ void mainGame::update()
 
 	_KZmain->update();
 
-
-
+	//ÀÌÆåÆ®½ÇÇè
+	//RECT rect = RectMakeCenter(WINSIZEX / 2, WINSIZEY / 2, 100, 100);
+	//ZORDER->UIRectangle(rect, ZMAXLAYER);
+	//if (INPUT->isOnceKeyDown(VK_SPACE)) {
+	//	float angle = UTIL::getAngle(WINSIZEX / 2, WINSIZEY / 2, m_ptMouse.x, m_ptMouse.y);
+	//	float startX = WINSIZEX / 2 + 1566 * cos((float)PI + angle);
+	//	float startY = WINSIZEY / 2 - 1566 * sinf((float)PI + angle);
+	//	//EFFECT->play("hitEffect", ZEFFECT2, startX, startY, angle, 150);
+	//	EFFECT->play("hitEffect", ZEFFECT2, WINSIZEX/2, WINSIZEY/2, angle, 150);
+	//}	
 
 
 	setIsDebug();

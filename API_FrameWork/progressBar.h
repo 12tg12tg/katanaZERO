@@ -9,6 +9,8 @@ private:
 	int _x, _y;
 	int _width;
 
+	float _ratio;
+
 	image* _progressBarFront;
 	image* _progressBarBack;
 
@@ -33,6 +35,7 @@ public:
 	void setY(int y) { _y = y; }
 
 	RECT getRect()const { return _rcProgress; }
-
+	
+	float getRatio() { return _ratio; }
 };
 

@@ -93,7 +93,7 @@ void KatanaZero::update()
             _caretaker->allVectorClear();
             _state = MAINSTATE::INGAME;
             EFFECT->deleteParticle();
-            MAIN->getUIlink()->slowReset();
+            MAIN->getUIlink()->reinit();
             PLAYER->reInit();
             PLAYER->getFSM()->ChangeState(PLAYERSTATE::IDLE);
             SCENE->curScene()->release();
@@ -185,7 +185,7 @@ void KatanaZero::render()
         image* map = dynamic_cast<Cmap*>(SCENE->curScene())->getMap();
         image* map_front = dynamic_cast<Cmap*>(SCENE->curScene())->getMap_front();
         ZORDER->ZorderRender(map, ZFLOORMAP, 0, 0, 0);
-        if (map_front) ZORDER->ZorderRender(map_front, ZABOVEMAP, 0, 0, 0);
+        if (map_front) ZORDER->ZorderRender(map_front, ZABOVEMAP, 0, 1365, 154);
     }
         break;
     case MAINSTATE::PAUSE:
@@ -208,7 +208,7 @@ void KatanaZero::sceneInit()
     _testmap1 = dynamic_cast<textMap*>(SCENE->addScene("Å×½ºÆ®¸Ê1", new textMap));
     _testmap2 = dynamic_cast<textMap2*>(SCENE->addScene("Å×½ºÆ®¸Ê2", new textMap2));
     _testmap3 = dynamic_cast<textMap3*>(SCENE->addScene("Å×½ºÆ®¸Ê3", new textMap3));
-    SCENE->changeScene("Å×½ºÆ®¸Ê3");
+    SCENE->changeScene("Å×½ºÆ®¸Ê1");
     //------------------------------------------------------------------------------------------------
 }
 
@@ -222,6 +222,9 @@ void KatanaZero::collisionInit()
     COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::DOOR);
     COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::LASER);
     COLLISION->CollisionCheck(COLLIDER_TYPE::ENEMY_UNIT, COLLIDER_TYPE::LASER);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::PLAYER_UNIT, COLLIDER_TYPE::SEARCH);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::LASER, COLLIDER_TYPE::SEARCH);
+    COLLISION->CollisionCheck(COLLIDER_TYPE::DOOR, COLLIDER_TYPE::SEARCH);
 }
 
 void KatanaZero::dropFrame()
@@ -347,7 +350,7 @@ void KatanaZero::updateReplay()
             _replayDone = false;
             _state = MAINSTATE::INGAME;
             EFFECT->deleteParticle();
-            MAIN->getUIlink()->slowReset();
+            MAIN->getUIlink()->reinit();
             PLAYER->reInit();
             SCENE->changeScene(dynamic_cast<Cmap*>(SCENE->curScene())->getNextSceneName());
         }
