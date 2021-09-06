@@ -57,7 +57,7 @@ void grunt::release()
 	for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end(); )
 	{
 		COLLISION->erase(_viEnemy->col);
-		//COLLISION->erase(_viEnemy->searchCol);
+		COLLISION->erase(_viEnemy->searchCol);
 		_viEnemy = _vEnemy.erase(_viEnemy);
 	}
 }
