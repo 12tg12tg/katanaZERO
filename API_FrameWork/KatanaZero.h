@@ -8,6 +8,7 @@
 #include "textMap.h"
 #include "textMap2.h"
 #include "textMap3.h"
+#include "textMap4.h"
 //-----------------------------
 
 
@@ -22,6 +23,7 @@ private:
 	textMap* _testmap1;
 	textMap2* _testmap2;
 	textMap3* _testmap3;
+	textMap4* _testmap4;
 	//-------------------------
 
 	//리플레이 bool
@@ -39,7 +41,13 @@ private:
 	MAINSTATE _state;
 	//메멘토효과
 	Caretaker* _caretaker;
-
+	//다시시작이미지
+	image* _restartBox;
+	image* _restartBox_over;
+	RECT _restartTextRc;
+	bool _fortextNeon;
+	bool _startRollback;
+	int _rollbackstartCount;
 	//슬로우
 	BYTE _slowAlpha;
 	bool _isSlow;
@@ -58,6 +66,8 @@ public:
 	void render();
 
 	void dropFrame();
+	void restartBoxupdate();
+	void restartBoxrender();
 
 	void showReplay();
 	void updateReplay();

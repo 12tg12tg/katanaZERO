@@ -71,7 +71,6 @@ void textMap3::update()
 
 
 
-	_isClear = true;
 	CheckClear();
 	goalCol();
 	checkPlayerDie();
@@ -108,6 +107,13 @@ void textMap3::render()
 	PLAYER->render();
 	COLLISION->render();
 	EFFECT->render();
+}
+
+void textMap3::CheckClear()
+{
+	if (_grunt->checkEverybodyDie()) {
+		_isClear = true;
+	}
 }
 
 void textMap3::checkPlayerDie()

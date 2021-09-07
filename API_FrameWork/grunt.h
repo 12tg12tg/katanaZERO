@@ -36,6 +36,7 @@ public:
 	void laserCollision();
 	void laserDie();
 	void attack();
+	bool checkEverybodyDie();
 
 	virtual void setCollider();
 };

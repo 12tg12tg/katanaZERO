@@ -58,6 +58,12 @@ private:
 	int _laserCount;
 	int _laserX;
 
+	//타임아웃
+	bool isTimeOut;
+
+	//무적
+	bool _isGracePeriod;
+
 	//잔상
 	bool _specOn;
 	float _specCount;
@@ -122,6 +128,10 @@ public:
 	bool getLaserDie() {return _isLaserDie;	}
 	void setLaserDie(bool ld) { _isLaserDie = ld; }
 	playerSlash* getPlayerSlash() {	return _slash;	}
+	bool IsGracePeriod() { return _isGracePeriod; }
+	void setIsGravePeriod(bool set) { _isGracePeriod = set; }
+	bool getIsTimeOut() {return isTimeOut;	}
+	void setIsTimeOut(bool to) { isTimeOut = to; }
 public:
 	////메멘토패턴 저장,복구
 	//Memento save()const { return Memento(_img, _z, _col->getRect().bottom, _x, _y, _ani->getFrameX(), _ani->getFrameY()); }

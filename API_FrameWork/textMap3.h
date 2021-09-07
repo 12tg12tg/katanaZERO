@@ -19,6 +19,7 @@ public:
 	void release();
 	void update();
 	void render();
+	virtual void CheckClear();
 
 	void checkPlayerDie();
 };

@@ -1,21 +1,17 @@
 #pragma once
 #include "Cmap.h"
-#include "door.h"
-#include "grunt.h"
-class textMap : public Cmap
+class textMap4 : public Cmap
 {
 private:
-	door* _door;
-	grunt* _grunt;
+
 public:
-	textMap();
-	~textMap();
+	textMap4();
+	~textMap4();
 
 	virtual HRESULT init();
 	virtual void release();
 	virtual void update();
 	virtual void render();
 	virtual void CheckClear();
-
 };
 

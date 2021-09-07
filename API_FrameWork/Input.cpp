@@ -7,6 +7,8 @@ Input::~Input(){}
 
 HRESULT Input::init()
 {
+    _isAnyKeyDown = false;
+
     //키가 전부 눌려있지 않은 상태로 초기화
     for (int i = 0; i < KEYMAX; i++)
     {

@@ -58,7 +58,7 @@ void gruntPunch::update()
 		//충돌판정
 		if (_viBullet->count > 20) {
 			if (_viBullet->col->isThere(COLLIDER_TYPE::PLAYER_UNIT) &&
-				PLAYER->getState()!=PLAYERSTATE::ROLL) {
+				!PLAYER->IsGracePeriod()) {
 				float angle = _viBullet->col->getPos().AngleTo(PLAYER->getCollider()->getPos());
 				PLAYER->getFSM()->SetDeath(angle, 10);
 				PLAYER->getCollider()->setCanCol(false);

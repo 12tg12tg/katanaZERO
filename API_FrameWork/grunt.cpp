@@ -184,7 +184,7 @@ void grunt::move()
 	switch (_viEnemy->state)
 	{
 	case ENEMYSTATE::IDLE:
-		if (_viEnemy->patterncount > 100) {
+		if (_viEnemy->patterncount > 60 && PLAYER->getState()!=PLAYERSTATE::DEAD) {
 			_viEnemy->state = ENEMYSTATE::FIND;
 			_viEnemy->patterncount = 0;
 		}
@@ -692,7 +692,7 @@ void grunt::attack()
 	if (!(!_viEnemy->isDeath && !_viEnemy->laserDie && _viEnemy->findPlayer)) return;
 	if (_viEnemy->state == ENEMYSTATE::ATTACK || _viEnemy->state == ENEMYSTATE::IDLE) return;
 	Vec2 pos = _viEnemy->col->getPos();
-	if (PLAYER->getCollider()->getPos().Distance(pos) < 100) {
+	if (PLAYER->getCollider()->getPos().Distance(pos) < 60) {
 		FOWARD foward = pos.whichFoward(PLAYER->getCollider()->getPos());
 		if (foward == FOWARD::LEFT || foward == FOWARD::LEFTDOWN || foward == FOWARD::LEFTUP || foward == FOWARD::UP) foward = FOWARD::LEFT;
 		else foward = FOWARD::RIGHT;
@@ -702,4 +702,13 @@ void grunt::attack()
 		_viEnemy->haveToChangeAni = true;
 		_viEnemy->attackDelay = 0;
 	}
+}
+
+bool grunt::checkEverybodyDie()
+{
+	for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end(); ++_viEnemy)
+	{
+		if (!(_viEnemy->isDeath || _viEnemy->laserDie)) return false;
+	}
+	return true;
 }

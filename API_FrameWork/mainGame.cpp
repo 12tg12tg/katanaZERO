@@ -59,6 +59,7 @@ void mainGame::update()
 	setIsDebug();
 	setFPSprint();
 	//========================================================
+	INPUT->setIsAnyKeyDown(false);
 }
 
 void mainGame::render(/*HDC hdc*/)	//그림그리는곳

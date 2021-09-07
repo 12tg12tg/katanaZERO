@@ -70,7 +70,8 @@ void Caretaker::rollback()
 		isRollback = true;
 		i = _vZorderhistory.size()-1;
 		saveCount = 0;
-		rollbackNum = _vZorderhistory.size() / 200;
+		if (_vZorderhistory.size() >= 600)rollbackNum = _vZorderhistory.size() / 200;
+		else rollbackNum = 3;
 	}
 	else {
 		if (i < 0) {
@@ -85,7 +86,7 @@ void Caretaker::rollback()
 		else {
 			ZORDER->restore(_vZorderhistory[i], false);
 			CAMERA->restore(_vCamerahistory[i]);
-			i -= 3;
+			i -= rollbackNum;
 		}
 	}
 }

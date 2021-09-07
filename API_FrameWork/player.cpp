@@ -57,11 +57,6 @@ void player::update()
 		laserDie();	//레이저사망시
 	}
 	//상태테스트
-	//if (INPUT->isOnceKeyDown('J')) _FSM->ChangeState(PLAYERSTATE::DOORBREAK);
-	//if (INPUT->isOnceKeyDown('K')) _FSM->ChangeState(PLAYERSTATE::DEAD);
-	//if (INPUT->isOnceKeyDown('R')) _FSM->ChangeState(PLAYERSTATE::HURTCOVER);
-
-
 
 }
 
@@ -124,9 +119,11 @@ void player::render()
 		}
 	}
 	else {
-		EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x+RND->getInt(30)-15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
-		EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x+RND->getInt(30)-15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
-		EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x+RND->getInt(30)-15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
+		if (_laserX <= _img->getFrameHeight()) {
+			EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x + RND->getInt(30) - 15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
+			EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x + RND->getInt(30) - 15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
+			EFFECT->addParticle("레이저파편", ZEFFECT2, _col->getPos().x + RND->getInt(30) - 15, _y + _laserX, 10, RND->getFloatFromTo(PI_8, PI_8 * 7), 20, 5, false);
+		}
 		ZORDER->ZorderFrameRender(IMAGE->findImage("player_laserDie"), _z, _bottom, _x, _y + _laserX, _ani->getFrameX(),
 			_ani->getFrameY(), 0, _laserX, _img->getFrameWidth(), _img->getFrameHeight() - _laserX);
 		ZORDER->SaveFrameRender(_img, IMAGE->findImage("player_bw_ALL1"), _z, _bottom, _x, _y + _laserX, _ani->getFrameX(),
@@ -163,6 +160,8 @@ void player::reInit()
 
 	_colYello = false;
 	_stillWall = false;
+
+	_isGracePeriod = false;
 
 	_col->setCanCol(true);
 	_foward = FOWARD::RIGHT;

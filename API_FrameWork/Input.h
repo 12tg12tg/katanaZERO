@@ -7,7 +7,7 @@ class Input : public Singleton<Input>
 private:
 	bitset<KEYMAX> _keyUp;
 	bitset<KEYMAX> _keyDown;
-
+	bool _isAnyKeyDown;
 public:
 	Input();
 	~Input();
@@ -20,5 +20,7 @@ public:
 	bool isStayKeyDown(int key); //누르고있냐
 	bool isToggleKey(int key);//토글키냐
 
+	void setIsAnyKeyDown(bool isanykeydown) { _isAnyKeyDown = isanykeydown; }
+	bool isAnyKeyDown() { return _isAnyKeyDown; }
 };
 

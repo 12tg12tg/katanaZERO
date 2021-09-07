@@ -147,6 +147,7 @@
     <ClInclude Include="animation.h" />
     <ClInclude Include="animationManager.h" />
     <ClInclude Include="API_FrameWork.h" />
+    <ClInclude Include="boss.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Caretaker.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="textMap.h" />
     <ClInclude Include="textMap2.h" />
     <ClInclude Include="textMap3.h" />
+    <ClInclude Include="textMap4.h" />
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="txtData.h" />
@@ -201,6 +203,7 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="animationManager.cpp" />
     <ClCompile Include="API_FrameWork.cpp" />
+    <ClCompile Include="boss.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Caretaker.cpp" />
@@ -235,6 +238,7 @@
     <ClCompile Include="textMap.cpp" />
     <ClCompile Include="textMap2.cpp" />
     <ClCompile Include="textMap3.cpp" />
+    <ClCompile Include="textMap4.cpp" />
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="txtData.cpp" />

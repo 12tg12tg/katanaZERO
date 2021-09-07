@@ -118,6 +118,7 @@ LRESULT gameNode::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 		m_ptMouse.y = HIWORD(lParam);
 		break;
 	case WM_KEYDOWN:
+		INPUT->setIsAnyKeyDown(true);
 		//switch (wParam)
 		//{
 		//case VK_ESCAPE: //ESC

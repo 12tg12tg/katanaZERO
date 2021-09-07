@@ -41,6 +41,7 @@ HRESULT textMap::init()
 	_grunt->addEnemy(200, 265, FOWARD::RIGHT, Vec2(0, 0));
 
 	_timeCount = _timelimit;
+	_isClear = false;
     return S_OK;
 }
 
@@ -64,7 +65,6 @@ void textMap::update()
 
 
 
-	_isClear = true;
 	CheckClear();
 	goalCol();
 	_door->update();
@@ -94,5 +94,12 @@ void textMap::render()
 	PLAYER->render();
 	COLLISION->render();
 	EFFECT->render();
+}
+
+void textMap::CheckClear()
+{
+	if (_grunt->checkEverybodyDie()) {
+		_isClear = true;
+	}
 }
 

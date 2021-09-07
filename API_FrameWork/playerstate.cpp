@@ -373,6 +373,7 @@ Player_Roll::~Player_Roll()
 
 void Player_Roll::init()
 {
+	PLAYER->setIsGravePeriod(true);
 	PLAYER->setState(PLAYERSTATE::ROLL);
 	PLAYER->setSpeed(10.f);
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
@@ -395,6 +396,7 @@ void Player_Roll::update()
 
 	//구르기 끝나면
 	if (!PLAYER->getAni()->isPlay()) {
+		PLAYER->setIsGravePeriod(false);
 		if (INPUT->isStayKeyDown('D')|| INPUT->isStayKeyDown('A')) {
 			m_pFSM->ChangeState(PLAYERSTATE::RUN);
 		}
@@ -810,10 +812,20 @@ void Player_Attack::init()
 		SOUND->play("slash3", 0.1f);
 		break;
 	}
+	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::ROLL) {
+		PLAYER->setIsGravePeriod(true);
+		_GracePeriodCount = 0;
+	}
 }
 
 void Player_Attack::update()
 {
+	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::ROLL) {
+		++_GracePeriodCount;
+		if (_GracePeriodCount > 20) {
+			PLAYER->setIsGravePeriod(false);
+		}
+	}
 	//속도설정 - 최대속도에서 accel만큼 감속
 	float speed;
 	speed = PLAYER->getSpeed();
@@ -954,12 +966,14 @@ void Player_Dead::update()
 		}
 		if (_speed <= 0) {
 			_speed = 0;
+			PLAYER->setIsTimeOut(false);
 			MAIN->changeMainState(MAINSTATE::ROLLBACK);
 			/*통하지않을거야.. -> 클릭시 되감기 -> 리셋*/
 		}
 		PLAYER->setY(PLAYER->getY() + 10);
 	}
 	else {
+		PLAYER->setIsTimeOut(true);
 		PLAYER->setY(PLAYER->getY() + 10);
 		if (!PLAYER->getAni()->isPlay()) {
 			MAIN->changeMainState(MAINSTATE::ROLLBACK);

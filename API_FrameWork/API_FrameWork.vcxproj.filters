@@ -130,14 +130,17 @@
     <Filter Include="KatanaZero\4bullet\playerSlash">
       <UniqueIdentifier>{297b65af-37bb-4800-a4f6-718cdc8ecb58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KatanaZero\5enemy\NewFilter1">
-      <UniqueIdentifier>{d6454607-9c5f-4a9b-81c3-2689b3e389cc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="KatanaZero\5enemy\grunt">
       <UniqueIdentifier>{9ff248c9-57cb-45b7-a97e-039278509a1b}</UniqueIdentifier>
     </Filter>
     <Filter Include="KatanaZero\4bullet\gruntPunch">
       <UniqueIdentifier>{70b562b1-5625-4ddf-a95d-53cd0784a4b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\3Map\maps\4">
+      <UniqueIdentifier>{dda899b1-1d0c-4a07-9360-628048d9506b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\5enemy\boss">
+      <UniqueIdentifier>{7634c3d1-2e41-436f-a2a9-837a1a94d1f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -297,6 +300,12 @@
     <ClInclude Include="gruntPunch.h">
       <Filter>KatanaZero\4bullet\gruntPunch</Filter>
     </ClInclude>
+    <ClInclude Include="textMap4.h">
+      <Filter>KatanaZero\3Map\maps\4</Filter>
+    </ClInclude>
+    <ClInclude Include="boss.h">
+      <Filter>KatanaZero\5enemy\boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -427,6 +436,12 @@
     </ClCompile>
     <ClCompile Include="gruntPunch.cpp">
       <Filter>KatanaZero\4bullet\gruntPunch</Filter>
+    </ClCompile>
+    <ClCompile Include="textMap4.cpp">
+      <Filter>KatanaZero\3Map\maps\4</Filter>
+    </ClCompile>
+    <ClCompile Include="boss.cpp">
+      <Filter>KatanaZero\5enemy\boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

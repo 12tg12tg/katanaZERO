@@ -33,6 +33,13 @@ HRESULT KatanaZero::init()
     _caretaker = new Caretaker;
     _caretaker->init();
 
+    _restartBox = IMAGE->addImage("restartbox", "images/ui/restartBox.bmp", 395, 240);
+    _restartBox_over = IMAGE->addImage("restartbox_over", "images/ui/restartBox_over.bmp", 395, 240, true);
+    _fortextNeon = false;
+    _startRollback = false;
+    _rollbackstartCount = 0;
+    _restartTextRc = RectMakeCenter(WINSIZEX / 2 + 40, WINSIZEY / 2 + 60, 395 - 20, 240 - 20);
+
     m_debugRc = RectMake(1110, 79, 220, 200);
     _slowAlpha = 0;
     return S_OK;
@@ -85,19 +92,23 @@ void KatanaZero::update()
         break;
     case MAINSTATE::ROLLBACK:
     {
-        //m_ui->update();
-        _caretaker->rollback();
-        CAMERA->update();
-        if (_caretaker->getRollbackDone()) {
-            _caretaker->setRollbackDone(false);
-            _caretaker->allVectorClear();
-            _state = MAINSTATE::INGAME;
-            EFFECT->deleteParticle();
-            MAIN->getUIlink()->reinit();
-            PLAYER->reInit();
-            PLAYER->getFSM()->ChangeState(PLAYERSTATE::IDLE);
-            SCENE->curScene()->release();
-            SCENE->curScene()->init();
+        restartBoxupdate();
+        if (_startRollback) {
+            //m_ui->update();
+            _caretaker->rollback();
+            CAMERA->update();
+            if (_caretaker->getRollbackDone()) {
+                _startRollback = false;
+                _caretaker->setRollbackDone(false);
+                _caretaker->allVectorClear();
+                _state = MAINSTATE::INGAME;
+                EFFECT->deleteParticle();
+                MAIN->getUIlink()->reinit();
+                PLAYER->reInit();
+                PLAYER->getFSM()->ChangeState(PLAYERSTATE::IDLE);
+                SCENE->curScene()->release();
+                SCENE->curScene()->init();
+            }
         }
     }
         break;
@@ -181,11 +192,14 @@ void KatanaZero::render()
 
     case MAINSTATE::ROLLBACK:
     {
-        //m_ui->render();
-        image* map = dynamic_cast<Cmap*>(SCENE->curScene())->getMap();
-        image* map_front = dynamic_cast<Cmap*>(SCENE->curScene())->getMap_front();
-        ZORDER->ZorderRender(map, ZFLOORMAP, 0, 0, 0);
-        if (map_front) ZORDER->ZorderRender(map_front, ZABOVEMAP, 0, 1365, 154);
+        restartBoxrender();
+        if (_startRollback) {
+            m_ui->render();
+            image* map = dynamic_cast<Cmap*>(SCENE->curScene())->getMap();
+            image* map_front = dynamic_cast<Cmap*>(SCENE->curScene())->getMap_front();
+            ZORDER->ZorderRender(map, ZFLOORMAP, 0, 0, 0);
+            if (map_front) ZORDER->ZorderRender(map_front, ZABOVEMAP, 0, 1365, 154);
+        }
     }
         break;
     case MAINSTATE::PAUSE:
@@ -208,7 +222,8 @@ void KatanaZero::sceneInit()
     _testmap1 = dynamic_cast<textMap*>(SCENE->addScene("테스트맵1", new textMap));
     _testmap2 = dynamic_cast<textMap2*>(SCENE->addScene("테스트맵2", new textMap2));
     _testmap3 = dynamic_cast<textMap3*>(SCENE->addScene("테스트맵3", new textMap3));
-    SCENE->changeScene("테스트맵1");
+    _testmap4 = dynamic_cast<textMap4*>(SCENE->addScene("보스맵", new textMap4));
+    SCENE->changeScene("보스맵");
     //------------------------------------------------------------------------------------------------
 }
 
@@ -253,6 +268,52 @@ void KatanaZero::dropFrame()
 		_slowAlpha -= 5;
 		if (_slowAlpha < 0)_slowAlpha = 0;
 
+    }
+}
+
+void KatanaZero::restartBoxupdate()
+{
+    if (!_startRollback) {
+        if (_rollbackstartCount % 5 == 0) {
+            _fortextNeon = !_fortextNeon;
+        }
+        _rollbackstartCount++;
+        if (_rollbackstartCount > 20) {
+            if (INPUT->isAnyKeyDown()||INPUT->isOnceKeyDown(VK_LBUTTON)||INPUT->isOnceKeyDown(VK_RBUTTON)) {
+                _rollbackstartCount = 0;
+                _startRollback = true;
+                PLAYER->setIsTimeOut(false);
+            }
+        }
+        SCENE->update();
+    }
+}
+
+void KatanaZero::restartBoxrender()
+{
+    if (!_startRollback) {
+        ZORDER->UIAlphaRender(_restartBox, ZUIFIRTH, 0, WINSIZEX / 2 - _restartBox->getWidth() / 2, WINSIZEY / 2 - _restartBox->getHeight() / 2, 180);
+        ZORDER->UIAlphaRender(_restartBox_over, ZUIFIRTH, 1, WINSIZEX / 2 - _restartBox->getWidth() / 2, WINSIZEY / 2 - _restartBox->getHeight() / 2, 180);
+        
+        string str;
+        if (PLAYER->getIsTimeOut()) str = "         전부 기억할 수 없어.\n      더 효율적으로 움직여야 해.\n\n      (아무 버튼이나 눌러 재시작)";
+        else str = "                아니....\n           통하지 않을 거야.\n\n      (아무 버튼이나 눌러 재시작)";
+        
+        if (_fortextNeon) {
+            ZORDER->UIDrawText(str, ZUIFIRTH, _restartTextRc,
+                CreateFont(20, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
+                    0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("소야논8")),
+                RGB(64, 180, 219), DT_LEFT | DT_VCENTER);
+        }
+        else {
+            ZORDER->UIDrawText(str, ZUIFIRTH, _restartTextRc,
+                CreateFont(20, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
+                    0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("소야논8")),
+                RGB(138, 207, 242), DT_LEFT | DT_VCENTER);
+        }
+
+        m_ui->render();
+        SCENE->render();
     }
 }
 

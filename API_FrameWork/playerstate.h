@@ -166,6 +166,8 @@ private:
 	playerSlash* _slash;
 	float _attackCenterX;
 	float _attackCenterY;
+
+	int _GracePeriodCount;
 public:
 	Player_Attack(playerSlash* sl);
 	~Player_Attack();
