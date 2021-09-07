@@ -70,7 +70,7 @@ void PlayerFSM::SetState(PLAYERSTATE _eType)
 		}
 	}
 }
-void PlayerFSM::SetDeath(float angle)
+void PlayerFSM::SetDeath(float angle, float power)
 {
 	for (UINT i = 0; i < m_vecState.size(); ++i)
 	{
@@ -78,7 +78,7 @@ void PlayerFSM::SetDeath(float angle)
 		{
 			m_pCurState = m_vecState[i];
 			m_pPreState = m_vecState[i];
-			dynamic_cast<Player_Dead*>(m_pCurState)->init(angle);
+			dynamic_cast<Player_Dead*>(m_pCurState)->init(angle, power);
 			return;
 		}
 	}
@@ -914,11 +914,11 @@ void Player_Dead::init()
 	CAMERA->setShake(5, 3, 1);
 }
 
-void Player_Dead::init(float angle)
+void Player_Dead::init(float angle, float power)
 {
 	_timeOver = false;
 	_angle = angle;
-	_speed = 20;
+	_speed = power;
 	PLAYER->setState(PLAYERSTATE::DEAD);
 	//ÇÁ·¹ÀÓ
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {

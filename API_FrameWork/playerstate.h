@@ -21,7 +21,7 @@ public:
 	void AddState(PlayerState* _pState);
 	void ChangeState(PLAYERSTATE _eType);
 	void SetState(PLAYERSTATE _eType);
-	void SetDeath(float angle);
+	void SetDeath(float angle, float power);
 	PlayerState* getState() { return m_pCurState; }
 	PlayerState* getPreState() { return m_pPreState; }
 };
@@ -201,7 +201,7 @@ public:
 	~Player_Dead();
 
 	virtual void init();
-	virtual void init(float angle);
+	virtual void init(float angle, float power);
 	virtual void update();
 	virtual void release();
 	bool getTimeover() { return _timeOver; }

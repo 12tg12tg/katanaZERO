@@ -57,6 +57,8 @@ public:
 
 	void CollisionGroup(UINT left, UINT right);
 
+	map<UINT, list<Collider*>>& getTotalCollider() { return m_totalCollider; }
+
 	void setIsDebug(bool isDebug) { _isDebug = isDebug; }
 };
 

@@ -44,6 +44,8 @@ HRESULT textMap3::init()
 	_grunt->addEnemy(773, 560+19, FOWARD::LEFT, Vec2(0, 0));
 	_grunt->addEnemy(550, 560+19, FOWARD::RIGHT, Vec2(0, 0));
 
+	//_grunt->addEnemy(600, 560+19, FOWARD::RIGHT, Vec2(0, 0));
+	//_grunt->addEnemy(800, 560+19, FOWARD::LEFT, Vec2(0, 0));
 	return S_OK;
 }
 
@@ -112,6 +114,6 @@ void textMap3::checkPlayerDie()
 {
 	if (_fan->getCollider()->isColIng() && !_fan->canPass() && PLAYER->getState() != PLAYERSTATE::DEAD) {
 		float deathAngle = _fan->getCollider()->getPos().AngleTo(PLAYER->getCollider()->getPos());
-		PLAYER->getFSM()->SetDeath(deathAngle);
+		PLAYER->getFSM()->SetDeath(deathAngle, 20);
 	}
 }

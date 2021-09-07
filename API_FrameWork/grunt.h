@@ -1,5 +1,6 @@
 #pragma once
 #include "enemy.h"
+#include "gruntPunch.h"
 class grunt : public enemy
 {
 private:
@@ -13,6 +14,8 @@ private:
 	bool playerisDownside;
 
 	float maxgravity=8.f;
+
+	gruntPunch* _gP;
 public:
 	grunt(bool isLaser, bool isStair = false, Vec2 downPoint = { 0, 0 }, Vec2 upPoint = { 0, 0 });
 	~grunt();
@@ -30,6 +33,9 @@ public:
 	virtual void getgravity();
 	void checkRoute();
 	void doorCollision();
+	void laserCollision();
+	void laserDie();
+	void attack();
 
 	virtual void setCollider();
 };

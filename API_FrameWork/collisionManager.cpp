@@ -161,9 +161,9 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 	list<Collider*>::iterator listIter2 = ltRight.begin();
 
 	COL_ID colID;
-	for (listIter1; listIter1 != ltLeft.end(); ++listIter1)
+	for (listIter1 = ltLeft.begin(); listIter1 != ltLeft.end(); ++listIter1)
 	{
-		for (listIter2; listIter2 != ltRight.end(); ++listIter2)
+		for (listIter2 = ltRight.begin(); listIter2 != ltRight.end(); ++listIter2)
 		{
 			colID.left = (*listIter1)->getID();
 			colID.right = (*listIter2)->getID();
@@ -182,6 +182,23 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 				(*listIter2)->_isEnter = false;
 				(*listIter2)->_isIng = false;
 			}
+
+
+			////체크후 삭제 - 해결완료. 2번iter가 begin으로 오지 않고 있음. - debug용으로 냅두자
+			//if ((*listIter1)->getType() == COLLIDER_TYPE::ENEMY_UNIT ||
+			//	(*listIter2)->getType() == COLLIDER_TYPE::ENEMY_UNIT)
+			//{
+			//	DWORD id1 = (*listIter1)->getID();
+			//	DWORD id2 = (*listIter2)->getID();
+			//	COLLIDER_TYPE type1 = (*listIter1)->getType();
+			//	COLLIDER_TYPE type2 = (*listIter2)->getType();
+			//	int i = 3;
+			//}
+
+
+
+
+
 
 			//충돌체크
 			if (isCollision((*listIter1), (*listIter2)))

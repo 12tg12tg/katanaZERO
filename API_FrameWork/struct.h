@@ -46,12 +46,17 @@ struct tagEnemy
 	int destinationY;
 	float angle;
 	CHASEPOINT cpoint;
+	bool laserDie;
+	int laserX;
+	bool laserDieover;
+	int attackDelay;
 };
 
 struct tagBullet
 {
 	image* img;
 	image* bwimg;
+	FOWARD foward;
 	animation* ani;
 	Collider* col;
 	float x, y, z;
@@ -62,4 +67,5 @@ struct tagBullet
 	bool isOn;
 	float count;
 	int alpha;
+	bool firstTime;
 };
