@@ -1,10 +1,59 @@
 #pragma once
 #include "gameNode.h"
+class BossFSM;
 class boss : public gameNode
 {
-private:
-
 public:
+	BossFSM* _FSM;
+public:
+	float _x, _y, _z;
+	float _bottom;
+	image* _img;
+	image* _bwimg;
+	animation* _ani;
+	Collider* _col;
+	FOWARD _foward;
+	float _speed;
+	BOSSSTATE _state;
+
+	int _hp;
+
+	bool _isGracePeriod;
+
+	bool _isSideCol;
+	bool _isLand;
+	bool _isCut;
+
+	image* _headImg;
+	animation* _headAni;
+	float _headX;
+	float _headY;
+	float _headjumpPower;
+	float _headgravity;
+	float _headmaxGravity;
+	float _headSpeed;
+	float _headbreak;
+	bool _headLand;
+public:
+	boss();
+	~boss();
+
+	HRESULT init(float x, float y);
+	void release();
+	void update();
+	void render();
+	void reInit();
+
+	void stateInit();
+	void soundInit();
+	void imageInit();
+
+	void setCollider();
+	void setpos();
+	void headFly();
+
+	BossFSM* getFSM() { return _FSM; }
+
 
 };
 

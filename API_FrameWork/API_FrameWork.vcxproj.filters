@@ -306,6 +306,9 @@
     <ClInclude Include="boss.h">
       <Filter>KatanaZero\5enemy\boss</Filter>
     </ClInclude>
+    <ClInclude Include="BossFSM.h">
+      <Filter>KatanaZero\5enemy\boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -441,6 +444,9 @@
       <Filter>KatanaZero\3Map\maps\4</Filter>
     </ClCompile>
     <ClCompile Include="boss.cpp">
+      <Filter>KatanaZero\5enemy\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="BossFSM.cpp">
       <Filter>KatanaZero\5enemy\boss</Filter>
     </ClCompile>
   </ItemGroup>

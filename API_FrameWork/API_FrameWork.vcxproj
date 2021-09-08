@@ -148,6 +148,7 @@
     <ClInclude Include="animationManager.h" />
     <ClInclude Include="API_FrameWork.h" />
     <ClInclude Include="boss.h" />
+    <ClInclude Include="BossFSM.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Caretaker.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="animationManager.cpp" />
     <ClCompile Include="API_FrameWork.cpp" />
     <ClCompile Include="boss.cpp" />
+    <ClCompile Include="BossFSM.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Caretaker.cpp" />

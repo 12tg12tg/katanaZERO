@@ -7,9 +7,10 @@ textMap4::textMap4()
 	_bwmap = IMAGE->addImage("map4_bw", "images/map/boss_bw.bmp", 1365, 784);
 	_colmap = IMAGE->addImage("map4_col", "images/map/boss_col.bmp", 1365, 784, true);
 	_map_front = _bwmap_front = nullptr;
-	_startPt = Vec2(328, 520);
-	_timelimit = 6000;
+	_startPt = Vec2(328, 526);
+	_timelimit = 12000;
 	_nextScene = "엔딩";
+	_retryNum = -1;
 }
 
 textMap4::~textMap4()
@@ -32,11 +33,18 @@ HRESULT textMap4::init()
 
 	_timeCount = _timelimit;
 	_isClear = false;
+
+	_boss = new boss;
+	_boss->init(880, 523);
+
+	_retryNum++;
 	return S_OK;
 }
 
 void textMap4::release()
 {
+	_boss->release();
+	SAFE_DELETE(_boss);
 }
 
 void textMap4::update()
@@ -46,7 +54,7 @@ void textMap4::update()
 	//충돌
 	coltoMap();
 
-
+	_boss->update();
 
 	CheckClear();
 	//--------------------------------------------------
@@ -67,7 +75,7 @@ void textMap4::render()
 	ZORDER->ZorderRender(_map, ZFLOORMAP, 0, 0, 0);
 	if (_isDebug) ZORDER->ZorderRender(_colmap, ZCOL1, 0, 0, 0);
 
-
+	_boss->render();
 	//--------------------------------------------------
 	PLAYER->render();
 	COLLISION->render();
