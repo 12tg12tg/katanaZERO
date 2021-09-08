@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "boss.h"
 #include "BossFSM.h"
+#include "effect.h"
 boss::boss()
 {
 }
@@ -33,6 +34,8 @@ HRESULT boss::init(float x, float y)
     _headbreak = 0.2f;
     _headSpeed = 5.f;
 
+    _hp = 9;
+
     stateInit();
     soundInit();
 
@@ -40,12 +43,16 @@ HRESULT boss::init(float x, float y)
 
     _isSideCol = false;
     _isLand = false;
+    
+    _bm = new bossBulletManater;
+    _bm->init();
     return S_OK;
 }
 
 void boss::release()
 {
     COLLISION->erase(_col);
+    _bm->release();
     _FSM->release();
     SAFE_DELETE(_FSM);
 }
@@ -70,15 +77,19 @@ void boss::update()
     if (INPUT->isOnceKeyDown('7')) _FSM->ChangeState(BOSSSTATE::HURT);
     if (INPUT->isOnceKeyDown('8')) _FSM->ChangeState(BOSSSTATE::DEAD);
 
-    if (INPUT->isOnceKeyDown('C')) _isCut = true;
     if (INPUT->isOnceKeyDown('R')) this->init(880, 523);
+
+    if (INPUT->isOnceKeyDown(VK_RBUTTON))
+        _bm->getNormalBullet()->fire(WINSIZEX / 2, WINSIZEY / 2, 
+            UTIL::getAngle(WINSIZEX / 2, WINSIZEY / 2, CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y));
     //==========================================
 
 
-
+    _bm->update();
     setpos();
     _FSM->update();
     setCollider();
+    checkHit();
     if (_isCut) {
         headFly();
     }
@@ -86,6 +97,7 @@ void boss::update()
 
 void boss::render()
 {
+    _bm->render();
     _bottom = _col->getRect().bottom;
     ZORDER->ZorderAniRender(_img, _z, _bottom, _x, _y, _ani);
     ZORDER->SaveAniRender(_img, _bwimg, _z, _bottom, _x, _y, _ani);
@@ -191,5 +203,34 @@ void boss::headFly()
         _headY += _headgravity;
         _headgravity += 0.4f;
         if (_headgravity > _headmaxGravity)_headgravity = _headmaxGravity;
+    }
+}
+
+void boss::checkHit()
+{
+    if (!_isGracePeriod && _col->isEnterThere(COLLIDER_TYPE::BULLET_PLAYER)) {
+        //이펙트
+        _effectAngle = PLAYER->getCollider()->getPos().AngleTo(_col->getPos());
+        float startX = _col->getPos().x + 1566 * cos((float)PI + _effectAngle);
+        float startY = _col->getPos().y - 1566 * sinf((float)PI + _effectAngle);
+        _hitEffect = EFFECT->play("hitEffect", ZEFFECT2, startX, startY, _effectAngle, 150);
+        //쉐이크
+        CAMERA->setShake(20, 10, 1);
+
+        //사망인지 HURT인지 확인
+        if (_state != BOSSSTATE::DEAD) {
+            --_hp;
+            if (_hp <= 0) _FSM->ChangeState(BOSSSTATE::DEAD);
+            else _FSM->ChangeState(BOSSSTATE::HURT);
+        }
+        else {
+            _isCut = true;
+        }
+    }
+
+    //이펙트이동
+    if (_hitEffect != nullptr) {
+        _hitEffect->offsetEffect(cosf(_effectAngle) * 150, -sinf(_effectAngle) * 150);
+        if (!_hitEffect->getIsRunning()) _hitEffect = nullptr;		//자기이펙트끝나면 칼같이 손절
     }
 }

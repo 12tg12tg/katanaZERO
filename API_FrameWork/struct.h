@@ -52,6 +52,12 @@ struct tagEnemy
 	int attackDelay;
 };
 
+struct bulletSpec
+{
+	int x, y;
+	BYTE alpha;
+};
+
 struct tagBullet
 {
 	image* img;
@@ -68,4 +74,5 @@ struct tagBullet
 	float count;
 	int alpha;
 	bool firstTime;
+	list<bulletSpec> specList;
 };

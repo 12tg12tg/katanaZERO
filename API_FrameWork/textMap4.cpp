@@ -61,10 +61,10 @@ void textMap4::update()
 	PLAYER->update();
 	ANIMATION->update();
 	COLLISION->update();
-	//POINT lerp;
-	//lerp.x = CAMERA->getPivotX() * (1 - 0.08) + PLAYER->getCollider()->getPos().x * 0.08;
-	//lerp.y = CAMERA->getPivotY() * (1 - 0.08) + PLAYER->getY() * 0.08;
-	//CAMERA->movePivot(lerp.x, lerp.y);
+	POINT lerp;
+	lerp.x = CAMERA->getPivotX() * (1 - 0.08) + PLAYER->getCollider()->getPos().x * 0.08;
+	lerp.y = CAMERA->getPivotY() * (1 - 0.08) + PLAYER->getY() * 0.08;
+	CAMERA->movePivot(lerp.x, 513);
 	CAMERA->update();
 	EFFECT->update();
 }

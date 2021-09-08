@@ -1,10 +1,12 @@
 #pragma once
 #include "gameNode.h"
+#include "bossBulletManater.h"
 class BossFSM;
 class boss : public gameNode
 {
 public:
 	BossFSM* _FSM;
+	bossBulletManater* _bm;
 public:
 	float _x, _y, _z;
 	float _bottom;
@@ -19,6 +21,8 @@ public:
 	int _hp;
 
 	bool _isGracePeriod;
+	float _effectAngle;
+	effect* _hitEffect;
 
 	bool _isSideCol;
 	bool _isLand;
@@ -51,6 +55,8 @@ public:
 	void setCollider();
 	void setpos();
 	void headFly();
+
+	void checkHit();
 
 	BossFSM* getFSM() { return _FSM; }
 

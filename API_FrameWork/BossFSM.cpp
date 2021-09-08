@@ -283,10 +283,12 @@ void Boss_RollJumpShot::init()
 	_jumpAngle = 0.f;
 	_wallGrapCount = 0.f;
 
-	_jumpPower = 10.f;
+	_jumpPower = 13.f;
 	_gravity = 0.4f;
-	_maxGravity = 6.f;
+	_maxGravity = 8.f;
 	_shotCount = 0;
+	_angle = PI+PI/3;
+	_shotNum = 0;
 }
 
 void Boss_RollJumpShot::update()
@@ -353,13 +355,15 @@ void Boss_RollJumpShot::update()
 			if (_boss->_foward == FOWARD::RIGHT) ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 252, 258, 8, false, false);
 			else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 683, 677, 8, false, false);
 			//샷건뛸 점프각을 계산..
+			if (_boss->_foward == FOWARD::RIGHT)_angle = PI + PI / 3;
+			else _angle = PI2 - PI / 3;
 		}
 	}
 	//샷건
 	else {
 		//이동
-		if (_boss->_foward == FOWARD::RIGHT) _boss->_x += 9.f;
-		else _boss->_x -= 9.f;
+		if (_boss->_foward == FOWARD::RIGHT) _boss->_x += 7.f;
+		else _boss->_x -= 7.f;
 
 		if (_jumpPower > 0.f) {
 			_boss->_y -= _jumpPower;
@@ -379,7 +383,14 @@ void Boss_RollJumpShot::update()
 			}		
 		}
 		//발사
-		/*카운트당 각도 조금 씩 틀어서 fire*/
+		_shotCount += 1 * TIME->getGameTimeRate();
+		if (_shotCount > 1 && _shotNum < 20) {
+			_shotCount = 0;			
+			_boss->_bm->getNormalBullet()->fire(_boss->_col->getPos().x, _boss->_col->getPos().y, _angle);
+			if (_boss->_foward == FOWARD::RIGHT) _angle += RADIAN(5);
+			else _angle -= RADIAN(5);
+			_shotNum++;
+		}
 	}
 }
 
@@ -732,6 +743,8 @@ void Boss_Hurt::init()
 	_jumpPower = 5.f;
 	_gravity = 0.4f;
 	_maxGravity = 5.f;
+	_stunGauge = 0.f;
+	_stunOver = false;
 }
 
 void Boss_Hurt::update()
@@ -755,16 +768,19 @@ void Boss_Hurt::update()
 			if (_gravity > _maxGravity) _gravity = _maxGravity;
 		}
 
-
 		//애니끝나면
-		if (!_boss->_ani->isPlay()) {
+		if (!_boss->_ani->isPlay() && _boss->_isLand) {
 			_afterHurt = true;
-			if (_boss->_foward == FOWARD::RIGHT) ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 342, 345, 15, false, false);
-			else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 773, 770, 15, false, false);
 		}
 	}
 	else {
-		if (!_boss->_ani->isPlay()) {
+		_stunGauge += 1 * TIME->getGameTimeRate();
+		if (_stunGauge > 20 && !_stunOver) {
+			if (_boss->_foward == FOWARD::RIGHT) ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 342, 345, 15, false, false);
+			else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 773, 770, 15, false, false);
+			_stunOver = true;
+		}
+		if (_stunOver && !_boss->_ani->isPlay()) {
 			_boss->_isGracePeriod = false;
 			m_pFSM->ChangeState(BOSSSTATE::IDLE);
 		}

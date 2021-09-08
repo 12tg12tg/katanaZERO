@@ -142,6 +142,12 @@
     <Filter Include="KatanaZero\5enemy\boss">
       <UniqueIdentifier>{7634c3d1-2e41-436f-a2a9-837a1a94d1f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets">
+      <UniqueIdentifier>{baa8abe1-bff0-4e8b-91a8-ada98ee6ba14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\BBmanager">
+      <UniqueIdentifier>{f878960f-f336-4093-8f9f-dd922e101e63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -309,6 +315,12 @@
     <ClInclude Include="BossFSM.h">
       <Filter>KatanaZero\5enemy\boss</Filter>
     </ClInclude>
+    <ClInclude Include="bossNormalBullet.h">
+      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+    </ClInclude>
+    <ClInclude Include="bossBulletManater.h">
+      <Filter>KatanaZero\4bullet\bossBullets\BBmanager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -448,6 +460,12 @@
     </ClCompile>
     <ClCompile Include="BossFSM.cpp">
       <Filter>KatanaZero\5enemy\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="bossNormalBullet.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+    </ClCompile>
+    <ClCompile Include="bossBulletManater.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets\BBmanager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

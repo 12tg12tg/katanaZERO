@@ -107,6 +107,8 @@ private:
 	float _gravity;
 	float _maxGravity;
 	float _shotCount;
+	float _angle;
+	int _shotNum;
 
 	float _wallGrapCount;
 public:
@@ -181,6 +183,9 @@ private:
 	float _jumpPower;
 	float _gravity;
 	float _maxGravity;
+
+	float _stunGauge;
+	bool _stunOver;
 public:
 	Boss_Hurt();
 	~Boss_Hurt();
