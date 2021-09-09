@@ -14,7 +14,7 @@ void verlaser::fire(float x, float y)
 {
 	tagBullet newBul;
 	newBul.img = IMAGE->findImage("verlaser");
-	newBul.ani = ANIMATION->addNoneKeyAnimation("verlaser", 3, 0, 8, false, false);
+	newBul.ani = ANIMATION->addNoneKeyAnimation("verlaser", 3, 0, 11, false, false);
 	newBul.x = x - newBul.img->getFrameWidth()/2;
 	newBul.y = y;
 	newBul.bwimg = nullptr;
@@ -66,7 +66,7 @@ void verlaser::update()
 			_viBullet->count += 1 * TIME->getGameTimeRate();
 			if (_viBullet->count > 10) {
 				_viBullet->secendTime = false;
-				ANIMATION->changeNonKeyAnimation(_viBullet->ani, "verlaser", 0, 3, 8, false, false);
+				ANIMATION->changeNonKeyAnimation(_viBullet->ani, "verlaser", 0, 3, 11, false, false);
 			}
 		}
 	}

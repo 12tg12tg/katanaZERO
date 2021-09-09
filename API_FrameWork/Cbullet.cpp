@@ -3,6 +3,7 @@
 
 Cbullet::Cbullet()
 {
+
 }
 
 Cbullet::~Cbullet()

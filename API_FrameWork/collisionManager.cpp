@@ -119,6 +119,9 @@ void collisionManager::CollisionCheck(COLLIDER_TYPE left, COLLIDER_TYPE right)
 
 bool collisionManager::isCollision(Collider* pleft, Collider* pright)
 {
+	pleft->enterVecClear();		//20210909 - 레이저 사라지기전까지 enter에 정보남는거때매 추가해봄.
+	pright->enterVecClear();
+
 	if (!(pleft->getCanCol() && pright->getCanCol())) {
 		pleft->eraseThisInEngerVec(pright->_id);
 		pright->eraseThisInEngerVec(pleft->_id);

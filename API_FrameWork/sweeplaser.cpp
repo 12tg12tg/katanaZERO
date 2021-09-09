@@ -59,6 +59,7 @@ void sweeplaser::update()
 		if (_viBullet->col->isEnterThere(COLLIDER_TYPE::PLAYER_UNIT) && !PLAYER->IsGracePeriod()) {
 			PLAYER->getFSM()->SetDeath(_viBullet->angle, 10);
 			_viBullet->col->setCanCol(false);
+			EFFECT->play("explosion", ZEFFECT2, PLAYER->getCollider()->getPos().x, PLAYER->getCollider()->getPos().y);
 		}
 
 		if (_viBullet->isOn) {

@@ -59,7 +59,7 @@ void bossNormalBullet::release()
 	for (_viReflect = _vReflect.begin(); _viReflect != _vReflect.end(); )
 	{
 		COLLISION->erase(_viReflect->col);
-		_viReflect = _vBullet.erase(_viReflect);
+		_viReflect = _vReflect.erase(_viReflect);
 	}
 }
 

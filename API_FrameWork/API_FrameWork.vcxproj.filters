@@ -148,6 +148,30 @@
     <Filter Include="KatanaZero\4bullet\bossBullets\BBmanager">
       <UniqueIdentifier>{f878960f-f336-4093-8f9f-dd922e101e63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets">
+      <UniqueIdentifier>{83ddf03a-a691-429a-acd3-6ce2e0f18f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets\normal">
+      <UniqueIdentifier>{ad550ca1-9731-4940-91f9-fdc79255971f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets\horiLaser">
+      <UniqueIdentifier>{1e98fde7-16a9-4043-8bdd-72669ce92bdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets\verLaser">
+      <UniqueIdentifier>{8ca1f973-a858-4fb9-9481-fdfbbda6514a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets\sweepLaser">
+      <UniqueIdentifier>{91554cc8-d97e-41c4-9831-cdfc83f9ba10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets\dashAtk">
+      <UniqueIdentifier>{6ffe72fb-7095-49ee-b2f1-ad8e057cb938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets\circleBomb">
+      <UniqueIdentifier>{1e19f8b9-fa16-456f-b856-9df52e7f5efe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\4bullet\bossBullets\bullets\explosion">
+      <UniqueIdentifier>{e9e3be74-0bfb-4a58-bd35-5ab29f537b11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -315,17 +339,29 @@
     <ClInclude Include="BossFSM.h">
       <Filter>KatanaZero\5enemy\boss</Filter>
     </ClInclude>
-    <ClInclude Include="bossNormalBullet.h">
-      <Filter>KatanaZero\4bullet\bossBullets</Filter>
-    </ClInclude>
     <ClInclude Include="bossBulletManater.h">
       <Filter>KatanaZero\4bullet\bossBullets\BBmanager</Filter>
     </ClInclude>
-    <ClInclude Include="verlaser.h">
-      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+    <ClInclude Include="bossNormalBullet.h">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\normal</Filter>
+    </ClInclude>
+    <ClInclude Include="horiLaser.h">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\horiLaser</Filter>
     </ClInclude>
     <ClInclude Include="sweeplaser.h">
-      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\sweepLaser</Filter>
+    </ClInclude>
+    <ClInclude Include="verlaser.h">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\verLaser</Filter>
+    </ClInclude>
+    <ClInclude Include="dashAtk.h">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\dashAtk</Filter>
+    </ClInclude>
+    <ClInclude Include="circleBomb.h">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\circleBomb</Filter>
+    </ClInclude>
+    <ClInclude Include="explosion.h">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\explosion</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -467,17 +503,29 @@
     <ClCompile Include="BossFSM.cpp">
       <Filter>KatanaZero\5enemy\boss</Filter>
     </ClCompile>
-    <ClCompile Include="bossNormalBullet.cpp">
-      <Filter>KatanaZero\4bullet\bossBullets</Filter>
-    </ClCompile>
     <ClCompile Include="bossBulletManater.cpp">
       <Filter>KatanaZero\4bullet\bossBullets\BBmanager</Filter>
     </ClCompile>
-    <ClCompile Include="verlaser.cpp">
-      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+    <ClCompile Include="bossNormalBullet.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\normal</Filter>
+    </ClCompile>
+    <ClCompile Include="horiLaser.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\horiLaser</Filter>
     </ClCompile>
     <ClCompile Include="sweeplaser.cpp">
-      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\sweepLaser</Filter>
+    </ClCompile>
+    <ClCompile Include="verlaser.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\verLaser</Filter>
+    </ClCompile>
+    <ClCompile Include="dashAtk.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\dashAtk</Filter>
+    </ClCompile>
+    <ClCompile Include="circleBomb.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\circleBomb</Filter>
+    </ClCompile>
+    <ClCompile Include="explosion.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets\bullets\explosion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

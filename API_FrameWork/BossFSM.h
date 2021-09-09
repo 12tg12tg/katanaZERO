@@ -29,6 +29,7 @@ protected:
 	boss* _boss;
 	BossFSM* m_pFSM;
 	BOSSSTATE m_eState;
+
 public:
 	BossState()	{};
 	~BossState() {};
@@ -37,6 +38,7 @@ public:
 	virtual void update() = 0;
 	virtual void release() = 0;
 	virtual void decideFoward();
+	virtual void decideNextState();
 
 	BOSSSTATE getThisState() { return m_eState; }
 	void SetFSM(BossFSM* _pFSM) { m_pFSM = _pFSM; }
@@ -57,7 +59,7 @@ public:
 class Boss_Idle : public BossState
 {
 private:
-	
+	int delay;
 public:
 	Boss_Idle();
 	~Boss_Idle();
@@ -127,6 +129,7 @@ private:
 	float _dashCount;
 
 	bool _changeAni;
+	bool _isFire;
 public:
 	Boss_Dash();
 	~Boss_Dash();

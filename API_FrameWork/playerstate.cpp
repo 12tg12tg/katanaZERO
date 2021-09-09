@@ -144,10 +144,21 @@ void Player_Idle::init()
 			ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 106, 96, 11, false, true);
 		break;
 	}
+	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::ROLL) {
+		PLAYER->setIsGravePeriod(true);
+		_GracePeriodCount = 0;
+	}
 }
 
 void Player_Idle::update()
 {
+	//잠시무적
+	if (m_pFSM->getPreState()->getThisState() == PLAYERSTATE::ROLL) {
+		++_GracePeriodCount;
+		if (_GracePeriodCount > 20) {
+			PLAYER->setIsGravePeriod(false);
+		}
+	}
 	//애니메이션재생
 	if (!PLAYER->getAni()->isPlay()) {
 		if (PLAYER->getFoward() == FOWARD::RIGHT)
@@ -204,6 +215,7 @@ void Player_Idle::update()
 
 void Player_Idle::release()
 {
+	PLAYER->setIsGravePeriod(false);
 }
 //====================================================
 

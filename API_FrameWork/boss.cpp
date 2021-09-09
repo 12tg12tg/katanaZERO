@@ -43,6 +43,7 @@ HRESULT boss::init(float x, float y)
 
     _isSideCol = false;
     _isLand = false;
+    _hasAi = true;
     
     _bm = new bossBulletManater;
     _bm->init();
@@ -59,38 +60,7 @@ void boss::release()
 
 void boss::update()
 {
-    //==========================================
-    //if (INPUT->isStayKeyDown(VK_RIGHT)) _x += 3;
-    //if (INPUT->isStayKeyDown(VK_LEFT)) _x -= 3;
-    //if (INPUT->isStayKeyDown(VK_DOWN)) _y += 3;
-    //if (INPUT->isStayKeyDown(VK_UP)) _y -= 3;
-	if (INPUT->isStayKeyDown(VK_RIGHT)) _headX += 3;
-	if (INPUT->isStayKeyDown(VK_LEFT)) _headX -= 3;
-	if (INPUT->isStayKeyDown(VK_DOWN)) _headY += 3;
-	if (INPUT->isStayKeyDown(VK_UP)) _headY -= 3;
-    if (INPUT->isOnceKeyDown('1')) _FSM->ChangeState(BOSSSTATE::SHOOT);
-    if (INPUT->isOnceKeyDown('2')) _FSM->ChangeState(BOSSSTATE::RIFLE);
-    if (INPUT->isOnceKeyDown('3')) _FSM->ChangeState(BOSSSTATE::ROLL_JUMP_SHOTGUN);
-    if (INPUT->isOnceKeyDown('4')) _FSM->ChangeState(BOSSSTATE::DASH);
-    if (INPUT->isOnceKeyDown('5')) _FSM->ChangeState(BOSSSTATE::SWEEP);
-    if (INPUT->isOnceKeyDown('6')) _FSM->ChangeState(BOSSSTATE::VERTICALLASER);
-    if (INPUT->isOnceKeyDown('7')) _FSM->ChangeState(BOSSSTATE::HURT);
-    if (INPUT->isOnceKeyDown('8')) _FSM->ChangeState(BOSSSTATE::DEAD);
-
-    if (INPUT->isOnceKeyDown('R')) this->init(880, 523);
-
-    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
-    //    _bm->getNormalBullet()->fire(WINSIZEX / 2, WINSIZEY / 2, 
-    //        UTIL::getAngle(WINSIZEX / 2, WINSIZEY / 2, CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y));
-    
-	//if (INPUT->isOnceKeyDown(VK_RBUTTON))
-	//	_bm->getVerLaser()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y);
-   
-    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
-    //    _bm->getSweepLaser()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y, FOWARD::RIGHT);
-    //==========================================
-
-
+    cheetMode();
     _bm->update();
     setpos();
     _FSM->update();
@@ -108,13 +78,13 @@ void boss::render()
     ZORDER->ZorderAniRender(_img, _z, _bottom, _x, _y, _ani);
     ZORDER->SaveAniRender(_img, _bwimg, _z, _bottom, _x, _y, _ani);
 
+    //사망시
     if (_isCut) {
         ZORDER->ZorderAniRender(_headImg, _z, _bottom + 1, _headX, _headY, _headAni);
     }
-
-    //for DEGUG
-    ZORDER->UITextOut("보스위치 : " + to_string(_x) + ", " + to_string(_y), ZUIFIRST, 600, 700, RGB(255, 255, 255));
-    ZORDER->UITextOut("헤드위치 : " + to_string(_headX) + ", " + to_string(_headY), ZUIFIRST, 600, 720, RGB(255, 255, 255));
+    //=============================================for DEGUG =============================================================
+    //ZORDER->UITextOut("보스위치 : " + to_string(_x) + ", " + to_string(_y), ZUIFIRST, 600, 700, RGB(255, 255, 255));
+    //ZORDER->UITextOut("헤드위치 : " + to_string(_headX) + ", " + to_string(_headY), ZUIFIRST, 600, 720, RGB(255, 255, 255));
 }
 
 void boss::reInit()
@@ -210,6 +180,42 @@ void boss::headFly()
         _headgravity += 0.4f;
         if (_headgravity > _headmaxGravity)_headgravity = _headmaxGravity;
     }
+}
+
+void boss::cheetMode()
+{
+    if (INPUT->isOnceKeyDown(VK_F8)) _hasAi = !_hasAi;          /*치트모드진입*/
+    if (_hasAi) return;
+    //==========================================
+    if (INPUT->isStayKeyDown(VK_RIGHT)) _x += 3;
+    if (INPUT->isStayKeyDown(VK_LEFT)) _x -= 3;
+    if (INPUT->isStayKeyDown(VK_DOWN)) _y += 3;
+    if (INPUT->isStayKeyDown(VK_UP)) _y -= 3;
+    //if (INPUT->isStayKeyDown(VK_RIGHT)) _headX += 3;
+    //if (INPUT->isStayKeyDown(VK_LEFT)) _headX -= 3;
+    //if (INPUT->isStayKeyDown(VK_DOWN)) _headY += 3;
+    //if (INPUT->isStayKeyDown(VK_UP)) _headY -= 3;
+    if (INPUT->isOnceKeyDown('1')) _FSM->ChangeState(BOSSSTATE::SHOOT);
+    if (INPUT->isOnceKeyDown('2')) _FSM->ChangeState(BOSSSTATE::RIFLE);
+    if (INPUT->isOnceKeyDown('3')) _FSM->ChangeState(BOSSSTATE::ROLL_JUMP_SHOTGUN);
+    if (INPUT->isOnceKeyDown('4')) _FSM->ChangeState(BOSSSTATE::DASH);
+    if (INPUT->isOnceKeyDown('5')) _FSM->ChangeState(BOSSSTATE::SWEEP);
+    if (INPUT->isOnceKeyDown('6')) _FSM->ChangeState(BOSSSTATE::VERTICALLASER);
+    if (INPUT->isOnceKeyDown('7')) _FSM->ChangeState(BOSSSTATE::HURT);
+    if (INPUT->isOnceKeyDown('8')) _FSM->ChangeState(BOSSSTATE::DEAD);
+    if (INPUT->isOnceKeyDown('R')) this->init(880, 523);
+    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
+    //    _bm->getNormalBullet()->fire(WINSIZEX / 2, WINSIZEY / 2, 
+    //        UTIL::getAngle(WINSIZEX / 2, WINSIZEY / 2, CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y));
+    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
+    //	_bm->getVerLaser()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y);
+    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
+    //    _bm->getSweepLaser()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y, FOWARD::RIGHT);
+    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
+    //    _bm->getholLaser()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y, FOWARD::LEFT);
+    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
+    //    _bm->getCirBomb()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y, FOWARD::LEFT);
+    //==========================================
 }
 
 void boss::checkHit()

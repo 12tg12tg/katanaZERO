@@ -38,6 +38,9 @@ public:
 	float _headSpeed;
 	float _headbreak;
 	bool _headLand;
+	bool _isdashAtk;
+
+	bool _hasAi;
 public:
 	boss();
 	~boss();
@@ -55,6 +58,8 @@ public:
 	void setCollider();
 	void setpos();
 	void headFly();
+
+	void cheetMode();
 
 	void checkHit();
 

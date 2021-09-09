@@ -212,6 +212,11 @@ void player::imageInit()
 
 	//ÀúÀå¾ÈÇÏ´Â ÀÏÀÚ ÀÌÆåÆ®
 	EFFECT->addEffect("hitEffect", "images/effect/hiteffect.bmp", 395, 18, 395, 6, 4, 0.01666, 10, true, true, false);
+
+	//Æø¹ßÀÌÆåÆ®
+	IMAGE->addFrameImage("explosion", "imgaes/effect/explosion.bmp", 528*2, 56*2, 11, 1, true);
+	IMAGE->addFrameImage("explosion_bw", "images/effect/explosion_bw.bmp", 528 * 2, 56 * 2, 11, 1, true);
+	EFFECT->addEffect("explosion", "images/effect/explosion.bmp", 528 * 2, 56 * 2, 48 * 2, 56 * 2, 15, 0.01666, 20, false, false, IMAGE->findImage("explosion_bw"));
 }
 
 void player::stateInit()

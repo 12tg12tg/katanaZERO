@@ -62,6 +62,7 @@ class Player_Idle : public PlayerState
 {
 private:
 	float _accel;
+	int _GracePeriodCount;
 public:
 	Player_Idle();
 	~Player_Idle();

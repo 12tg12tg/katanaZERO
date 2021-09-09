@@ -9,6 +9,118 @@ void BossState::decideFoward()
 	}
 	else _boss->_foward = FOWARD::LEFT;
 }
+void BossState::decideNextState()
+{
+	switch (m_eState)
+	{
+	case BOSSSTATE::IDLE:
+		switch (RND->getInt(2))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::SHOOT);
+			break;
+		case 1:
+			m_pFSM->ChangeState(BOSSSTATE::RIFLE);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::SHOOT:
+		switch (RND->getInt(2))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::DASH);
+			break;
+		case 1:
+			m_pFSM->ChangeState(BOSSSTATE::ROLL_JUMP_SHOTGUN);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::RIFLE:
+		switch (RND->getInt(2))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::DASH);
+			break;
+		case 1:
+			m_pFSM->ChangeState(BOSSSTATE::ROLL_JUMP_SHOTGUN);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::ROLL_JUMP_SHOTGUN:
+		switch (RND->getInt(5))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::DASH);
+			break;
+		case 1:
+			m_pFSM->ChangeState(BOSSSTATE::SHOOT);
+			break;
+		case 2:
+			m_pFSM->ChangeState(BOSSSTATE::RIFLE);
+			break;
+		case 3:
+			m_pFSM->ChangeState(BOSSSTATE::SWEEP);
+			break;
+		case 4:
+			m_pFSM->ChangeState(BOSSSTATE::VERTICALLASER);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::DASH:
+		switch (RND->getInt(1))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::VERTICALLASER);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::SWEEP:
+		switch (RND->getInt(1))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::VERTICALLASER:
+		switch (RND->getInt(1))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::HURT:
+		switch (RND->getInt(2))
+		{
+		case 0:
+			m_pFSM->ChangeState(BOSSSTATE::SWEEP);
+			break;
+		case 1:
+			m_pFSM->ChangeState(BOSSSTATE::VERTICALLASER);
+			break;
+		}
+		break;
+
+
+	case BOSSSTATE::DEAD:
+		break;
+	}
+}
 //====================================================
 
 BossFSM::BossFSM()
@@ -112,11 +224,16 @@ void Boss_Idle::init()
 		else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 431, 420, 15, false, true);
 		break;
 	}
+	//고유멤버변수초기화
+	delay = 0;
 }
 
 void Boss_Idle::update()
 {
-
+	delay++;
+	if (delay > 30 && _boss->_hasAi) {
+		/*상태스위칭함수*/decideNextState();
+	}
 }
 
 void Boss_Idle::release()
@@ -169,11 +286,13 @@ void Boss_Shoot::update()
 		if (_shootCount < _shootNum) {
 			if (_boss->_foward == FOWARD::RIGHT) ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 36, 43, 15, false, false);
 			else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 467, 460, 15, false, false);
-			/*원형폭탄fire*/
+			if (_boss->_foward == FOWARD::LEFT) _boss->_bm->getCirBomb()->fire(_boss->_col->getPos().x - 50, _boss->_col->getPos().y - 17, FOWARD::LEFT);
+			else _boss->_bm->getCirBomb()->fire(_boss->_col->getPos().x + 50, _boss->_col->getPos().y - 17, FOWARD::RIGHT); ;
 			++_shootCount;
 		}
 		else {
-			m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			/*상태스위칭함수*/decideNextState();
+			//m_pFSM->ChangeState(BOSSSTATE::IDLE);
 		}
 	}
 }
@@ -226,15 +345,15 @@ void Boss_Rifle::update()
 	if (!_boss->_ani->isPlay()) {
 		if (!_readyForShoot) {
 			_readyForShoot = true;
-			/*레이저fire*/
-
+			if (_boss->_foward == FOWARD::LEFT) _boss->_bm->getholLaser()->fire(_boss->_col->getPos().x - 50, _boss->_col->getPos().y - 17, FOWARD::LEFT);
+			else _boss->_bm->getholLaser()->fire(_boss->_col->getPos().x + 50, _boss->_col->getPos().y - 17, FOWARD::RIGHT); ;
 		}
 		else {
 			/*레이저발사딜레이 55 count*/
 			_count += 1 * TIME->getGameTimeRate();
-			if (_count > 55) {
-				//IDLE로
-				m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			if (_count > 80) {
+				/*상태스위칭함수*/decideNextState();
+				//m_pFSM->ChangeState(BOSSSTATE::IDLE);
 			}
 		}
 	}
@@ -379,7 +498,8 @@ void Boss_RollJumpShot::update()
 			if (_gravity > _maxGravity) _gravity = _maxGravity;
 			//땅에 닿으면 탈출
 			if (_boss->_isLand) {
-				m_pFSM->ChangeState(BOSSSTATE::IDLE);
+				/*상태스위칭함수*/decideNextState();
+				//m_pFSM->ChangeState(BOSSSTATE::IDLE);
 			}		
 		}
 		//발사
@@ -434,6 +554,7 @@ void Boss_Dash::init()
 	_afterReady = false;
 	_dashCount = 0.f;
 	_changeAni = false;
+	_isFire = false;
 }
 
 void Boss_Dash::update()
@@ -487,18 +608,24 @@ void Boss_Dash::update()
 		else _boss->_x -= 30 * TIME->getGameTimeRate();
 
 		//발사
-		/*fire - 시작지점부터 방향으로 일정길이까지 길어지는 투사체, 다 길어지면 이동.*/
+		if (!_isFire) {
+			_isFire = true;
+			_boss->_isdashAtk = true;
+			_boss->_bm->getDashAtk()->fire(_boss);
+		}
 
 		//탈출
 		if (_boss->_isSideCol) {
 			_boss->_isGracePeriod = false;
-			m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			/*상태스위칭함수*/decideNextState();
+			//m_pFSM->ChangeState(BOSSSTATE::IDLE);
 		}
 	}
 }
 
 void Boss_Dash::release()
 {
+	_boss->_isdashAtk = false;
 }
 
 //====================================================
@@ -600,7 +727,8 @@ void Boss_Sweep::update()
 		if (_secondterm > 40) {
 			_boss->_x = 880;
 			_boss->_y = 523;
-			m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			/*상태스위칭함수*/decideNextState();
+			//m_pFSM->ChangeState(BOSSSTATE::IDLE);
 		}
 	}
 
@@ -702,7 +830,8 @@ void Boss_verLaser::update()
 		}
 		else {
 			_boss->_y = 523;
-			m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			/*상태스위칭함수*/decideNextState();
+			//m_pFSM->ChangeState(BOSSSTATE::IDLE);
 		}
 	}
 }
@@ -787,7 +916,8 @@ void Boss_Hurt::update()
 		}
 		if (_stunOver && !_boss->_ani->isPlay()) {
 			_boss->_isGracePeriod = false;
-			m_pFSM->ChangeState(BOSSSTATE::IDLE);
+			/*상태스위칭함수*/decideNextState();
+			//m_pFSM->ChangeState(BOSSSTATE::IDLE);
 		}
 	}
 }

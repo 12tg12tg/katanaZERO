@@ -78,6 +78,7 @@ public:
 
 	bool isEnterThere(COLLIDER_TYPE type);
 	bool isThere(COLLIDER_TYPE type);
+	void enterVecClear() { _enterVec.clear(); }
 	
 	map<DWORD, Collider*>& getOthers() { return _others; }
 	vector<ColEnter>& getEnters() { return _enterVec; }

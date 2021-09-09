@@ -65,6 +65,7 @@ struct tagBullet
 	FOWARD foward;
 	animation* ani;
 	Collider* col;
+	effect* effect;
 	float x, y, z;
 	float centerX, centerY;
 	float bottom;
@@ -76,5 +77,6 @@ struct tagBullet
 	int alpha;
 	bool firstTime;
 	bool secendTime;
+	bool thirdTime;
 	list<bulletSpec> specList;
 };
