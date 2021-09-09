@@ -375,7 +375,7 @@ void Player_Roll::init()
 {
 	PLAYER->setIsGravePeriod(true);
 	PLAYER->setState(PLAYERSTATE::ROLL);
-	PLAYER->setSpeed(10.f);
+	PLAYER->setSpeed(8.f); //원래10이었는지 벽뚫때매 고침
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
 		ANIMATION->changeNonKeyAnimation(PLAYER->getAni(), "player_ALL1", 72, 78, 16, false, false);
 	}
@@ -915,6 +915,7 @@ Player_Dead::~Player_Dead()
 void Player_Dead::init()
 {
 	_timeOver = true;
+	PLAYER->setIsGravePeriod(true);
 	PLAYER->setState(PLAYERSTATE::DEAD);
 	//프레임
 	if (PLAYER->getFoward() == FOWARD::RIGHT) {
@@ -929,6 +930,7 @@ void Player_Dead::init()
 void Player_Dead::init(float angle, float power)
 {
 	_timeOver = false;
+	PLAYER->setIsGravePeriod(true);
 	_angle = angle;
 	_speed = power;
 	PLAYER->setState(PLAYERSTATE::DEAD);

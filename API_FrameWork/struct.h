@@ -66,6 +66,7 @@ struct tagBullet
 	animation* ani;
 	Collider* col;
 	float x, y, z;
+	float centerX, centerY;
 	float bottom;
 	float length;
 	float angle;
@@ -74,5 +75,6 @@ struct tagBullet
 	float count;
 	int alpha;
 	bool firstTime;
+	bool secendTime;
 	list<bulletSpec> specList;
 };

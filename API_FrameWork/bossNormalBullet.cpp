@@ -17,7 +17,7 @@ void bossNormalBullet::fire(float x, float y, float angle)
 	newBul.bwimg = nullptr;
 	newBul.foward = FOWARD::NONE;
 	newBul.angle = angle;
-	newBul.col = COLLISION->addCollider(Vec2(x + 1, y + 1), Vec2(2, 2), COLLIDER_TYPE::BULLET_ENEMY, ZUNIT);
+	newBul.col = COLLISION->addCollider(Vec2(x + 1, y + 1), Vec2(2, 2), COLLIDER_TYPE::BULLET_ENEMY, ZCOL3);
 	newBul.x = x;
 	newBul.y = y;
 	newBul.z = ZUNIT;
@@ -36,7 +36,7 @@ void bossNormalBullet::fire2(float x, float y, float angle)
 	newBul.bwimg = nullptr;
 	newBul.foward = FOWARD::NONE;
 	newBul.angle = angle;
-	newBul.col = COLLISION->addCollider(Vec2(x + 1, y + 1), Vec2(2, 2), COLLIDER_TYPE::BULLET_PLAYER, ZUNIT);
+	newBul.col = COLLISION->addCollider(Vec2(x + 1, y + 1), Vec2(2, 2), COLLIDER_TYPE::BULLET_PLAYER, ZCOL3);
 	newBul.x = x;
 	newBul.y = y;
 	newBul.z = ZUNIT;
@@ -50,6 +50,17 @@ void bossNormalBullet::fire2(float x, float y, float angle)
 
 void bossNormalBullet::release()
 {
+	for (_viBullet = _vBullet.begin(); _viBullet != _vBullet.end(); )
+	{
+		COLLISION->erase(_viBullet->col);
+		_viBullet = _vBullet.erase(_viBullet);
+	}
+
+	for (_viReflect = _vReflect.begin(); _viReflect != _vReflect.end(); )
+	{
+		COLLISION->erase(_viReflect->col);
+		_viReflect = _vBullet.erase(_viReflect);
+	}
 }
 
 void bossNormalBullet::update()
@@ -176,6 +187,17 @@ void bossNormalBullet::updateforPlayerBullet()
 		//콜라이더수정
 		_viReflect->col->setPos(Vec2(_viReflect->x + 1, _viReflect->y + 1));
 	}
+
+	////삭제하는업뎃
+	//for (_viReflect = _vReflect.begin(); _viReflect != _vReflect.end(); )
+	//{
+	//	//반사확인
+	//	if (_viReflect->col->isThere(COLLIDER_TYPE::ENEMY_UNIT)) {
+	//		COLLISION->erase(_viReflect->col);
+	//		_viReflect = _vReflect.erase(_viReflect);
+	//	}
+	//	else ++_viReflect;
+	//}
 
 	//소멸확인(&콜라이더)
 	for (_viReflect = _vReflect.begin(); _viReflect != _vReflect.end(); )

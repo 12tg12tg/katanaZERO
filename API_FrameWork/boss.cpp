@@ -79,9 +79,15 @@ void boss::update()
 
     if (INPUT->isOnceKeyDown('R')) this->init(880, 523);
 
-    if (INPUT->isOnceKeyDown(VK_RBUTTON))
-        _bm->getNormalBullet()->fire(WINSIZEX / 2, WINSIZEY / 2, 
-            UTIL::getAngle(WINSIZEX / 2, WINSIZEY / 2, CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y));
+    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
+    //    _bm->getNormalBullet()->fire(WINSIZEX / 2, WINSIZEY / 2, 
+    //        UTIL::getAngle(WINSIZEX / 2, WINSIZEY / 2, CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y));
+    
+	//if (INPUT->isOnceKeyDown(VK_RBUTTON))
+	//	_bm->getVerLaser()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y);
+   
+    //if (INPUT->isOnceKeyDown(VK_RBUTTON))
+    //    _bm->getSweepLaser()->fire(CAMERA->getRelativeMouse().x, CAMERA->getRelativeMouse().y, FOWARD::RIGHT);
     //==========================================
 
 

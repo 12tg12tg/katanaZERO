@@ -374,7 +374,7 @@ void Boss_RollJumpShot::update()
 			}
 		}
 		else {
-			_gravity += 0.2f;
+			_gravity += 0.1f;
 			_boss->_y += _gravity;
 			if (_gravity > _maxGravity) _gravity = _maxGravity;
 			//¶¥¿¡ ´êÀ¸¸é Å»Ãâ
@@ -555,6 +555,8 @@ void Boss_Sweep::update()
 		if (!_boss->_ani->isPlay()) {
 			ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 611, 594, 15, false, false);
 			_afterReady = true;
+			/*fire*/
+			_boss->_bm->getSweepLaser()->fire(_boss->_col->getPos().x, _boss->_col->getPos().y, FOWARD::LEFT);
 		}
 	}
 	else if (!_afterShot) {
@@ -580,6 +582,8 @@ void Boss_Sweep::update()
 		if (!_boss->_ani->isPlay()) {
 			ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 180, 197, 15, false, false);
 			_secondReady = true;
+			/*fire*/
+			_boss->_bm->getSweepLaser()->fire(_boss->_col->getPos().x, _boss->_col->getPos().y, FOWARD::RIGHT);
 		}
 	}
 	else if (!_seconddisapear) {
@@ -637,7 +641,7 @@ void Boss_verLaser::init()
 	case BOSSSTATE::DEAD:
 		ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 288, 291, 15, false, false);
 		_boss->_x = 124;// , 1024, 301, 823
-		_boss->_y = 184;
+		_boss->_y = 140;
 		break;
 	}
 	//°íÀ¯¸â¹öº¯¼ö
@@ -655,6 +659,7 @@ void Boss_verLaser::update()
 		if (!_afterShot) {
 			if (!_boss->_ani->isPlay()) {
 				/*fire*/
+				_boss->_bm->getVerLaser()->fire(_boss->_col->getPos().x, _boss->_col->getBottom() + 20);
 				++_shootNum;
 				if (_shootNum == 4) {
 					_verShotDone = true;
@@ -688,7 +693,7 @@ void Boss_verLaser::update()
 			if (_boss->_ani->getNowPlayIndex() == 2 && !_isshot) {
 				_isshot = true;
 				/*fire-sweep*/
-				OutputDebugString("Key Down!");
+				_boss->_bm->getSweepLaser()->fire(_boss->_col->getPos().x, _boss->_col->getPos().y, FOWARD::LEFT);
 			}
 			else if (!_boss->_ani->isPlay()) {
 				ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 647, 644, 15, false, false);

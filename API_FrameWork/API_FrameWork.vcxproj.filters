@@ -321,6 +321,12 @@
     <ClInclude Include="bossBulletManater.h">
       <Filter>KatanaZero\4bullet\bossBullets\BBmanager</Filter>
     </ClInclude>
+    <ClInclude Include="verlaser.h">
+      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+    </ClInclude>
+    <ClInclude Include="sweeplaser.h">
+      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -466,6 +472,12 @@
     </ClCompile>
     <ClCompile Include="bossBulletManater.cpp">
       <Filter>KatanaZero\4bullet\bossBullets\BBmanager</Filter>
+    </ClCompile>
+    <ClCompile Include="verlaser.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets</Filter>
+    </ClCompile>
+    <ClCompile Include="sweeplaser.cpp">
+      <Filter>KatanaZero\4bullet\bossBullets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
