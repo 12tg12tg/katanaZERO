@@ -56,6 +56,7 @@ public:
 	bool isCollision(Collider* pleft, Collider* pright);
 
 	void CollisionGroup(UINT left, UINT right);
+	void firstTimeBoolClear();
 
 	map<UINT, list<Collider*>>& getTotalCollider() { return m_totalCollider; }
 

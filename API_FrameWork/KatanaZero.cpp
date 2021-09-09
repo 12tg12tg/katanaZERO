@@ -223,7 +223,7 @@ void KatanaZero::sceneInit()
     _testmap2 = dynamic_cast<textMap2*>(SCENE->addScene("Å×½ºÆ®¸Ê2", new textMap2));
     _testmap3 = dynamic_cast<textMap3*>(SCENE->addScene("Å×½ºÆ®¸Ê3", new textMap3));
     _testmap4 = dynamic_cast<textMap4*>(SCENE->addScene("º¸½º¸Ê", new textMap4));
-    SCENE->changeScene("º¸½º¸Ê");
+    SCENE->changeScene("Å×½ºÆ®¸Ê2");
     //------------------------------------------------------------------------------------------------
 }
 

@@ -35,6 +35,7 @@ private:
 	bool			_isExit;		//충돌끝
 
 	bool			_canCollision;	//충돌가능상태?
+	bool			_isFirstCheck;	//충돌체크에 처음왔냐. 그렇다면 enter벡터 초기화.
 
 	map<DWORD, Collider*> _others;
 public:

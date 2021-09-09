@@ -39,6 +39,7 @@ void collisionManager::update()
 			}
 		}
 	}
+	firstTimeBoolClear();
 }
 
 void collisionManager::release()
@@ -119,8 +120,14 @@ void collisionManager::CollisionCheck(COLLIDER_TYPE left, COLLIDER_TYPE right)
 
 bool collisionManager::isCollision(Collider* pleft, Collider* pright)
 {
-	pleft->enterVecClear();		//20210909 - 레이저 사라지기전까지 enter에 정보남는거때매 추가해봄.
-	pright->enterVecClear();
+	if (pleft->_isFirstCheck) {	//20210909 - 레이저 사라지기전까지 enter에 정보남는거때매 추가해봄.
+		pleft->_isFirstCheck = false;
+		pleft->enterVecClear();
+	}
+	if (pright->_isFirstCheck) {
+		pright->_isFirstCheck = false;
+		pright->enterVecClear();
+	}
 
 	if (!(pleft->getCanCol() && pright->getCanCol())) {
 		pleft->eraseThisInEngerVec(pright->_id);
@@ -253,6 +260,19 @@ void collisionManager::CollisionGroup(UINT left, UINT right)
 					(*listIter2)->getOthers().erase((*listIter2)->getOthers().find((*listIter1)->getID()));
 				}
 			}
+		}
+	}
+}
+
+void collisionManager::firstTimeBoolClear()
+{
+	auto iter = m_totalCollider.begin();
+	for (iter; iter != m_totalCollider.end(); ++iter)
+	{
+		auto listIter = iter->second.begin();
+		for (listIter; listIter != iter->second.end(); ++listIter)
+		{
+			(*listIter)->_isFirstCheck = true;
 		}
 	}
 }
