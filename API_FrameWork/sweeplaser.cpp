@@ -78,6 +78,10 @@ void sweeplaser::update()
 
 		//局聪场唱搁 闰林闰林闰林
 		if (_viBullet->firstTime && !_viBullet->ani->isPlay()) {
+			int rnd = RND->getInt(3);
+			if (rnd == 0) SOUND->play("sound_boss_huntresslaser_shot_1", 0.1f);
+			else if (rnd == 1) SOUND->play("sound_boss_huntresslaser_shot_2", 0.1f);
+			else SOUND->play("sound_boss_huntresslaser_shot_3", 0.1f);
 			_viBullet->firstTime = false;
 			_viBullet->secendTime = true;
 			_viBullet->isOn = true;

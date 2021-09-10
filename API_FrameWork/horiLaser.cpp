@@ -64,6 +64,7 @@ void horiLaser::update()
 			_viBullet->secendTime = true;
 			_viBullet->isOn = true;
 			_viBullet->col->setCanCol(true);
+			SOUND->play("lazer", 0.1f);
 			if (_viBullet->foward == FOWARD::LEFT) {
 				int arr[] = { 4 + 5, 1 + 5, 0 + 5 };
 				ANIMATION->changeNonKeyAnimation(_viBullet->ani, "horizonlaser", arr, sizeof(arr) / sizeof(int), 10, false);

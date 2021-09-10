@@ -399,6 +399,7 @@ void grunt::deathCheck()
 		else
 			ANIMATION->changeNonKeyAnimation(_viEnemy->bloodAni, "blood", 10, 19, 10, false, false);
 		CAMERA->setShake(20, 10, 1);
+		SOUND->play("blunt", 0.1f);
 		//_viEnemy->col->setCanCol(false);
 		_viEnemy->searchCol->setCanCol(false);
 		COLLISION->erase(_viEnemy->searchCol);

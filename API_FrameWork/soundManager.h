@@ -3,7 +3,7 @@
 #include "inc/fmod.hpp"
 #pragma comment(lib, "lib/fmodex_vc.lib")
 #define EXTRACHANNELBUFFER 5
-#define SOUNDBUFFER 100
+#define SOUNDBUFFER 500//100
 #define TOTALSOUNDBUFFER SOUNDBUFFER+EXTRACHANNELBUFFER
 
 class soundManager : public Singleton<soundManager>

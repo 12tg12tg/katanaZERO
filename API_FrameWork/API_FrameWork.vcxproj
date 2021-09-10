@@ -165,6 +165,7 @@
     <ClInclude Include="door.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
+    <ClInclude Include="conversation.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enum.h" />
     <ClInclude Include="explosion.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="textMap4.h" />
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
+    <ClInclude Include="titleScene.h" />
     <ClInclude Include="txtData.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="utils.h" />
@@ -229,6 +231,7 @@
     <ClCompile Include="door.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
+    <ClCompile Include="conversation.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fan.cpp" />
@@ -258,6 +261,7 @@
     <ClCompile Include="textMap4.cpp" />
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
+    <ClCompile Include="titleScene.cpp" />
     <ClCompile Include="txtData.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="utils.cpp" />

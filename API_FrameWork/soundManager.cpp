@@ -148,7 +148,7 @@ void soundManager::resume(string keyName)
 bool soundManager::isPlaySound(string keyName)
 {
     int count = 0;
-    bool isPlay;
+    bool isPlay = false;
     arrSoundIter iter = m_totalSounds.begin();
     for (iter; iter != m_totalSounds.end(); ++iter, count++)
     {
@@ -164,7 +164,7 @@ bool soundManager::isPlaySound(string keyName)
 bool soundManager::isPauseSound(string keyName)
 {
     int count = 0;
-    bool isPause;
+    bool isPause = false;
     arrSoundIter iter = m_totalSounds.begin();
     for (iter; iter != m_totalSounds.end(); ++iter, count++)
     {

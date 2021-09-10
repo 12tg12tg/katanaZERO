@@ -7,6 +7,9 @@ private:
 	boss* _boss;
 
 	int _retryNum;
+
+	bool _clear;
+	int _clearCount;
 public:
 	textMap4();
 	~textMap4();
@@ -16,5 +19,8 @@ public:
 	virtual void update();
 	virtual void render();
 	virtual void CheckClear();
+
+	void afterClearUpdate();
+	void afterClearRender();
 };
 

@@ -21,6 +21,9 @@ textMap3::~textMap3()
 
 HRESULT textMap3::init()
 {
+	if (!SOUND->isPlaySound("song_bunker_2")) {
+		SOUND->play("song_bunker_2", 0.1f);
+	}
 	Cmap::init();
 	_goal = COLLISION->addCollider(Vec2(1853, 265), Vec2(19, 221), COLLIDER_TYPE::POTAL, ZCOL1);
 
@@ -51,6 +54,7 @@ HRESULT textMap3::init()
 
 void textMap3::release()
 {
+	SOUND->stop("song_bunker_2");
 	COLLISION->erase(_goal);
 	_fan->release();
 	_laser->release();
@@ -112,6 +116,7 @@ void textMap3::render()
 void textMap3::CheckClear()
 {
 	if (_grunt->checkEverybodyDie()) {
+		if (!_isClear) SOUND->play("go", 0.1f);
 		_isClear = true;
 	}
 }

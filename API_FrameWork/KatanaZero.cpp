@@ -20,6 +20,7 @@ HRESULT KatanaZero::init()
     m_ui->init();
     MAIN->setUIlink(m_ui);
 
+    soundInit();
     sceneInit();
     collisionInit();
 
@@ -28,8 +29,9 @@ HRESULT KatanaZero::init()
     _RPfadeIn = false;
     _firstFadeOut = false;
     _secondFadeIn = false;
+    _playsound = false;
 
-    _state = MAINSTATE::INGAME;
+    _state = MAINSTATE::TITLE;
     _caretaker = new Caretaker;
     _caretaker->init();
 
@@ -75,6 +77,7 @@ void KatanaZero::update()
     switch (_state)
     {
     case MAINSTATE::TITLE:
+        SCENE->update();
         break;
     case MAINSTATE::LOADING:
         break;
@@ -169,6 +172,7 @@ void KatanaZero::render()
     switch (_state)
     {
     case MAINSTATE::TITLE:
+        SCENE->render();
         break;
     case MAINSTATE::LOADING:
         break;
@@ -223,8 +227,27 @@ void KatanaZero::sceneInit()
     _testmap2 = dynamic_cast<textMap2*>(SCENE->addScene("Å×½ºÆ®¸Ê2", new textMap2));
     _testmap3 = dynamic_cast<textMap3*>(SCENE->addScene("Å×½ºÆ®¸Ê3", new textMap3));
     _testmap4 = dynamic_cast<textMap4*>(SCENE->addScene("º¸½º¸Ê", new textMap4));
-    SCENE->changeScene("Å×½ºÆ®¸Ê2");
+    _title = dynamic_cast<titleScene*>(SCENE->addScene("Å¸ÀÌÆ²", new titleScene));
+    SCENE->changeScene("Å¸ÀÌÆ²");
     //------------------------------------------------------------------------------------------------
+}
+
+void KatanaZero::soundInit()
+{
+    SOUND->addSound("blunt", "sound/all/blunt.wav", false, false);
+    SOUND->addSound("explosion_1", "sound/all/explosion_1.wav", false, false);
+    SOUND->addSound("explosion_2", "sound/all/explosion_2.wav", false, false);
+    SOUND->addSound("explosion_3", "sound/all/explosion_3.wav", false, false);
+    SOUND->addSound("Slowmo_Enter", "sound/all/Slowmo_Enter.wav", false, false);
+    SOUND->addSound("Slowmo_Exit", "sound/all/Slowmo_Exit.wav", false, false);
+    SOUND->addSound("song_bossbattle", "sound/all/song_bossbattle.ogg", true, true);
+    SOUND->addSound("song_bunker_2", "sound/all/song_bunker_2.ogg", true, true);
+    SOUND->addSound("bgm_ending", "sound/all/bgm_ending.mp3", true, true);
+    SOUND->addSound("beep", "sound/all/beep.wav", false, false);
+    SOUND->addSound("bgm_title", "sound/all/bgm_title.mp3", true, true);
+    SOUND->addSound("go", "sound/all/go.wav", false, false);
+    SOUND->addSound("start", "sound/all/start.wav", false, false);
+    //SOUND->addSound("walljump", "sound/player/walljump1.wav", false, false);
 }
 
 void KatanaZero::collisionInit()
@@ -246,6 +269,10 @@ void KatanaZero::collisionInit()
 void KatanaZero::dropFrame()
 {
     if (INPUT->isStayKeyDown(VK_LSHIFT)) {
+        if (!_playsound) {
+            _playsound = true;
+            SOUND->play("Slowmo_Enter", 0.1f);
+        }
         TIME->setGameTimeRate(TIME->getGameTimeRate() - 0.05f);
         if (TIME->getGameTimeRate() < 0.3f) {
             TIME->setGameTimeRate(0.3f);
@@ -256,6 +283,10 @@ void KatanaZero::dropFrame()
         PLAYER->getState() == PLAYERSTATE::DEAD || PLAYER->getLaserDie() ||
         MAIN->getCantSlow())
     {
+        if (_playsound) {
+            _playsound = false;
+            SOUND->play("Slowmo_Exit", 0.1f);
+        }
         TIME->setGameTimeRate(1.0f);
         _isSlow = false;
     }

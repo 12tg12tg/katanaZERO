@@ -123,6 +123,7 @@ void circleBomb::updateForEnemy()
 
 			//스피드 0이면
 			if (_viBullet->speed == 0) {
+				SOUND->play("sticky", 0.1f);
 				_viBullet->firstTime = false;
 				_viBullet->secendTime = true;
 				ANIMATION->changeNonKeyAnimation(_viBullet->ani, "circleBomb", 0, 1, 2, false, true);
@@ -152,6 +153,10 @@ void circleBomb::updateForEnemy()
 		if (_viBullet->thirdTime && _viBullet->count > 80) {
 			//폭발발사
 			int num = RND->getFromTo(8, 10);
+			int rndNum = RND->getInt(3);
+			if (rndNum == 0) SOUND->play("explosion_1", 0.1f);
+			else if (rndNum == 1)SOUND->play("explosion_2", 0.1f);
+			else SOUND->play("explosion_3", 0.1f);
 			for (size_t i = 0; i < num; i++) {
 				_explo->fire(_viBullet->col->getPos().x, _viBullet->col->getPos().y, COLLIDER_TYPE::BULLET_ENEMY);
 			}
@@ -207,6 +212,10 @@ void circleBomb::updateForPlayer()
 		//시간지나면 소멸
 		if (_ireflect->count > 60) {
 			//폭발발사
+			int rndNum = RND->getInt(3);
+			if (rndNum == 0) SOUND->play("explosion_1", 0.1f);
+			else if (rndNum == 1)SOUND->play("explosion_2", 0.1f);
+			else SOUND->play("explosion_3", 0.1f);
 			int num = RND->getFromTo(8, 10);
 			for (size_t i = 0; i < num; i++) {
 				_explo->fire(_ireflect->col->getPos().x, _ireflect->col->getPos().y, COLLIDER_TYPE::BULLET_PLAYER);

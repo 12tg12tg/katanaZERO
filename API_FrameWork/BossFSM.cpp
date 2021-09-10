@@ -284,6 +284,7 @@ void Boss_Shoot::update()
 	//shoot횟수를 채우거나 IDLE로 가거나
 	if (!_boss->_ani->isPlay()) {
 		if (_shootCount < _shootNum) {
+			SOUND->play("shoot", 0.1f);
 			if (_boss->_foward == FOWARD::RIGHT) ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 36, 43, 15, false, false);
 			else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 467, 460, 15, false, false);
 			if (_boss->_foward == FOWARD::LEFT) _boss->_bm->getCirBomb()->fire(_boss->_col->getPos().x - 50, _boss->_col->getPos().y - 17, FOWARD::LEFT);
@@ -345,6 +346,7 @@ void Boss_Rifle::update()
 	if (!_boss->_ani->isPlay()) {
 		if (!_readyForShoot) {
 			_readyForShoot = true;
+			SOUND->play("aimground", 0.1f);
 			if (_boss->_foward == FOWARD::LEFT) _boss->_bm->getholLaser()->fire(_boss->_col->getPos().x - 50, _boss->_col->getPos().y - 17, FOWARD::LEFT);
 			else _boss->_bm->getholLaser()->fire(_boss->_col->getPos().x + 50, _boss->_col->getPos().y - 17, FOWARD::RIGHT); ;
 		}
@@ -548,6 +550,7 @@ void Boss_Dash::init()
 	case BOSSSTATE::DEAD:
 		if (_boss->_foward == FOWARD::RIGHT) ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 90, 97, 15, false, false);
 		else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 521, 514, 15, false, false);
+		SOUND->play("predash", 0.1f);
 		break;
 	}
 	//고유멤버변수
@@ -562,6 +565,7 @@ void Boss_Dash::update()
 	if (!_afterReady) {
 		if (!_boss->_ani->isPlay()) {
 			_afterReady = true;
+			SOUND->play("dash", 0.1f);
 			if (_boss->_foward == FOWARD::RIGHT) {
 				int arr[] = { 108 };
 				ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", arr, sizeof(arr)/sizeof(int), 1, false);
@@ -787,6 +791,7 @@ void Boss_verLaser::update()
 		if (!_afterShot) {
 			if (!_boss->_ani->isPlay()) {
 				/*fire*/
+				SOUND->play("aimtop", 0.1f);
 				_boss->_bm->getVerLaser()->fire(_boss->_col->getPos().x, _boss->_col->getBottom() + 20);
 				++_shootNum;
 				if (_shootNum == 4) {
@@ -910,6 +915,7 @@ void Boss_Hurt::update()
 	else {
 		_stunGauge += 1 * TIME->getGameTimeRate();
 		if (_stunGauge > 20 && !_stunOver) {
+			SOUND->play("teleport", 0.5f);
 			if (_boss->_foward == FOWARD::RIGHT) ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 342, 345, 15, false, false);
 			else ANIMATION->changeNonKeyAnimation(_boss->_ani, "headhunter_all", 773, 770, 15, false, false);
 			_stunOver = true;

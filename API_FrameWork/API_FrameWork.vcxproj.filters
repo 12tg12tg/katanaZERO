@@ -172,6 +172,12 @@
     <Filter Include="KatanaZero\4bullet\bossBullets\bullets\explosion">
       <UniqueIdentifier>{e9e3be74-0bfb-4a58-bd35-5ab29f537b11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KatanaZero\6title">
+      <UniqueIdentifier>{984fb571-7510-4788-ad62-2977353a40b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KatanaZero\7conversation">
+      <UniqueIdentifier>{a5c8e68f-9f41-44e7-b7df-732b454f5f6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -363,6 +369,12 @@
     <ClInclude Include="explosion.h">
       <Filter>KatanaZero\4bullet\bossBullets\bullets\explosion</Filter>
     </ClInclude>
+    <ClInclude Include="titleScene.h">
+      <Filter>KatanaZero\6title</Filter>
+    </ClInclude>
+    <ClInclude Include="conversation.h">
+      <Filter>KatanaZero\7conversation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API_FrameWork.cpp">
@@ -526,6 +538,12 @@
     </ClCompile>
     <ClCompile Include="explosion.cpp">
       <Filter>KatanaZero\4bullet\bossBullets\bullets\explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="titleScene.cpp">
+      <Filter>KatanaZero\6title</Filter>
+    </ClCompile>
+    <ClCompile Include="conversation.cpp">
+      <Filter>KatanaZero\7conversation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

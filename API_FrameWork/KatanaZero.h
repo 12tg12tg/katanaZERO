@@ -9,6 +9,7 @@
 #include "textMap2.h"
 #include "textMap3.h"
 #include "textMap4.h"
+#include "titleScene.h"
 //-----------------------------
 
 
@@ -24,6 +25,7 @@ private:
 	textMap2* _testmap2;
 	textMap3* _testmap3;
 	textMap4* _testmap4;
+	titleScene* _title;
 	//-------------------------
 
 	//리플레이 bool
@@ -51,6 +53,7 @@ private:
 	//슬로우
 	BYTE _slowAlpha;
 	bool _isSlow;
+	bool _playsound;
 	//디버그텍스트박스
 	RECT m_debugRc;	
 	bool _isDebug;
@@ -60,6 +63,7 @@ public:
 
 	HRESULT init();
 	void sceneInit();
+	void soundInit();
 	void collisionInit();
 	void release();
 	void update();

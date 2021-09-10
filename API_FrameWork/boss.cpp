@@ -109,6 +109,19 @@ void boss::stateInit()
 
 void boss::soundInit()
 {
+    SOUND->addSound("aimground", "sound/boss/aimground.wav", false, false);
+    SOUND->addSound("aimtop", "sound/boss/aimtop.wav", false, false);
+    SOUND->addSound("boom", "sound/boss/boom.wav", false, false);
+    SOUND->addSound("dash", "sound/boss/dash.wav", false, false);
+    SOUND->addSound("lazer", "sound/boss/lazer.wav", false, false);
+    SOUND->addSound("predash", "sound/boss/predash.wav", false, false);
+    SOUND->addSound("shoot", "sound/boss/shoot.wav", false, false);
+    SOUND->addSound("sticky", "sound/boss/sticky.wav", false, false);
+    SOUND->addSound("teleport", "sound/boss/teleport.wav", false, false);
+
+    SOUND->addSound("sound_boss_huntresslaser_shot_1", "sound/boss/sound_boss_huntresslaser_shot_1.wav", false, false);
+    SOUND->addSound("sound_boss_huntresslaser_shot_2", "sound/boss/sound_boss_huntresslaser_shot_2.wav", false, false);
+    SOUND->addSound("sound_boss_huntresslaser_shot_3", "sound/boss/sound_boss_huntresslaser_shot_3.wav", false, false);
 }
 
 void boss::imageInit()

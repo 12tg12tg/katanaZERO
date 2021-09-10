@@ -19,6 +19,9 @@ textMap::~textMap()
 
 HRESULT textMap::init()
 {
+	if (!SOUND->isPlaySound("song_bunker_2")) {
+		SOUND->play("song_bunker_2", 0.1f);
+	}
 	Cmap::init();
 	_goal = COLLISION->addCollider(Vec2(1712, 237), Vec2(19, 221), COLLIDER_TYPE::POTAL, ZCOL1);
 	PLAYER->setX(_startPt.x);
@@ -99,6 +102,7 @@ void textMap::render()
 void textMap::CheckClear()
 {
 	if (_grunt->checkEverybodyDie()) {
+		if(!_isClear) SOUND->play("go", 0.1f);
 		_isClear = true;
 	}
 }

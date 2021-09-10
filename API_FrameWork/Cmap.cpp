@@ -15,6 +15,7 @@ HRESULT Cmap::init()
 	CAMERA->FadeInit(20, FADE_LEFT_IN);
 	CAMERA->FadeStart();
 	_timeOver = false;
+	SOUND->play("start", 0.1f);
     return S_OK;
 }
 

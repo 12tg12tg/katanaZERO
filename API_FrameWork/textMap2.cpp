@@ -24,6 +24,9 @@ textMap2::~textMap2()
 
 HRESULT textMap2::init()
 {
+	if (!SOUND->isPlaySound("song_bunker_2")) {
+		SOUND->play("song_bunker_2", 0.1f);
+	}
 	Cmap::init();
 	_goal = COLLISION->addCollider(Vec2(2143, 385), Vec2(19, 221), COLLIDER_TYPE::POTAL, ZCOL1);
 
@@ -51,6 +54,7 @@ HRESULT textMap2::init()
 	_laser->fire(2035, 290, 206);
 	_laser->fire(2099, 290, 206);
 
+	SOUND->play("go", 0.1f);
     return S_OK;
 }
 

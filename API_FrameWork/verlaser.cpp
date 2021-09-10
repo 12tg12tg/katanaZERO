@@ -49,6 +49,11 @@ void verlaser::update()
 	{
 		//처음으로 애니끝낫을때 충돌ON
 		if (_viBullet->firstTime && !_viBullet->ani->isPlay()) {
+			int rnd = RND->getInt(3);
+			if (rnd == 0) SOUND->play("sound_boss_huntresslaser_shot_1", 0.1f);
+			else if (rnd == 1) SOUND->play("sound_boss_huntresslaser_shot_2", 0.1f);
+			else SOUND->play("sound_boss_huntresslaser_shot_3", 0.1f);
+
 			CAMERA->setShake(7, 10, 1);
 			_viBullet->col->setCanCol(true);
 			_viBullet->firstTime = false;
